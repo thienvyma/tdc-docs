@@ -310,20 +310,20 @@ html { scroll-behavior: smooth; }
       <p class="answer">Hệ thống gồm 4 phần đi cùng nhau: <strong>chuẩn định dạng TDC</strong> (đặt tên, thứ tự, caption), <strong>engine quy tắc</strong> kiểm tra và gợi ý sửa, <strong>database</strong> lưu toàn bộ lịch sử, và <strong>bộ đăng 2 chế độ</strong>. Phần khó nhất là đăng đúng format TDC, nên format được viết thành hồ sơ mà máy đọc được thay vì để trong đầu người đăng.</p>
       <div class="grid-2">
         <div class="card">
-          <span class="label">Chế độ Trình duyệt · dùng ngay</span>
+          <span class="label">Chế độ Trình duyệt · dự phòng</span>
           <h4>Claude in Chrome thao tác Meta Business Suite</h4>
-          <p>Đi theo đúng flow hiện tại, không cần xác thực app trên developers.facebook.com. Mỗi lô bài cần một lệnh của người trong chat.</p>
+          <p>Đi theo đúng flow hiện tại, không cần app Meta. Mỗi lô bài cần một lệnh của người trong chat và một máy bật Chrome trong lúc đặt lịch. Dùng khi API lỗi hoặc bị thu hồi quyền.</p>
         </div>
         <div class="card">
-          <span class="label">Chế độ API · khi được cấp quyền</span>
+          <span class="label">Chế độ API · đường chính</span>
           <h4>Worker gọi Meta Graph API</h4>
-          <p>Nhanh, gần như miễn phí, không cần người trực. Chuyển sang bằng một công tắc, dữ liệu và quy tắc giữ nguyên.</p>
+          <p>VPS tự đăng đúng giờ, gần như miễn phí, không cần người trực hay máy nào bật. Không cần App Review. Đổi qua lại với chế độ Trình duyệt bằng một công tắc, dữ liệu và quy tắc giữ nguyên.</p>
         </div>
       </div>
       <ul>
         <li>Engine kiểm tra đủ 9 quy tắc ở mục 2 của bản flow, cộng thêm các quy tắc chống dư thừa (trùng file, trùng bài, trùng Story). Giới hạn tự đổi theo chế độ.</li>
         <li>Lưu trữ 2 tầng: bản gốc giữ vĩnh viễn trên Google Drive theo cấu trúc thư mục chuẩn (engine tự sắp xếp), bản nén trên Cloudflare R2 để Meta tải về. VPS Việt Nam chạy app và database. Chi tiết ở trang <a href="techstack.html#kho-file">Tech stack</a>.</li>
-        <li>Chế độ Trình duyệt có 3 giới hạn cần chấp nhận: cần người ra lệnh mỗi lô, tốn hạn mức Claude, và phải chỉnh lại khi Meta đổi giao diện.</li>
+        <li>Chế độ API là đường chính. Chế độ Trình duyệt chỉ là dự phòng vì có 3 giới hạn: cần người ra lệnh mỗi lô (và máy bật Chrome lúc đó), tốn hạn mức Claude, và phải chỉnh lại khi Meta đổi giao diện.</li>
         <li>Claude kết nối vào app bằng luồng đăng nhập (OAuth) theo tài khoản từng người, và sẽ đảm nhận việc viết content ở cả 2 chế độ.</li>
         <li>Toàn bộ file gốc được giữ vĩnh viễn.</li>
       </ul>
@@ -380,7 +380,7 @@ html { scroll-behavior: smooth; }
           <tr><td>Rủi ro</td><td>Meta đổi giao diện; checkpoint/CAPTCHA; tự động hoá giao diện là vùng xám trong điều khoản Meta</td><td>Meta đổi phiên bản API; token bị thu hồi</td></tr>
         </tbody>
       </table></div>
-      <h3>Một ngày ở chế độ Trình duyệt (2 đợt)</h3>
+      <h3>Một ngày ở chế độ Trình duyệt (dự phòng, 2 đợt)</h3>
       <ol class="steps">
         <li><div><strong>Chuẩn bị.</strong> Engine chọn bài đã duyệt có giờ đăng trong 24–48 giờ tới, đặt bản nén đúng tên, đúng thứ tự vào <code>outbox/</code> trên máy chạy Chrome (rclone đồng bộ từ R2).</div></li>
         <li><div><strong>Ra lệnh.</strong> Người dùng mở Claude, gõ "lên lịch các bài đã duyệt". Một lệnh là sự cho phép cho cả lô đó; Claude không tự đăng khi không có người ra lệnh.</div></li>
@@ -389,7 +389,7 @@ html { scroll-behavior: smooth; }
         <li><div><strong>Đợt sau giờ đăng.</strong> Claude gọi <code>get_verify_batch</code>, mở từng bài kiểm tra caption, số ảnh, cover; comment dưới bài trên FB và IG; ghi <code>permalink</code> bằng <code>report_published</code>; tạo việc "Story dẫn link" cho người làm trên điện thoại.</div></li>
         <li><div><strong>Sự cố.</strong> Gặp checkpoint, CAPTCHA hoặc giao diện lạ thì Claude dừng, đánh dấu "cần người" và gửi thông báo.</div></li>
       </ol>
-      <div class="note"><span class="label">( Điểm mấu chốt )</span><p>Claude không cần online đúng giờ đăng: Business Suite tự đăng theo lịch Claude đã đặt. Khi chế độ API sẵn sàng, chỉ cần đổi <code>publish_mode</code>.</p></div>
+      <div class="note"><span class="label">( Điểm mấu chốt )</span><p>Ở chế độ API không cần đợt nào: worker trên VPS tự đăng và tự kiểm tra. Khi phải dùng dự phòng, Claude cũng không cần online đúng giờ đăng: Business Suite tự đăng theo lịch Claude đã đặt. Đổi chế độ chỉ cần đổi <code>publish_mode</code>.</p></div>
     </section>
 
     <section id="dang-nhap">
@@ -610,7 +610,7 @@ html { scroll-behavior: smooth; }
 
     <section id="xac-thuc">
       <header><span class="paren">( Xác thực Meta )</span><h2>Không cần App Review: Standard Access + System User + Live mode</h2></header>
-      <p>Làm song song, không chặn chế độ Trình duyệt. App Review chỉ bắt buộc khi cần <strong>Advanced Access</strong>, tức là khi đụng đến dữ liệu của người không có vai trò trên app. Tool nội bộ đăng lên Page và IG của chính TDC dùng <strong>Standard Access</strong>, mà Meta tự cấp cho app loại Business, nhưng chỉ cho người có vai trò trên app.</p>
+      <p>Đây là bước mở khoá chế độ API, đường đăng chính, nên làm ngay từ ngày 1. App Review chỉ bắt buộc khi cần <strong>Advanced Access</strong>, tức là khi đụng đến dữ liệu của người không có vai trò trên app. Tool nội bộ đăng lên Page và IG của chính TDC dùng <strong>Standard Access</strong>, mà Meta tự cấp cho app loại Business, nhưng chỉ cho người có vai trò trên app.</p>
       <div class="note key"><span class="label">( Cái bẫy )</span><p>Khi app còn ở <strong>Development mode</strong>, bài đăng qua API chỉ người có vai trò trên app mới thấy. Phải chuyển sang <strong>Live mode</strong> (cần link chính sách quyền riêng tư, hướng dẫn xoá dữ liệu, icon, danh mục; không cần App Review).</p></div>
       <ol class="steps">
         <li><div>Trong Business Portfolio TDC: xác nhận Page và IG Business thuộc portfolio và đã liên kết với nhau.</div></li>

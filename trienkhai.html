@@ -398,7 +398,7 @@ details.prompt .row { display: flex; justify-content: flex-end; margin-top: 8px;
         items: ['Chọn người điều phối gần như toàn thời gian trong 3 tuần (bạn hoặc một developer)', 'Đặt lịch họp content ngày 1, 2 giờ: content, designer, người duyệt', 'Chọn người duyệt bài (bấm Duyệt trong app)', 'Chọn người ra lệnh đợt đăng mỗi ngày cho Claude', 'Chọn người xử lý việc làm tay trên điện thoại (Story, nhạc, bài trộn)'] },
       { id: 'C.2', title: 'Tài khoản và quyền', who: ['ban'], days: 'trước ngày 1', ai: 0, hu: 2,
         dod: 'Mọi tài khoản dưới đây đăng nhập được và đúng quyền.',
-        items: ['Nâng Claude lên gói Max mức cao (2 phiên Claude Code song song)', 'Cài Claude Code trên máy điều phối; mở sẵn 2 cửa sổ cho phiên A và phiên B', 'Cài Claude in Chrome trên máy sẽ chạy đợt đăng', {t: 'Xác nhận đã có Business Portfolio TDC và bạn là admin', fixed: true}, 'Kiểm tra Page FB và IG Business đã nằm trong portfolio và đã liên kết với nhau', 'Xác nhận Drive của TDC là Google Workspace hay Google One; ghi dung lượng còn trống', 'Tạo tài khoản GitHub (hoặc dùng tài khoản sẵn có) để chứa repo private'] },
+        items: ['Nâng Claude lên gói Max mức cao (2 phiên Claude Code song song)', 'Cài Claude Code trên máy điều phối; mở sẵn 2 cửa sổ cho phiên A và phiên B', 'Cài Claude in Chrome trên máy sẽ chạy đợt đăng (chỉ cần khi dùng dự phòng Trình duyệt)', {t: 'Xác nhận đã có Business Portfolio TDC và bạn là admin', fixed: true}, 'Kiểm tra Page FB và IG Business đã nằm trong portfolio và đã liên kết với nhau', 'Xác nhận Drive của TDC là Google Workspace hay Google One; ghi dung lượng còn trống', 'Tạo tài khoản GitHub (hoặc dùng tài khoản sẵn có) để chứa repo private'] },
       { id: 'C.3', title: 'Dữ liệu thử cho engine', who: ['content', 'ban'], days: 'trước ngày 1', ai: 0, hu: 3,
         dod: 'Folder _test-old-posts có khoảng 1 tháng bài cũ, mỗi bài đủ file, caption, link.',
         items: ['Tạo thư mục TDC Post/_test-old-posts trên Drive', 'Mỗi bài cũ một folder: file đúng như designer từng giao, caption.txt, link bài trên FB/IG', 'Gom khoảng 1 tháng bài, có đủ loại: ảnh đơn, carousel, Reels, bài trộn', 'Ghi lại các lỗi team từng gặp theo mục 5 của bản flow (bài nào, lỗi gì)'] },
@@ -460,7 +460,21 @@ details.prompt .row { display: flex; justify-content: flex-end; margin-top: 8px;
         prompt: 'Nạp toàn bộ TDC Post/_test-old-posts, chạy engine quy tắc trên từng bài như ở thời điểm "gửi duyệt" và "sau khi đăng".\nĐối chiếu với danh sách lỗi tôi gửi: <dán danh sách C.3>.\nXuất báo cáo HTML: lỗi bắt được, lỗi bỏ sót, cảnh báo thừa, đề xuất sửa quy tắc hoặc tham số.' }
     ] },
 
-    { id: 'p2', title: 'Giai đoạn 2 · Chế độ Trình duyệt · phiên A', days: 'ngày 8–14', gate: { name: 'Cổng 3', when: 'ngày 14', text: '5 ngày đăng thật: không bài trùng, không lỗi nào bị bỏ sót qua đợt kiểm tra.' }, tasks: [
+    { id: 'api', title: 'Giai đoạn 2 · Chế độ API (đường chính) · phiên A', days: 'ngày 1–14', note: 'VPS tự đăng đúng giờ qua Graph API, không cần máy nào bật. Không cần App Review: app Business + System User + Live mode. Việc Meta không mở API (Story có link, nhạc IG từ thư viện, bài trộn IG) thành việc làm tay trên điện thoại.', gate: { name: 'Cổng 3', when: 'ngày 14', text: '5 ngày đăng thật qua API: không bài trùng, không lỗi nào bị bỏ sót qua bước kiểm tra sau đăng.' }, tasks: [
+      { id: 'A.1', title: 'Tạo app Meta và System User', who: ['ban', 'claudeA'], days: 'ngày 1–3', ai: 0, hu: 3,
+        dod: 'Token System User đọc được Page và IG; app ở Live mode; bài thử hiển thị công khai khi xem ẩn danh.',
+        items: ['Tạo app loại Business gắn với Business Portfolio TDC', 'Thêm use case quản lý Trang và Instagram API', 'Tạo System User (Admin), gán Page, IG và app', 'Tạo token với các quyền trong mục "Xác thực Meta"', 'Chuyển app sang Live mode', 'Lưu token vào .env của server, không dán vào chat'],
+        prompt: 'Đọc ' + DOCS + 'index.html mục "Xác thực Meta". Hướng dẫn tôi từng bước tạo app Business, System User, token và chuyển Live mode; mỗi lần một bước, chờ tôi xác nhận. Tuyệt đối không yêu cầu tôi dán token vào chat.' },
+      { id: 'A.2', title: 'ApiPublisher và đọc số liệu', who: ['claudeA', 'ban'], days: 'ngày 4–9', ai: 8, hu: 2,
+        dod: 'Đổi publish_mode sang API cho từng loại bài; bài lên đúng giờ, comment dưới bài FB và IG tự động, kiểm tra sau đăng đạt.',
+        items: ['Graph API: FB ảnh, carousel, Reels; IG carousel, Reels', 'Comment dưới bài FB và IG, kiểm tra sau 5 phút, đọc insights', 'Thử trên 1 bài công khai', 'Bật API cho từng loại bài một', 'Nhạc Reels IG qua Instagram Audio API (cần User token qua Facebook Login); nhạc FB ghép sẵn bằng ffmpeg'],
+        prompt: 'Đọc ' + DOCS + 'index.html mục "Meta API làm được gì" và ' + DOCS + 'techstack.html bước 7–9, 11 của "Luồng xử lý một bài".\nViết ApiPublisher cài interface Publisher: FB photos → feed (attached_media), Reels 3 bước, IG container → media_publish, comment dưới bài FB (/{post-id}/comments) và IG (/{ig-media-id}/comments), verify.post, metrics.snapshot. Ghim phiên bản Graph API. Thử lại 3 lần với khoảng cách tăng dần, lưu phản hồi Meta nguyên văn vào job_attempts.' },
+      { id: '2.4', title: '5 ngày đăng thật qua API', who: ['ban', 'content'], days: 'ngày 10–14', ai: 0, hu: 3,
+        dod: 'Mỗi ngày mọi bài đã duyệt lên đúng giờ và qua kiểm tra sau đăng; mọi việc làm tay đã xử lý; tổng kết tuần không có bài trùng, không lỗi bỏ sót.',
+        items: ['Ngày 10: bài lên đúng giờ; xem màn Kiểm tra sau đăng buổi tối', 'Ngày 11: bài lên đúng giờ; xem màn Kiểm tra sau đăng buổi tối', 'Ngày 12: bài lên đúng giờ; xem màn Kiểm tra sau đăng buổi tối', 'Ngày 13: bài lên đúng giờ; xem màn Kiểm tra sau đăng buổi tối', 'Ngày 14: bài lên đúng giờ; xem màn Kiểm tra sau đăng buổi tối', 'Xử lý hết việc làm tay mỗi ngày (Story, nhạc IG, bài trộn)', 'Ghi mọi lỗi phát sinh vào Nhật ký', 'Tổng kết tuần và quyết định qua Cổng 3'] }
+    ] },
+
+    { id: 'p2', title: 'Dự phòng · Chế độ Trình duyệt · phiên A', days: 'khi cần', note: 'Chỉ dùng khi API lỗi kéo dài hoặc Meta thu hồi quyền. Máy chạy Chrome chỉ cần bật trong lúc chạy đợt đăng (30–60 phút), sau đó Business Suite tự đăng theo lịch đã đặt. Phần code đã có; làm 2.1 và 2.3 một lần để sẵn sàng.', tasks: [
       { id: '2.1', title: 'Chuẩn bị máy chạy Chrome cho Claude', who: ['ban'], days: 'ngày 8', ai: 0, hu: 1,
         dod: 'Trên máy đó, Claude mở được Business Suite bằng tài khoản admin và thấy folder bài qua Drive for desktop.',
         items: ['Cài Google Drive for desktop, đồng bộ TDC Post/', 'Chrome đăng nhập tài khoản admin Page; mở thử Meta Business Suite', 'Cài Claude in Chrome, cấp quyền cho business.facebook.com', 'Thêm connector TDC Post trong Claude trên máy này'] },
@@ -471,9 +485,6 @@ details.prompt .row { display: flex; justify-content: flex-end; margin-top: 8px;
       { id: '2.3', title: 'Chạy thử với bài nháp', who: ['claudeA', 'ban'], days: 'ngày 9', ai: 2, hu: 3,
         dod: '1 đợt đăng và 1 đợt kiểm tra chạy hết, không thao tác sai; bài thử đã huỷ hoặc xoá.',
         items: ['Tạo 2–3 bài thử, lên lịch xa (ví dụ 30 ngày sau) để không lên thật', 'Ra lệnh 1 đợt đăng, theo dõi từng thao tác', 'Chạy 1 đợt kiểm tra trên một bài đã lên trước đó', 'Sửa hướng dẫn chỗ Claude bấm sai', 'Huỷ lịch các bài thử'] },
-      { id: '2.4', title: '5 ngày đăng thật', who: ['ban', 'content'], days: 'ngày 10–14', ai: 0, hu: 4,
-        dod: 'Mỗi ngày đủ 2 đợt; mọi việc làm tay đã xử lý; bảng tổng kết cuối tuần không có bài trùng, không lỗi bỏ sót.',
-        items: ['Ngày 10: đợt đăng sáng + đợt kiểm tra tối', 'Ngày 11: đợt đăng sáng + đợt kiểm tra tối', 'Ngày 12: đợt đăng sáng + đợt kiểm tra tối', 'Ngày 13: đợt đăng sáng + đợt kiểm tra tối', 'Ngày 14: đợt đăng sáng + đợt kiểm tra tối', 'Xử lý hết việc làm tay mỗi ngày (Story, nhạc, bài trộn)', 'Ghi mọi lỗi phát sinh vào Nhật ký', 'Tổng kết tuần và quyết định qua Cổng 3'] }
     ] },
 
     { id: 'p3', title: 'Giai đoạn 3 · Web app cho cả team · phiên B', days: 'ngày 3–15', gate: { name: 'Cổng 4', when: 'ngày 15', text: 'Team content soạn, duyệt và xem lịch hằng ngày trên app; Business Suite chỉ còn làm dự phòng.' }, tasks: [
@@ -496,17 +507,6 @@ details.prompt .row { display: flex; justify-content: flex-end; margin-top: 8px;
         dod: 'Mỗi người có tài khoản đúng vai trò và đã đọc hướng dẫn; từ ngày 15 bài mới chỉ soạn trên app.',
         items: ['Claude viết hướng dẫn sử dụng ngắn cho từng vai trò', 'Tạo tài khoản cho từng người, đúng vai trò', 'Buổi hướng dẫn 30–45 phút', 'Thông báo từ ngày 15 dùng app; Business Suite chỉ dự phòng'],
         prompt: 'Viết hướng dẫn sử dụng TDC Post (HTML, cùng phong cách với ' + DOCS + ') cho 3 vai trò: content, người duyệt, admin. Mỗi vai trò 1 trang: việc hằng ngày, các nút chính, làm gì khi gặp lỗi hoặc việc làm tay. Có ảnh chụp màn hình từ app thật.' }
-    ] },
-
-    { id: 'api', title: 'Song song · Chế độ API', days: 'khi Meta cấp quyền', note: 'Không chặn 3 tuần. Có quyền lúc nào thì làm lúc đó.', tasks: [
-      { id: 'A.1', title: 'Tạo app Meta và System User', who: ['ban', 'claudeA'], days: 'ngày 1–3', ai: 0, hu: 3,
-        dod: 'Token System User đọc được Page và IG; app ở Live mode; bài thử hiển thị công khai khi xem ẩn danh.',
-        items: ['Tạo app loại Business gắn với Business Portfolio TDC', 'Thêm use case quản lý Trang và Instagram API', 'Tạo System User (Admin), gán Page, IG và app', 'Tạo token với các quyền trong mục "Xác thực Meta"', 'Chuyển app sang Live mode', 'Lưu token vào .env của server, không dán vào chat'],
-        prompt: 'Đọc ' + DOCS + 'index.html mục "Xác thực Meta". Hướng dẫn tôi từng bước tạo app Business, System User, token và chuyển Live mode; mỗi lần một bước, chờ tôi xác nhận. Tuyệt đối không yêu cầu tôi dán token vào chat.' },
-      { id: 'A.2', title: 'ApiPublisher và đọc số liệu', who: ['claudeA', 'ban'], days: '2 ngày khi có quyền', ai: 8, hu: 2,
-        dod: 'Đổi publish_mode sang API cho 1 loại bài; bài lên đúng giờ, comment dưới bài FB và IG tự động, đợt kiểm tra đạt.',
-        items: ['Graph API: FB ảnh, carousel, Reels; IG carousel, Reels', 'Comment dưới bài FB và IG, kiểm tra sau 5 phút, đọc insights', 'Thử trên 1 bài công khai', 'Bật API cho từng loại bài một', 'Nhạc Reels IG qua Instagram Audio API (cần User token qua Facebook Login); nhạc FB ghép sẵn bằng ffmpeg'],
-        prompt: 'Đọc ' + DOCS + 'index.html mục "Meta API làm được gì" và ' + DOCS + 'techstack.html bước 7–9, 11 của "Luồng xử lý một bài".\nViết ApiPublisher cài interface Publisher: FB photos → feed (attached_media), Reels 3 bước, IG container → media_publish, comment dưới bài FB (/{post-id}/comments) và IG (/{ig-media-id}/comments), verify.post, metrics.snapshot. Ghim phiên bản Graph API. Thử lại 3 lần với khoảng cách tăng dần, lưu phản hồi Meta nguyên văn vào job_attempts.' }
     ] },
 
     { id: 'ops', title: 'Sau khi chuyển team · vận hành', days: 'từ ngày 16', note: 'Tuần 4 là tuần đệm. Phần hằng ngày và hằng tuần là checklist lặp lại; tick xong thì bỏ tick vào ngày hôm sau.', tasks: [
@@ -668,7 +668,7 @@ details.prompt .row { display: flex; justify-content: flex-end; margin-top: 8px;
     note.className = 'storage-note' + (mode === 'shared' ? ' shared' : '');
     note.textContent = mode === 'shared' ? 'Tiến độ lưu chung: mọi người mở link này đều thấy cùng một trạng thái.'
       : mode === 'readonly' ? 'Bạn đang xem tiến độ chung ở chế độ chỉ xem.'
-      : fileProgress ? 'Đang mở trên máy: hiện tiến độ Claude đã tick (progress.json) cộng với tick của bạn trên trình duyệt này.'
+      : fileProgress ? 'Hiện tiến độ Claude đã tick (progress.json) cộng với tick của bạn trên trình duyệt này. Tick của bạn chỉ lưu ở trình duyệt này.'
       : 'Tiến độ chỉ lưu trên trình duyệt này (mở qua link chia sẻ trên Desktop hoặc file trên máy).';
 
     var toc = document.getElementById('toc-list'); toc.textContent = '';

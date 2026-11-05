@@ -284,7 +284,7 @@ tr.ph td { background: var(--lab-soft); font: 700 14px/1.3 var(--f-display); let
   <div class="hero">
     <span class="paren">( Roadmap · bản 30.10.2026 )</span>
     <h1>Đăng bài thật từ ngày 10, cả team dùng app sau 3 tuần</h1>
-    <p class="lead">Bắt đầu từ chỗ khó nhất: chốt chuẩn định dạng TDC. Sau đó dựng lõi dữ liệu và engine, chạy chế độ Trình duyệt, rồi mới làm web app. Chế độ API chạy song song và không chặn tiến độ. Làm cùng 2 phiên Claude Code song song: khoảng 88 giờ AI và 41 giờ người trong 15 ngày làm việc.</p>
+    <p class="lead">Bắt đầu từ chỗ khó nhất: chốt chuẩn định dạng TDC. Sau đó dựng lõi dữ liệu và engine, rồi đăng thật qua chế độ API (đường chính, làm từ ngày 1) song song với web app. Chế độ Trình duyệt chỉ giữ làm dự phòng. Làm cùng 2 phiên Claude Code song song: khoảng 88 giờ AI và 41 giờ người trong 15 ngày làm việc.</p>
     <div class="meta"><span>Ước tính cho 1 người điều phối gần như toàn thời gian, tính theo ngày làm việc · chi tiết ở mục <a href="#thoi-gian">Thời gian</a></span></div>
   </div>
 </div>
@@ -307,11 +307,11 @@ tr.ph td { background: var(--lab-soft); font: 700 14px/1.3 var(--f-display); let
       <header><span class="paren">( Các giai đoạn )</span><h2>Mỗi giai đoạn chỉ mở khi qua cổng của giai đoạn trước</h2></header>
       <p class="answer">Cổng 1 là cổng quan trọng nhất: nếu hồ sơ định dạng chưa đúng format TDC, mọi phần sau sẽ đăng sai một cách rất nhất quán.</p>
       <figure class="diagram" style="margin:0">
-        <svg viewBox="0 0 760 744" role="img" aria-label="Roadmap 5 giai đoạn và 4 cổng, chế độ API chạy song song">
+        <svg viewBox="0 0 760 744" role="img" aria-label="Roadmap 5 giai đoạn và 4 cổng, chế độ API là đường chính từ ngày 1">
           <!-- API lane -->
           <rect class="d-lane" x="552" y="16" width="184" height="552" rx="10"/>
           <rect class="d-dash" x="552" y="16" width="184" height="552" rx="10"/>
-          <text class="d-l" x="566" y="44">( Song song, từ ngày 1 )</text>
+          <text class="d-l" x="566" y="44">( Đường chính, từ ngày 1 )</text>
           <text class="d-big" x="566" y="68">Chế độ API</text>
           <text class="d-s" x="566" y="98">Tạo app Business</text>
           <text class="d-s" x="566" y="118">System User + token</text>
@@ -319,9 +319,9 @@ tr.ph td { background: var(--lab-soft); font: 700 14px/1.3 var(--f-display); let
           <text class="d-s" x="566" y="158">Đăng thử bài công khai</text>
           <line class="d-line" x1="566" y1="180" x2="722" y2="180"/>
           <text class="d-t" x="566" y="204">Đạt</text>
-          <text class="d-s" x="566" y="224">Bật API theo từng loại</text>
-          <text class="d-s" x="566" y="244">bài, thay dần chế độ</text>
-          <text class="d-s" x="566" y="264">Trình duyệt</text>
+          <text class="d-s" x="566" y="224">Bật API cho từng loại bài,</text>
+          <text class="d-s" x="566" y="244">VPS tự đăng; Trình duyệt</text>
+          <text class="d-s" x="566" y="264">chỉ còn làm dự phòng</text>
           <text class="d-t" x="566" y="296">Không đạt</text>
           <text class="d-s" x="566" y="316">Giữ chế độ Trình duyệt,</text>
           <text class="d-s" x="566" y="336">cân nhắc dịch vụ trung</text>
@@ -358,13 +358,13 @@ tr.ph td { background: var(--lab-soft); font: 700 14px/1.3 var(--f-display); let
           <!-- phase 2 -->
           <rect class="d-box" x="24" y="320" width="512" height="96" rx="10"/>
           <line class="d-line" x1="212" y1="336" x2="212" y2="400" style="stroke:var(--line)"/>
-          <text class="d-l" x="40" y="348">Giai đoạn 2 · ngày 8–14</text>
+          <text class="d-l" x="40" y="348">Dự phòng · khi cần</text>
           <text class="d-big" x="40" y="372">Chế độ Trình duyệt</text>
-          <text class="d-s" x="228" y="350">Drive for desktop trên máy chạy Chrome</text>
-          <text class="d-s" x="228" y="370">Claude lên lịch theo lô trên Business Suite</text>
-          <text class="d-s" x="228" y="390">Đợt kiểm tra sau đăng: CTA, Story, báo cáo</text>
+          <text class="d-s" x="228" y="350">Chỉ dùng khi API lỗi hoặc bị thu hồi quyền</text>
+          <text class="d-s" x="228" y="370">Chrome chỉ bật lúc Claude đặt lịch theo lô</text>
+          <text class="d-s" x="228" y="390">Code đã có; chạy thử 1 lần để sẵn sàng</text>
           <polygon class="d-gate-q" points="46,444 56,434 66,444 56,454"/>
-          <text class="d-t" x="80" y="449">Cổng 3: 1 tuần đăng thật, không trùng, không sót lỗi</text>
+          <text class="d-t" x="80" y="449">Cổng 3: 1 tuần đăng thật qua API, không trùng, không sót lỗi</text>
 
           <!-- phase 3 -->
           <rect class="d-box" x="24" y="472" width="512" height="96" rx="10"/>
@@ -386,7 +386,7 @@ tr.ph td { background: var(--lab-soft); font: 700 14px/1.3 var(--f-display); let
           <text class="d-s" x="228" y="674">Xuất bộ dữ liệu có phiên bản (JSONL)</text>
           <text class="d-s" x="228" y="694">Thử mô hình viết caption theo giọng TDC</text>
         </svg>
-        <figcaption>Cổng tô màu là cổng quyết định nhất. Cột xám bên phải chạy song song với giai đoạn 0–3. Cuộn ngang trên điện thoại để xem hết.</figcaption>
+        <figcaption>Cổng tô màu là cổng quyết định nhất. Cột xám bên phải là đường đăng chính (API), làm song song với giai đoạn 0–3 từ ngày 1. Cuộn ngang trên điện thoại để xem hết.</figcaption>
       </figure>
     </section>
 
@@ -429,10 +429,10 @@ tr.ph td { background: var(--lab-soft); font: 700 14px/1.3 var(--f-display); let
           <text class="d-t" x="24" y="102">1 · Lõi + engine (phiên A)</text><text class="d-s" x="24" y="118">AI 39 giờ · người 14 giờ</text>
           <rect class="d-accent" x="210" y="96" width="245" height="20" rx="5"/>
           <!-- hàng 3: GĐ2 dựng ngày 8–9 -->
-          <text class="d-t" x="24" y="142">2 · Trình duyệt (phiên A)</text><text class="d-s" x="24" y="158">AI 8 giờ · người 6 giờ</text>
+          <text class="d-t" x="24" y="142">Trình duyệt (dự phòng)</text><text class="d-s" x="24" y="158">AI 8 giờ · người 6 giờ</text>
           <rect class="d-accent" x="455" y="136" width="70" height="20" rx="5"/>
           <!-- hàng 4: chạy thật ngày 10–14 -->
-          <text class="d-t" x="24" y="182">2 · Chạy thật 1 tuần</text><text class="d-s" x="24" y="198">người ~4 giờ · không rút ngắn</text>
+          <text class="d-t" x="24" y="182">2 · Chạy thật 1 tuần (API)</text><text class="d-s" x="24" y="198">người ~4 giờ · không rút ngắn</text>
           <rect x="525" y="176" width="175" height="20" rx="5" fill="url(#wait)" stroke="var(--line-strong)"/>
           <!-- hàng 5: GĐ3 phiên B ngày 3–15 -->
           <text class="d-t" x="24" y="222">3 · Web app (phiên B)</text><text class="d-s" x="24" y="238">AI 39 giờ · người 12 giờ</text>
@@ -440,7 +440,7 @@ tr.ph td { background: var(--lab-soft); font: 700 14px/1.3 var(--f-display); let
           <rect class="d-box" x="560" y="216" width="175" height="20" rx="5"/>
           <text class="d-l" x="568" y="230">thử với content, chuyển team</text>
           <!-- hàng 6: API song song -->
-          <text class="d-t" x="24" y="262">API · song song</text><text class="d-s" x="24" y="278">AI 8 giờ · người 5 giờ</text>
+          <text class="d-t" x="24" y="262">2 · API (đường chính)</text><text class="d-s" x="24" y="278">AI 8 giờ · người 5 giờ</text>
           <rect class="d-box" x="210" y="256" width="105" height="20" rx="5"/>
           <text class="d-l" x="216" y="270">tạo app Meta</text>
           <rect x="315" y="256" width="420" height="20" rx="5" fill="url(#wait)" stroke="var(--line-strong)"/>
@@ -477,11 +477,15 @@ tr.ph td { background: var(--lab-soft); font: 700 14px/1.3 var(--f-display); let
           <tr><td>Đăng nhập, phân quyền, MCP server + OAuth</td><td>Google Workspace SSO, danh sách mời, 4 vai trò kiểm ở backend, khoảng 20 tool MCP</td><td>Mời tài khoản thật, thử từng vai trò, kết nối Claude</td><td class="num">10</td><td class="num">3</td><td class="num">6–7</td></tr>
           <tr><td>Chạy engine trên bài cũ (Cổng 2)</td><td>Chạy, báo cáo lỗi bắt được / bỏ sót</td><td>Xác nhận kết quả đúng</td><td class="num">1</td><td class="num">2</td><td class="num">7</td></tr>
 
-          <tr class="ph"><td colspan="6">Giai đoạn 2 · Chế độ Trình duyệt · phiên A · ngày 8–14</td></tr>
+          <tr class="ph"><td colspan="6">Giai đoạn 2 · Chế độ API (đường chính) · phiên A · ngày 1–14</td></tr>
+          <tr><td>App Meta, System User, token, Live mode</td><td>Hướng dẫn từng bước</td><td>Thao tác trên Business Portfolio</td><td class="num">—</td><td class="num">3</td><td class="num">1–3</td></tr>
+          <tr><td>ApiPublisher + insights + thử</td><td>Graph API FB/IG, Reels, comment, đọc số liệu</td><td>Thử đăng bài công khai</td><td class="num">8</td><td class="num">2</td><td class="num">4–9</td></tr>
+          <tr><td>1 tuần đăng thật qua API (Cổng 3)</td><td>Worker trên VPS tự đăng và tự kiểm tra; không cần đợt Claude</td><td>Xem màn Kiểm tra sau đăng, xử lý việc làm tay</td><td class="num">—</td><td class="num">3</td><td class="num">10–14</td></tr>
+
+          <tr class="ph"><td colspan="6">Dự phòng · Chế độ Trình duyệt · phiên A · khi cần</td></tr>
           <tr><td>Máy chạy Chrome cho Claude</td><td>—</td><td>Cài Drive for desktop, đăng nhập admin Page</td><td class="num">—</td><td class="num">1</td><td class="num">8</td></tr>
           <tr><td>Tool đợt đăng, đợt kiểm tra + hướng dẫn thao tác Business Suite</td><td>Viết tool MCP và bộ hướng dẫn cho Claude in Chrome</td><td>Góp ý theo cách team đang bấm</td><td class="num">6</td><td class="num">2</td><td class="num">8–9</td></tr>
           <tr><td>Chạy thử với bài nháp</td><td>Chạy đợt, sửa chỗ thao tác sai</td><td>Theo dõi, xoá bài thử</td><td class="num">2</td><td class="num">3</td><td class="num">9</td></tr>
-          <tr><td>1 tuần đăng thật (Cổng 3)</td><td>Chạy 2 đợt mỗi ngày bằng subscription</td><td>Ra lệnh mỗi đợt (~20 phút), xử lý việc làm tay</td><td class="num">—</td><td class="num">4</td><td class="num">10–14</td></tr>
 
           <tr class="ph"><td colspan="6">Giai đoạn 3 · Web app cho cả team · phiên B · ngày 3–15</td></tr>
           <tr><td>Design system TDC Post: token + component</td><td>Dựng theo tab Design system (kế thừa TDC Coaching)</td><td>Xem nhanh</td><td class="num">5</td><td class="num">1</td><td class="num">3</td></tr>
@@ -489,10 +493,6 @@ tr.ph td { background: var(--lab-soft); font: 700 14px/1.3 var(--f-display); let
           <tr><td>Xác nhận 2 lớp, duyệt, thông báo, việc làm tay</td><td>Hộp xác nhận, xác nhận lại, luồng duyệt, Telegram/Zalo, nhật ký</td><td>Thử nhận thông báo</td><td class="num">7</td><td class="num">1</td><td class="num">9–10</td></tr>
           <tr><td>Thử với content (2 buổi)</td><td>Sửa theo góp ý</td><td>Team content dùng thử và góp ý</td><td class="num">4</td><td class="num">4</td><td class="num">11–13</td></tr>
           <tr><td>Hướng dẫn + chuyển team (Cổng 4)</td><td>Viết hướng dẫn sử dụng</td><td>Hướng dẫn team, tạo tài khoản</td><td class="num">2</td><td class="num">2</td><td class="num">14–15</td></tr>
-
-          <tr class="ph"><td colspan="6">Song song · Chế độ API · khi Meta cấp quyền (ngoài 3 tuần)</td></tr>
-          <tr><td>App Meta, System User, token, Live mode</td><td>Hướng dẫn từng bước</td><td>Thao tác trên Business Portfolio</td><td class="num">—</td><td class="num">3</td><td class="num">1–3</td></tr>
-          <tr><td>ApiPublisher + insights + thử</td><td>Graph API FB/IG, Reels, comment, đọc số liệu</td><td>Thử đăng bài công khai</td><td class="num">8</td><td class="num">2</td><td class="num">2 ngày khi có quyền</td></tr>
 
           <tr class="ph"><td colspan="6">Giai đoạn 4 · Dữ liệu và training (ngoài 3 tuần)</td></tr>
           <tr><td>Job số liệu 1h / 24h / 7 ngày</td><td>Viết job, lưu metric_snapshots</td><td>—</td><td class="num">3</td><td class="num">—</td><td class="num">14–15</td></tr>
@@ -506,9 +506,9 @@ tr.ph td { background: var(--lab-soft); font: 700 14px/1.3 var(--f-display); let
         <li><strong>Họp content trong ngày 1.</strong> Engine và phiên B đều chờ hồ sơ v2; buổi họp trễ bao nhiêu ngày thì cả lịch trễ bấy nhiêu.</li>
         <li><strong>Người điều phối gần như toàn thời gian.</strong> 2 phiên Claude Code chạy cùng lúc nên lượng code cần review dồn gấp đôi; review là nút thắt của lịch này.</li>
         <li><strong>Chốt hợp đồng API ở ngày 3.</strong> Phiên B làm web app trên dữ liệu giả theo hợp đồng này; đổi hợp đồng giữa chừng sẽ làm cả hai phiên phải sửa.</li>
-        <li><strong>Chạy thật 1 tuần thay vì 2.</strong> Ít bằng chứng hơn trước khi chuyển cả team, nên giữ Business Suite làm dự phòng thêm 1 tuần sau ngày 15 và chạy đợt kiểm tra sau đăng mỗi ngày.</li>
-        <li><strong>Hạn mức Claude:</strong> khoảng 88 giờ Claude Code trong 3 tuần, 2 phiên song song, cộng 2 đợt đăng mỗi ngày. Cần gói Max mức cao để không bị ngắt giữa chừng.</li>
-        <li><strong>Không có dự phòng bên trong 3 tuần.</strong> Nếu buổi họp đổi nhiều yêu cầu hoặc lỗi lộ ra khi đăng thật, tuần 4 là tuần đệm. Chế độ API (chờ Meta) và training (chờ dữ liệu) nằm ngoài 3 tuần này.</li>
+        <li><strong>Chạy thật 1 tuần thay vì 2.</strong> Ít bằng chứng hơn trước khi chuyển cả team, nên giữ chế độ Trình duyệt và Business Suite làm dự phòng thêm 1 tuần sau ngày 15, và xem màn Kiểm tra sau đăng mỗi ngày.</li>
+        <li><strong>Hạn mức Claude:</strong> khoảng 88 giờ Claude Code trong 3 tuần, 2 phiên song song. Đăng qua API không tốn hạn mức Claude. Cần gói Max mức cao để không bị ngắt giữa chừng.</li>
+        <li><strong>Không có dự phòng bên trong 3 tuần.</strong> Nếu buổi họp đổi nhiều yêu cầu hoặc lỗi lộ ra khi đăng thật, tuần 4 là tuần đệm. Training (chờ dữ liệu) nằm ngoài 3 tuần này. App Meta (A.1) phải xong trong 3 ngày đầu, vì đăng thật đi qua API.</li>
       </ul>
     </section>
 
@@ -520,10 +520,10 @@ tr.ph td { background: var(--lab-soft); font: 700 14px/1.3 var(--f-display); let
         <li><input type="checkbox" id="w1"><label for="w1"><strong>Bạn + content + designer:</strong> chốt dần 8 điểm còn lại ở trang <a href="index.html#chuan-tdc">Phương án</a> (kích thước đã giao team media). Không cần bài mẫu; caption tiêu biểu cho Claude lấy từ bài đã đăng.</label></li>
         <li><input type="checkbox" id="w2"><label for="w2"><strong>Claude:</strong> cập nhật hồ sơ định dạng lên v2 theo kết quả họp.</label></li>
         <li><input type="checkbox" id="w3"><label for="w3"><strong>Bạn + designer + content:</strong> duyệt hồ sơ định dạng v2 (Cổng 1).</label></li>
-        <li><input type="checkbox" id="w4"><label for="w4"><strong>Bạn:</strong> chọn máy chạy Chrome cho Claude, đăng nhập tài khoản admin Page trên máy đó.</label></li>
+        <li><input type="checkbox" id="w4"><label for="w4"><strong>Bạn:</strong> tạo app Meta loại Business và System User theo các bước ở trang <a href="index.html#xac-thuc">Phương án</a>. Đây là đường đăng chính.</label></li>
         <li><input type="checkbox" id="w5"><label for="w5"><strong>Bạn:</strong> thuê VPS Việt Nam, tạo thư mục chia sẻ <code>TDC Post/</code> và <code>_inbox/</code> trên Google Drive của TDC, tạo tài khoản Cloudflare R2, chọn tên miền. <strong>Claude:</strong> đo băng thông quốc tế từ VPS tới R2 và Meta; chưa đạt thì chuyển Singapore.</label></li>
         <li><input type="checkbox" id="w6"><label for="w6"><strong>Claude:</strong> dựng repo, schema database v1 và migration đầu tiên.</label></li>
-        <li><input type="checkbox" id="w7"><label for="w7"><strong>Song song, bạn:</strong> tạo app Meta loại Business và System User theo các bước ở trang <a href="index.html#xac-thuc">Phương án</a>.</label></li>
+        <li><input type="checkbox" id="w7"><label for="w7"><strong>Dự phòng, khi rảnh:</strong> chọn một máy chạy Chrome cho Claude, đăng nhập tài khoản admin Page trên máy đó (chỉ cần bật lúc đặt lịch).</label></li>
       </ul>
     </section>
 
@@ -534,10 +534,10 @@ tr.ph td { background: var(--lab-soft); font: 700 14px/1.3 var(--f-display); let
         <tbody>
           <tr><td>0 · Chuẩn định dạng</td><td>Hồ sơ định dạng v2, VPS đã đo băng thông</td><td>Kết quả họp content cho 10 điểm cần chốt; người duyệt hồ sơ</td></tr>
           <tr><td>1 · Lõi + engine</td><td>Database, kho file, engine, MCP chạy được trong Claude</td><td>1 tháng bài cũ (file + caption) để chạy thử engine</td></tr>
-          <tr><td>2 · Trình duyệt</td><td>Claude lên lịch và kiểm tra bài thật theo đợt</td><td>Người ra lệnh mỗi đợt; người xử lý việc "cần người"</td></tr>
+          <tr><td>2 · API (đường chính)</td><td>Bài tự lên đúng giờ qua Graph API, bật theo từng loại bài</td><td>Quyền admin Business Portfolio để tạo app và System User; người xử lý việc làm tay</td></tr>
           <tr><td>3 · Web app</td><td>App cho team content soạn, duyệt, xem lịch; Claude kết nối bằng đăng nhập</td><td>Tài khoản cho từng người; phân vai content / duyệt / admin</td></tr>
           <tr><td>4 · Training</td><td>Bộ dữ liệu có phiên bản, mô hình thử nghiệm</td><td>Mục tiêu training cụ thể; đồng ý dùng dữ liệu nội bộ</td></tr>
-          <tr><td>Song song · API</td><td>Chế độ API bật theo từng loại bài</td><td>Quyền admin Business Portfolio để tạo app và System User</td></tr>
+          <tr><td>Dự phòng · Trình duyệt</td><td>Claude lên lịch bài trên Business Suite khi API gặp sự cố</td><td>Một máy bật Chrome lúc đặt lịch; người ra lệnh mỗi đợt</td></tr>
           <tr><td>Tương lai · Agent kiểm tra</td><td>Báo cáo có ảnh chụp từng tấm sau mỗi bài</td><td>Tài khoản FB/IG phụ để xem; chốt kênh gửi, người nhận, thao tác của người kiểm duyệt</td></tr>
         </tbody>
       </table></div>
