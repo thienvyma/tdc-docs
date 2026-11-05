@@ -1,0 +1,698 @@
+<title>TDC Post · Phương án</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;500;600;700&family=Arimo:wght@400;700&display=swap">
+<style>
+/* Layout: thanh trang trên cùng · khối LAB mở đầu · mục lục dính bên trái (desktop) + cột nội dung ~760px.
+   Nhận diện theo design system TDC Coaching: giấy ấm, chữ condensed để nói, chữ thường để đọc,
+   mỗi trang 1 màu LAB. Một theme sáng, có chủ đích (TDC không dùng dark mode). */
+:root {
+  --paper: #F8F7F5;
+  --raised: #FFFFFF;
+  --sunk: #EFECE7;
+  --line: #E3DFD8;
+  --line-strong: #8C867D;
+  --ink: #121211;
+  --ink-soft: #3A3835;
+  --ink-muted: #6B6760;
+  --red: #E22E32;
+  --red-deep: #B8232A;
+  --red-tint: #FBE7E5;
+  --ok: #276B43;
+  --ok-tint: #E7F2EA;
+  --warn: #9A5B0B;
+  --warn-tint: #FBEFD9;
+  --lab: #C994EB;
+  --lab-soft: #E1C3F4;
+  --lab-strong: #C994EB;
+  --f-display: "Archivo Narrow", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --f-body: Arimo, Arial, "Helvetica Neue", sans-serif;
+  --f-mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  color-scheme: light;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+body.lab-sky { --lab: #C0DEFC; --lab-soft: #E0EFFE; --lab-strong: #9CCBFA; }
+body.lab-lime { --lab: #BEE059; --lab-soft: #D9ED9D; --lab-strong: #BEE059; }
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 72px; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 15px/1.6 var(--f-body);
+}
+img { max-width: 100%; }
+a { color: var(--ink); text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--ink); }
+:focus-visible { outline: 2px solid var(--red-deep); outline-offset: 2px; border-radius: 4px; }
+
+/* ---------- Thanh trang ---------- */
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 10; background: var(--paper);
+}
+.topbar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.topbar-in {
+  max-width: 1180px; margin: 0 auto;
+  padding-block: 10px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.brand { display: flex; align-items: baseline; gap: 8px; text-decoration: none; margin-right: auto; }
+.brand-mark { font: 700 20px/1 var(--f-display); color: var(--red); letter-spacing: -0.2px; }
+.brand-name { font: 600 12px/1 var(--f-display); letter-spacing: 0.8px; text-transform: uppercase; color: var(--ink-muted); }
+.pages { display: flex; gap: 4px; padding: 4px; background: var(--sunk); border-radius: 999px; }
+.pages a {
+  font: 600 14px/1 var(--f-display); letter-spacing: 0.3px;
+  text-decoration: none; color: var(--ink-soft);
+  padding: 8px 14px; border-radius: 999px;
+}
+.pages a:hover { background: var(--raised); color: var(--ink); }
+.pages a[aria-current="page"] { background: var(--lab-strong); color: var(--ink); }
+
+/* ---------- Mở đầu ---------- */
+.hero-wrap {
+  max-width: 1180px; margin: 0 auto;
+  padding-top: 24px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.hero {
+  background: var(--lab);
+  border-radius: var(--radius-lg);
+  padding: clamp(24px, 4vw, 44px);
+  position: relative; overflow: hidden;
+  display: grid; gap: 14px;
+}
+.hero::after {
+  content: ""; position: absolute; right: -40px; top: -40px;
+  width: 220px; height: 220px; border-radius: 50%;
+  background: var(--lab-soft); opacity: 0.9; pointer-events: none;
+}
+.hero > * { position: relative; z-index: 1; }
+.paren { font: 600 13px/1.2 var(--f-display); letter-spacing: 0.6px; color: var(--ink-soft); }
+.hero h1 {
+  margin: 0; font: 700 clamp(32px, 5.2vw, 52px)/1.02 var(--f-display);
+  letter-spacing: -0.6px; text-wrap: balance; max-width: 18ch;
+}
+.hero .lead { margin: 0; font-size: 17px; line-height: 1.55; max-width: 62ch; color: var(--ink); }
+.hero .meta { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--ink-soft); }
+
+/* ---------- Khung trang ---------- */
+.layout {
+  max-width: 1180px; margin: 0 auto;
+  padding-block: 32px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; grid-template-columns: 1fr; gap: 32px;
+}
+@media (min-width: 1024px) {
+  .layout { grid-template-columns: 220px minmax(0, 1fr); gap: 48px; }
+}
+.toc { display: none; }
+@media (min-width: 1024px) {
+  .toc { display: block; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 72px); align-self: start; }
+}
+.toc .label { margin-bottom: 10px; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.toc a {
+  display: block; padding: 6px 10px; border-radius: 8px;
+  font: 500 14px/1.3 var(--f-display); text-decoration: none; color: var(--ink-soft);
+}
+.toc a:hover { background: var(--sunk); color: var(--ink); }
+
+.content { min-width: 0; max-width: 780px; display: grid; gap: 56px; }
+
+/* ---------- Chữ ---------- */
+.label {
+  font: 600 12px/16px var(--f-display); letter-spacing: 0.8px; text-transform: uppercase; color: var(--ink-muted);
+}
+section { display: grid; gap: 16px; min-width: 0; }
+section > header { display: grid; gap: 6px; }
+h2 {
+  margin: 0; font: 700 32px/1.08 var(--f-display); letter-spacing: -0.3px; text-wrap: balance;
+}
+h3 {
+  margin: 12px 0 0; font: 600 20px/1.2 var(--f-display); text-wrap: balance;
+}
+p { margin: 0; max-width: 68ch; }
+.answer { font-size: 17px; line-height: 1.55; }
+strong { font-weight: 700; }
+code {
+  font: 13px/1.4 var(--f-mono); background: var(--sunk); padding: 1px 5px; border-radius: 5px;
+  overflow-wrap: anywhere;
+}
+mark { background: var(--lab-soft); color: var(--ink); padding: 0 3px; border-radius: 3px; }
+ul, ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; max-width: 68ch; }
+li::marker { color: var(--ink-muted); }
+.steps { counter-reset: s; list-style: none; padding: 0; gap: 10px; }
+.steps > li {
+  counter-increment: s; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; align-items: start;
+}
+.steps > li::before {
+  content: counter(s, decimal-leading-zero);
+  font: 700 18px/1.45 var(--f-display); color: var(--ink-muted); font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Bảng ---------- */
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--raised); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; line-height: 1.45; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+th {
+  font: 600 12px/16px var(--f-display); letter-spacing: 0.8px; text-transform: uppercase;
+  color: var(--ink-muted); background: var(--paper); white-space: nowrap;
+}
+td:first-child { font-weight: 700; }
+table.plain td:first-child { font-weight: 400; }
+.tbl.wide table { min-width: 720px; }
+.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ---------- Chip trạng thái ---------- */
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  font: 600 12px/1 var(--f-body); padding: 5px 8px; border-radius: var(--radius-sm);
+  background: var(--sunk); color: var(--ink-soft);
+}
+.chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.chip.block { background: var(--red-tint); color: var(--red-deep); }
+.chip.warn { background: var(--warn-tint); color: var(--warn); }
+.chip.ok { background: var(--ok-tint); color: var(--ok); }
+.chip.hand { background: var(--sunk); color: var(--ink-soft); }
+
+/* ---------- Khối phụ ---------- */
+.note {
+  background: var(--sunk); border-radius: var(--radius-md); padding: 16px 18px;
+  display: grid; gap: 8px; max-width: 72ch;
+}
+.note.key { background: var(--lab-soft); }
+.note .label { color: var(--ink-soft); }
+.grid-2 { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.card {
+  background: var(--raised); border: 1px solid var(--line); border-radius: var(--radius-md);
+  padding: 16px 18px; display: grid; gap: 8px; align-content: start; min-width: 0;
+}
+.card h4 { margin: 0; font: 600 18px/1.25 var(--f-display); }
+pre {
+  margin: 0; overflow-x: auto; background: var(--ink); color: var(--paper);
+  border-radius: var(--radius-md); padding: 16px 18px; font: 13px/1.6 var(--f-mono);
+}
+.checklist { list-style: none; padding: 0; gap: 8px; }
+.checklist li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; align-items: start; }
+.checklist input { margin: 3px 0 0; width: 16px; height: 16px; accent-color: var(--ink); }
+.checklist label { cursor: pointer; }
+.checklist .done-note { color: var(--ok); font-weight: 700; }
+.sources { font-size: 13px; color: var(--ink-muted); }
+.sources a { color: var(--ink-soft); }
+
+/* ---------- Sơ đồ SVG ---------- */
+.diagram { overflow-x: auto; background: var(--raised); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 12px; }
+.diagram svg { display: block; width: 100%; min-width: 640px; height: auto; }
+.diagram figcaption { font-size: 13px; color: var(--ink-muted); padding: 8px 4px 2px; }
+.d-box { fill: var(--raised); stroke: var(--line-strong); stroke-width: 1.25; }
+.d-accent { fill: var(--lab-soft); stroke: var(--ink); stroke-width: 1.5; }
+.d-lane { fill: var(--sunk); stroke: none; }
+.d-line { fill: none; stroke: var(--ink-muted); stroke-width: 1.25; }
+.d-dash { fill: none; stroke: var(--ink-muted); stroke-width: 1.25; stroke-dasharray: 4 4; }
+.d-head { fill: var(--ink-muted); }
+.d-t { fill: var(--ink); font: 600 14px var(--f-display); }
+.d-s { fill: var(--ink-muted); font: 400 12px var(--f-body); }
+.d-l { fill: var(--ink-soft); font: 400 11.5px var(--f-body); }
+.d-big { fill: var(--ink); font: 700 16px var(--f-display); }
+.d-gate { fill: var(--lab-strong); stroke: var(--ink); stroke-width: 1.25; }
+.d-gate-q { fill: var(--raised); stroke: var(--ink-muted); stroke-width: 1.25; }
+
+.foot {
+  max-width: 1180px; margin: 0 auto; padding-block: 24px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-muted);
+  display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between;
+}
+.next-page {
+  display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+  background: var(--raised); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 18px 20px;
+}
+.next-page a { font: 700 20px/1.2 var(--f-display); text-decoration: none; }
+.next-page a::after { content: " ↘"; color: var(--red); }
+
+@media (max-width: 560px) {
+  h2 { font-size: 27px; }
+  .pages a { padding: 8px 10px; font-size: 13px; }
+  .brand-name { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+
+</style>
+
+<div class="lab-lavender-page">
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="index.html"><span class="brand-mark">TDC Post</span><span class="brand-name">Hệ thống đăng bài FB &amp; IG</span></a>
+    <nav class="pages" aria-label="Tài liệu">
+      <a href="index.html" aria-current="page">Phương án</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="techstack.html">Tech stack</a>
+      <a href="designsystem.html">Design system</a>
+      <a href="mockup.html">Giao diện</a>
+      <a href="trienkhai.html">Triển khai</a>
+      <a href="huongdan.html">Hướng dẫn</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero-wrap">
+  <div class="hero">
+    <span class="paren">( Đề xuất · bản 30.10.2026 )</span>
+    <h1>Đăng bài FB &amp; IG đúng chuẩn TDC, tự động</h1>
+    <p class="lead">Team content soạn và duyệt bài trong app. Bài đã duyệt vào hàng đợi và được đăng bằng một trong <strong>2 chế độ</strong>: Claude thao tác trình duyệt (dùng ngay), hoặc Meta API (bật khi được cấp quyền). Mọi dữ liệu nằm trong một database, sẵn sàng cho training sau này.</p>
+    <div class="meta"><span>Dựa trên: Flow đăng bài FB &amp; IG – TDC (28.10.2026)</span><span>·</span><span>Người phụ trách: Phuong (admin)</span></div>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="toc" aria-label="Mục lục">
+    <div class="label">Trên trang này</div>
+    <ol>
+      <li><a href="#tom-tat">Tóm tắt</a></li>
+      <li><a href="#flow">Flow hiện tại</a></li>
+      <li><a href="#hai-che-do">Hai chế độ đăng</a></li>
+      <li><a href="#dang-nhap">Đăng nhập &amp; phân quyền</a></li>
+      <li><a href="#claude">Vai trò của Claude</a></li>
+      <li><a href="#chuan-tdc">Chuẩn định dạng TDC</a></li>
+      <li><a href="#quy-tac">Bộ quy tắc R01–R15</a></li>
+      <li><a href="#api">Meta API làm được gì</a></li>
+      <li><a href="#xac-thuc">Gỡ điểm nghẽn xác thực</a></li>
+      <li><a href="#tuong-lai">Tính năng tương lai</a></li>
+      <li><a href="#rui-ro">Rủi ro &amp; câu hỏi</a></li>
+    </ol>
+  </aside>
+
+  <main class="content">
+
+    <section id="tom-tat">
+      <header><span class="paren">( Tóm tắt )</span><h2>Đã chốt 2 chế độ đăng, một engine, một database</h2></header>
+      <p class="answer">Hệ thống gồm 4 phần đi cùng nhau: <strong>chuẩn định dạng TDC</strong> (đặt tên, thứ tự, caption), <strong>engine quy tắc</strong> kiểm tra và gợi ý sửa, <strong>database</strong> lưu toàn bộ lịch sử, và <strong>bộ đăng 2 chế độ</strong>. Phần khó nhất là đăng đúng format TDC, nên format được viết thành hồ sơ mà máy đọc được thay vì để trong đầu người đăng.</p>
+      <div class="grid-2">
+        <div class="card">
+          <span class="label">Chế độ Trình duyệt · dùng ngay</span>
+          <h4>Claude in Chrome thao tác Meta Business Suite</h4>
+          <p>Đi theo đúng flow hiện tại, không cần xác thực app trên developers.facebook.com. Mỗi lô bài cần một lệnh của người trong chat.</p>
+        </div>
+        <div class="card">
+          <span class="label">Chế độ API · khi được cấp quyền</span>
+          <h4>Worker gọi Meta Graph API</h4>
+          <p>Nhanh, gần như miễn phí, không cần người trực. Chuyển sang bằng một công tắc, dữ liệu và quy tắc giữ nguyên.</p>
+        </div>
+      </div>
+      <ul>
+        <li>Engine kiểm tra đủ 9 quy tắc ở mục 2 của bản flow, cộng thêm các quy tắc chống dư thừa (trùng file, trùng bài, trùng Story). Giới hạn tự đổi theo chế độ.</li>
+        <li>Lưu trữ 2 tầng: bản gốc giữ vĩnh viễn trên Google Drive theo cấu trúc thư mục chuẩn (engine tự sắp xếp), bản nén trên Cloudflare R2 để Meta tải về. VPS Việt Nam chạy app và database. Chi tiết ở trang <a href="techstack.html#kho-file">Tech stack</a>.</li>
+        <li>Chế độ Trình duyệt có 3 giới hạn cần chấp nhận: cần người ra lệnh mỗi lô, tốn hạn mức Claude, và phải chỉnh lại khi Meta đổi giao diện.</li>
+        <li>Claude kết nối vào app bằng luồng đăng nhập (OAuth) theo tài khoản từng người, và sẽ đảm nhận việc viết content ở cả 2 chế độ.</li>
+        <li>Toàn bộ file gốc được giữ vĩnh viễn.</li>
+      </ul>
+      <div class="note key">
+        <span class="label">( Cần chốt để bắt đầu )</span>
+        <p>Chuẩn định dạng v1 đã dựng từ báo cáo. Bước tiếp theo là họp content để chốt <a href="#chuan-tdc">10 điểm báo cáo chưa nói</a>. Các câu hỏi vận hành còn lại nằm ở <a href="#rui-ro">cuối trang</a>.</p>
+      </div>
+    </section>
+
+    <section id="flow">
+      <header><span class="paren">( Flow hiện tại )</span><h2>15–20 thao tác tay mỗi bài, quy tắc nằm trong đầu người đăng</h2></header>
+      <p>Bản flow 28.10.2026 đã rõ ràng, nên có thể chuyển thẳng thành dữ liệu và quy tắc. Đầu vào mỗi bài do team content giao sẽ thành các trường trong database:</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Đầu vào</th><th>Ghi chú</th></tr></thead>
+        <tbody>
+          <tr><td>File design đã đánh số</td><td>Ảnh, video, motion; thứ tự theo số designer đánh</td></tr>
+          <tr><td>Caption</td><td>Một caption chung, hoặc riêng từng ảnh (IG)</td></tr>
+          <tr><td>Nền tảng</td><td>Chỉ FB, hoặc FB + IG</td></tr>
+          <tr><td>Giờ đăng</td><td>Trong khung 10:00–13:00 hoặc 19:00–22:00</td></tr>
+          <tr><td>Comment / link</td><td>Comment dưới bài trên FB và IG (tự đăng sau khi bài lên) · link cho IG đặt ở Story</td></tr>
+          <tr><td>Cover, nhạc</td><td>Cover cho video/motion; nhạc chọn ngay trong app cho FB và IG (thư viện nhạc IG cho Reels, ghép sẵn vào video, hoặc ghi chú để thêm bằng app)</td></tr>
+        </tbody>
+      </table></div>
+      <p>Nguyên nhân gốc của 6 lỗi thường gặp (mục 5 của flow), và cách hệ thống xử lý:</p>
+      <div class="tbl wide"><table>
+        <thead><tr><th>Lỗi</th><th>Nguyên nhân gốc</th><th>Hệ thống xử lý</th></tr></thead>
+        <tbody>
+          <tr><td>FB lên nhưng IG không</td><td>Đăng chéo trong Business Suite thiếu tin cậy</td><td>FB và IG là 2 việc riêng, mỗi việc có trạng thái và kiểm tra sau đăng</td></tr>
+          <tr><td>IG tự cắt caption</td><td>Vượt 2.200 ký tự hoặc 5 hashtag</td><td>Cảnh báo ngay khi soạn; muốn gửi vẫn được nhưng phải chọn cách xử lý và ghi lý do (R07)</td></tr>
+          <tr><td>Cover sai trên lưới IG</td><td>Chọn cover thủ công</td><td>Frame đầu làm cover, được xem trước khi duyệt (R08)</td></tr>
+          <tr><td>Bài trùng trên FB</td><td>Quên tắt "Chia sẻ lên Facebook"</td><td>Không dùng đăng chéo (R12)</td></tr>
+          <tr><td>Story trùng</td><td>IG tự đăng Story</td><td>Kiểm tra Story hiện có trước khi tạo (R13)</td></tr>
+          <tr><td>Bài không lên</td><td>Thoát trang khi đang tải</td><td>Ghi nhận và kiểm tra sau giờ đăng (R15)</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="hai-che-do">
+      <header><span class="paren">( Hai chế độ đăng )</span><h2>Cùng dữ liệu, cùng quy tắc, chỉ khác "tay" bấm đăng</h2></header>
+      <p>Bộ đăng là một interface <code>Publisher</code> có 2 bản cài đặt. Chế độ chọn theo tài khoản (<code>publish_mode</code>) và ghi đè được cho từng bài, nên có thể chuyển dần sang API theo từng loại bài.</p>
+      <div class="tbl wide"><table>
+        <thead><tr><th></th><th>Trình duyệt (Claude in Chrome)</th><th>API (worker)</th></tr></thead>
+        <tbody>
+          <tr><td>Xác thực app Meta</td><td>Không cần; dùng phiên đăng nhập admin Page</td><td>Cần (xem <a href="#xac-thuc">bên dưới</a>)</td></tr>
+          <tr><td>Ai kích hoạt</td><td>Người ra lệnh cho Claude, mỗi lệnh một lô</td><td>Worker tự chạy</td></tr>
+          <tr><td>Ai canh giờ</td><td>Business Suite (Claude đặt lịch trước)</td><td>Worker</td></tr>
+          <tr><td>Carousel IG</td><td class="num">Tối đa 10</td><td class="num">Tối đa 20</td></tr>
+          <tr><td>Bài FB trộn ảnh + video</td><td>Được, qua ô tạo bài trên Page</td><td>Chưa chắc</td></tr>
+          <tr><td>Comment dưới bài (FB và IG)</td><td>Claude comment bằng tài khoản TDC trong đợt kiểm tra sau giờ đăng (FB trên Page, IG trên instagram.com)</td><td>Tự động ngay khi bài lên</td></tr>
+          <tr><td>Story dẫn link</td><td colspan="2">Báo cáo làm bằng cách chia sẻ bài vừa đăng vào tin và gắn sticker Liên kết trên app IG. Cả hai chế độ đều để người làm trên điện thoại; hệ thống nhắc việc kèm sẵn link và câu giới thiệu</td></tr>
+          <tr><td>Nhạc</td><td>Reels IG: Claude chọn bài ở bước Âm thanh của Business Suite (cần thử trên tài khoản TDC ở tuần 1) · Video FB: ghép sẵn nhạc vào file · Ảnh, carousel: làm tay trên app</td><td>Reels IG: thư viện nhạc qua Instagram Audio API · Video FB: ghép sẵn nhạc vào file · Ảnh, carousel: làm tay trên app</td></tr>
+          <tr><td>Caption riêng từng ảnh</td><td colspan="2">Làm tay trên app IG ở cả hai chế độ</td></tr>
+          <tr><td>Tốc độ, chi phí</td><td>Chậm, tốn hạn mức Claude</td><td>Vài giây mỗi bài, gần như miễn phí</td></tr>
+          <tr><td>Rủi ro</td><td>Meta đổi giao diện; checkpoint/CAPTCHA; tự động hoá giao diện là vùng xám trong điều khoản Meta</td><td>Meta đổi phiên bản API; token bị thu hồi</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Một ngày ở chế độ Trình duyệt (2 đợt)</h3>
+      <ol class="steps">
+        <li><div><strong>Chuẩn bị.</strong> Engine chọn bài đã duyệt có giờ đăng trong 24–48 giờ tới, đặt bản nén đúng tên, đúng thứ tự vào <code>outbox/</code> trên máy chạy Chrome (rclone đồng bộ từ R2).</div></li>
+        <li><div><strong>Ra lệnh.</strong> Người dùng mở Claude, gõ "lên lịch các bài đã duyệt". Một lệnh là sự cho phép cho cả lô đó; Claude không tự đăng khi không có người ra lệnh.</div></li>
+        <li><div><strong>Đặt lịch.</strong> Claude gọi <code>get_publish_batch</code>, rồi với từng bài: mở Business Suite, upload theo thứ tự, dán caption, chọn nền tảng, đặt lịch. FB và IG đặt thành 2 mục riêng.</div></li>
+        <li><div><strong>Ghi nhận.</strong> Claude chụp màn hình xác nhận, gọi <code>report_scheduled</code> ghi vào database.</div></li>
+        <li><div><strong>Đợt sau giờ đăng.</strong> Claude gọi <code>get_verify_batch</code>, mở từng bài kiểm tra caption, số ảnh, cover; comment dưới bài trên FB và IG; ghi <code>permalink</code> bằng <code>report_published</code>; tạo việc "Story dẫn link" cho người làm trên điện thoại.</div></li>
+        <li><div><strong>Sự cố.</strong> Gặp checkpoint, CAPTCHA hoặc giao diện lạ thì Claude dừng, đánh dấu "cần người" và gửi thông báo.</div></li>
+      </ol>
+      <div class="note"><span class="label">( Điểm mấu chốt )</span><p>Claude không cần online đúng giờ đăng: Business Suite tự đăng theo lịch Claude đã đặt. Khi chế độ API sẵn sàng, chỉ cần đổi <code>publish_mode</code>.</p></div>
+    </section>
+
+    <section id="dang-nhap">
+      <header><span class="paren">( Đăng nhập &amp; phân quyền )</span><h2>Chưa được admin mời thì không vào được, kể cả có link</h2></header>
+      <p class="answer">Mọi người đăng nhập bằng <strong>tài khoản Google Workspace của TDC</strong>. Admin mời trước bằng email và chọn vai trò; người chưa được mời, tài khoản ngoài tên miền TDC hay tài khoản đã khoá đều bị từ chối kèm lời giải thích. Mỗi vai trò chỉ thấy đúng các màn hình và nút bấm của mình. Claude kết nối bằng chính tài khoản đó nên có đúng quyền đó, không hơn. Thử từng vai trò ở tab <a href="mockup.html">Giao diện</a>.</p>
+      <ol class="steps">
+        <li><div><strong>Admin mời.</strong> Màn "Người dùng &amp; quyền": nhập email Google Workspace và chọn vai trò. Hệ thống gửi email mời.</div></li>
+        <li><div><strong>Đăng nhập lần đầu.</strong> Người được mời bấm "Tiếp tục bằng Google". App chỉ nhận tài khoản thuộc tên miền TDC và có trong danh sách mời; lần đầu đăng nhập thì tài khoản chuyển sang Hoạt động.</div></li>
+        <li><div><strong>Quyền áp ngay.</strong> Menu chỉ hiện màn được phép; nút không được phép thì ẩn hoặc khoá kèm lời giải thích. Kiểm tra quyền làm ở backend cho mọi lệnh (web, MCP, worker), giao diện chỉ phản ánh lại.</div></li>
+        <li><div><strong>Kết nối Claude (tuỳ chọn).</strong> Người có Claude Pro/Max thêm custom connector, đăng nhập cùng tài khoản qua OAuth. Mọi thao tác ghi "Claude thay mặt X".</div></li>
+      </ol>
+      <h3>Ma trận quyền</h3>
+      <div class="tbl wide"><table>
+        <thead><tr><th>Việc</th><th>Admin</th><th>Người duyệt</th><th>Content</th><th>Designer</th></tr></thead>
+        <tbody>
+          <tr><td>Xem lịch, nhận file, việc làm tay</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+          <tr><td>Thả folder vào <code>_inbox</code> (Google Drive)</td><td>✓</td><td>—</td><td>✓</td><td>✓</td></tr>
+          <tr><td>Tạo bài từ folder, soạn bài</td><td>✓</td><td>✓</td><td>✓</td><td>—</td></tr>
+          <tr><td>Gửi duyệt, xác nhận vấn đề khi gửi</td><td>✓</td><td>✓</td><td>✓</td><td>—</td></tr>
+          <tr><td>Duyệt, xác nhận lại, trả lại bài</td><td>✓</td><td>✓</td><td>—</td><td>—</td></tr>
+          <tr><td>Ra lệnh đợt đăng và đợt kiểm tra</td><td>✓</td><td>✓</td><td>—</td><td>—</td></tr>
+          <tr><td>Đánh dấu xong việc làm tay</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+          <tr><td>Xem nhật ký</td><td>✓</td><td>✓</td><td>—</td><td>—</td></tr>
+          <tr><td>Đổi chế độ đăng (Trình duyệt / API)</td><td>✓</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Sửa tham số quy tắc, hồ sơ định dạng</td><td>✓</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Mời người, đổi vai trò, khoá tài khoản, thu hồi Claude</td><td>✓</td><td>—</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Vòng đời tài khoản và an toàn</h3>
+      <ul>
+        <li><strong>Luôn có ít nhất 1 admin</strong> (app không cho hạ quyền hay khoá admin cuối cùng); nên có 2 admin để không bị kẹt khi một người vắng.</li>
+        <li><strong>Đổi vai trò có hiệu lực ngay</strong>, kể cả với Claude đang kết nối bằng tài khoản đó.</li>
+        <li><strong>Khoá tài khoản</strong> (người nghỉ việc, cộng tác viên hết hợp đồng): mọi phiên đăng nhập và kết nối Claude của người đó dừng ngay; dữ liệu và nhật ký giữ nguyên.</li>
+        <li><strong>Bật xác minh 2 bước</strong> cho tài khoản Google Workspace của TDC; phiên đăng nhập hết hạn sau 30 ngày không dùng (đề xuất, chỉnh được).</li>
+        <li><strong>Tài khoản kỹ thuật tách riêng:</strong> System User của Meta và service account của Google Drive chỉ để hệ thống chạy, không dùng để đăng nhập app.</li>
+        <li><strong>Quyền trong app khác quyền trên Page:</strong> người dùng app không cần quyền quản trị Page. Chỉ máy chạy Chrome cho chế độ Trình duyệt cần đăng nhập tài khoản admin Page.</li>
+        <li>Mọi lần đăng nhập, mời, đổi vai trò, khoá, thu hồi đều ghi vào Nhật ký.</li>
+      </ul>
+    </section>
+
+    <section id="claude">
+      <header><span class="paren">( Vai trò của Claude )</span><h2>Claude soạn, giải thích và vận hành; không giữ quy tắc hay dữ liệu</h2></header>
+      <p>Quy tắc nằm ở engine, dữ liệu nằm ở database, Claude chỉ đọc và ghi qua MCP. Đổi người, đổi máy hay đổi sang API thì mọi thứ vẫn chạy giống nhau.</p>
+      <div class="tbl wide"><table>
+        <thead><tr><th>Bước</th><th>Người</th><th>Claude</th><th>Engine</th></tr></thead>
+        <tbody>
+          <tr><td>Giao file</td><td>Designer đặt tên theo chuẩn</td><td>—</td><td>Kiểm tra tên, thứ tự, thông số; tạo bản nén</td></tr>
+          <tr><td>Soạn caption, CTA, link Story</td><td>Content quyết nội dung</td><td>Viết nháp theo mẫu TDC, rút gọn, chọn hashtag</td><td>Đếm ký tự, hashtag; so với bài cũ</td></tr>
+          <tr><td>Chọn giờ</td><td>Content chốt</td><td>Gợi ý lịch cả tuần</td><td>Kiểm tra khung giờ, 1h30; gợi ý giờ trống</td></tr>
+          <tr><td>Duyệt</td><td>Người duyệt (bắt buộc), xác nhận lại từng vấn đề người gửi đã xác nhận</td><td>Tóm tắt cảnh báo và lý do cho người duyệt</td><td>Chỉ đưa bài đã duyệt vào hàng đợi</td></tr>
+          <tr><td>Đặt lịch / đăng</td><td>Ra lệnh mỗi lô (Trình duyệt)</td><td>Thao tác Business Suite</td><td>Worker đăng (API)</td></tr>
+          <tr><td>Kiểm tra sau đăng</td><td>Xử lý việc "cần người"</td><td>Kiểm tra, comment, báo cáo (Trình duyệt)</td><td>Tự làm (API); ghi kết quả</td></tr>
+          <tr><td>Nhạc thêm bằng app, sticker link</td><td>Làm tay trên điện thoại</td><td>Nhắc việc, kèm hướng dẫn từng bước</td><td>Tạo việc, theo dõi đến khi xong</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Tool MCP</h3>
+      <div class="tbl"><table class="plain">
+        <thead><tr><th>Nhóm</th><th>Tool</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Soạn bài</strong></td><td><code>get_writing_context</code> <code>list_assets</code> <code>create_post_draft</code> <code>update_post_draft</code> <code>validate_post</code> <code>suggest_slots</code> <code>get_calendar</code></td></tr>
+          <tr><td><strong>Duyệt</strong></td><td><code>submit_for_approval</code> <code>approve_post</code> (chỉ tài khoản có vai trò duyệt)</td></tr>
+          <tr><td><strong>Chế độ Trình duyệt</strong></td><td><code>get_publish_batch</code> <code>report_scheduled</code> <code>get_verify_batch</code> <code>report_published</code> <code>report_blocked</code></td></tr>
+          <tr><td><strong>Theo dõi</strong></td><td><code>get_post_status</code> <code>list_manual_tasks</code> <code>complete_manual_task</code> <code>retry_job</code> <code>cancel_post</code></td></tr>
+          <tr><td><strong>Hiệu quả bài</strong></td><td><code>record_metrics</code> (đọc số liệu từ Business Suite khi chưa có API)</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Kết nối Claude bằng luồng đăng nhập</h3>
+      <p>Mỗi người có tài khoản Claude (Pro/Max) tự kết nối Claude vào app bằng chính tài khoản app của mình. Claude nhận đúng quyền của người đó, không hơn.</p>
+      <ol class="steps">
+        <li><div>Admin tạo tài khoản app cho từng người, gán vai trò: <strong>content</strong> (soạn, gửi duyệt), <strong>duyệt</strong> (duyệt bài, ra lệnh đăng), <strong>admin</strong> (cài đặt, quy tắc).</div></li>
+        <li><div>Trong Claude: Settings → Connectors → Add custom connector, dán địa chỉ <code>https://&lt;tên miền&gt;/mcp</code>.</div></li>
+        <li><div>Claude mở trang đăng nhập của app TDC Post. Người dùng đăng nhập, xem danh sách quyền và bấm Đồng ý (OAuth).</div></li>
+        <li><div>Từ đó Claude gọi tool thay mặt người này. Mọi thao tác ghi vào <code>audit_log</code> dạng "Claude, thay mặt người X". Tài khoản content không gọi được <code>approve_post</code>.</div></li>
+        <li><div>Thu hồi quyền: người dùng ngắt connector, hoặc admin khoá tài khoản app. Token hết hạn ngắn và tự làm mới khi còn hiệu lực.</div></li>
+      </ol>
+      <h3>Claude viết content</h3>
+      <p>Viết content tách riêng khỏi việc đăng, nên dùng được ở cả 2 chế độ. Trước khi viết, Claude gọi <code>get_writing_context</code> để lấy hồ sơ định dạng, hướng dẫn giọng văn TDC và các caption đã duyệt gần đây làm ví dụ. Bản nháp lưu thành <code>post_revisions</code> với tác giả là Claude. Người sửa đến đâu, database giữ lại khác biệt đến đó. Các cặp "Claude viết → bản được duyệt" chính là dữ liệu training giá trị nhất.</p>
+      <p>Về sau, nếu người không có Claude subscription cũng cần nút "Claude viết" ngay trong web app, có thể gọi Claude API từ backend. Cách này tính phí theo lượng dùng, là tuỳ chọn, không cần cho MVP.</p>
+      <ul>
+        <li>Custom connector cần URL HTTPS công khai và OAuth, không chạy authless.</li>
+        <li>Chế độ Trình duyệt cần Claude Desktop hoặc Claude Code kèm Claude in Chrome, trên máy có Chrome đã đăng nhập tài khoản admin Page.</li>
+        <li>Đăng lên trang công khai luôn cần một lệnh rõ ràng của người dùng cho từng lô. Duyệt trong app chưa đủ để Claude tự đăng.</li>
+        <li>File lớn không đi qua Claude; Claude chỉ upload từ <code>outbox/</code> mà engine đã chuẩn bị.</li>
+      </ul>
+    </section>
+
+    <section id="chuan-tdc">
+      <header><span class="paren">( Chuẩn định dạng TDC · v1 )</span><h2>Chuẩn v1 chỉ lấy từ những gì báo cáo đã ghi</h2></header>
+      <p class="answer">Bản flow 28.10.2026 đã nêu đủ để dựng <strong>hồ sơ định dạng v1</strong>. Cột "Nguồn" chỉ mục tương ứng trong báo cáo. Điều gì báo cáo chưa nói thì <mark>không tự đặt ra</mark>, mà đưa vào danh sách cần chốt ở buổi họp với content (cuối mục này). Hồ sơ có số phiên bản: chốt xong buổi họp thì lên v2.</p>
+
+      <h3>Thông tin của một bài</h3>
+      <div class="tbl wide"><table>
+        <thead><tr><th>Trường</th><th>Bắt buộc</th><th>Ràng buộc theo báo cáo</th><th>Nguồn</th></tr></thead>
+        <tbody>
+          <tr><td>Nền tảng</td><td>Có</td><td>"Chỉ FB" hoặc "FB + IG"; team content quyết từng bài; luôn kiểm tra lại trước khi đăng</td><td class="num">Mục 1, 2</td></tr>
+          <tr><td>Loại bài</td><td>Tự suy ra từ file</td><td>Ảnh đơn · carousel · Reels · trộn ảnh + video</td><td class="num">Đầu báo cáo, mục 3</td></tr>
+          <tr><td>File design</td><td>Có</td><td>Đã đánh số; thứ tự đăng = số designer đánh trên file; một bài là toàn bộ file trong một folder</td><td class="num">Mục 1, 2, 3.1</td></tr>
+          <tr><td>Caption</td><td>Có</td><td>Một caption chung, hoặc riêng từng ảnh (IG). IG tối đa 2.200 ký tự và 5 hashtag; vượt thì IG tự bỏ caption</td><td class="num">Mục 2, 4.1</td></tr>
+          <tr><td>Giờ đăng</td><td>Có</td><td>Trong 10:00–13:00 hoặc 19:00–22:00; cách bài khác tối thiểu 1h30 nếu lịch sát nhau; không trùng lịch đã xếp</td><td class="num">Mục 2</td></tr>
+          <tr><td>Cover</td><td>Có nếu có video/motion</td><td>Designer đặt ảnh cover ở frame đầu clip để IG tự lấy; slide đầu là motion thì chọn ảnh bìa</td><td class="num">Mục 2, 4.1</td></tr>
+          <tr><td>Tiêu đề Reels</td><td>Có, với Reels FB</td><td>Có tiêu đề; mô tả không bắt buộc</td><td class="num">Mục 3.2</td></tr>
+          <tr><td>Nhạc</td><td>Không (FB và IG)</td><td>Không lời, nhẹ nhàng, hợp nội dung. Chọn ngay trong màn Soạn bài: thư viện nhạc IG (Reels), ghép sẵn vào video, hoặc ghi chú để thêm bằng app; quy tắc R16 kiểm tra</td><td class="num">Mục 4.1</td></tr>
+          <tr><td>Comment dưới bài · Facebook</td><td>Không</td><td>Nội dung do content đưa; comment bằng tài khoản TDC sau khi bài lên</td><td class="num">Mục 3.4</td></tr>
+          <tr><td>Comment dưới bài · Instagram</td><td>Không</td><td>Như FB; có thể dùng chung nội dung với FB. Link trong comment IG không bấm được, nên link vẫn đặt ở Story</td><td class="num">Bổ sung 04.11 · mục 4.3</td></tr>
+          <tr><td>Link + câu giới thiệu</td><td>Không (IG)</td><td>Qua Story: chia sẻ bài vừa đăng vào tin, gắn sticker Liên kết, viết câu giới thiệu link</td><td class="num">Mục 4.3</td></tr>
+          <tr><td>Đối tượng xem</td><td>Cố định</td><td>Công khai</td><td class="num">Mục 3.3</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Loại bài × nền tảng</h3>
+      <div class="tbl wide"><table>
+        <thead><tr><th>Loại bài</th><th>Facebook</th><th>Instagram</th></tr></thead>
+        <tbody>
+          <tr><td>Ảnh đơn</td><td>Business Suite → Tạo bài viết</td><td>Dấu + → Bài viết</td></tr>
+          <tr><td>Carousel</td><td>Business Suite → Tạo bài viết; kéo thả theo số thứ tự</td><td>Bài viết, chọn nhiều ảnh theo số; tối đa 20 (app) hoặc 10 (Business Suite)</td></tr>
+          <tr><td>Reels</td><td>Business Suite → Tạo Reel: tiêu đề, mô tả, chọn frame cover; chờ kiểm tra bản quyền</td><td>Dấu + → Reel: caption, cover</td></tr>
+          <tr><td>Trộn ảnh + video</td><td>Đăng thủ công trên Page ("Bạn đang nghĩ gì?"), vì Business Suite không đăng được dạng này</td><td>Carousel có video; slide đầu là motion thì chọn ảnh bìa</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Quy tắc file v1</h3>
+      <p>Báo cáo chỉ yêu cầu file "đã đánh số" và nằm chung một folder, nên v1 không bắt designer đổi cách đặt tên:</p>
+      <ul>
+        <li>Mỗi bài là một folder. Engine lấy <strong>cụm số đầu tiên</strong> trong tên mỗi file làm thứ tự đăng.</li>
+        <li>Số phải bắt đầu từ 1, liên tục và không trùng. <code>1.jpg</code>, <code>02_motion.mp4</code>, <code>Slide 03.png</code> đều hợp lệ. Thiếu số, nhảy số (01 → 03) hoặc hai file cùng số 03 thì engine báo lỗi.</li>
+        <li>Video và motion: frame đầu là cover. Engine trích frame đầu cho người duyệt xem trước; ở chế độ API thì gửi frame đó làm cover.</li>
+        <li>Tên file gốc được giữ nguyên trong database. Trên kho, hệ thống tự gắn mã bài vào trước tên file để tra cứu, không đòi designer làm.</li>
+      </ul>
+<pre>Ví dụ một folder hợp lệ theo v1
+  01.jpg
+  02.jpg
+  03_motion.mp4      ← frame đầu là cover
+  04.jpg</pre>
+
+      <h3>Cần chốt trong buổi họp với content</h3>
+      <p>Báo cáo chưa nói tới những điểm dưới đây. Mỗi điểm chốt xong sẽ thành một dòng trong hồ sơ v2. Ô đánh dấu chỉ lưu trên trình duyệt của bạn.</p>
+      <ul class="checklist" id="agenda">
+        <li><input type="checkbox" id="a1"><label for="a1"><strong>Đặt tên:</strong> đánh số kiểu 1, 2, 3 hay 01, 02? Có cần mã bài, ngày trong tên folder không? (Đề xuất: <code>YYYYMMDD_tên-bài</code>.)</label></li>
+        <li><input type="checkbox" id="a2"><label for="a2"><strong>Bản cắt riêng:</strong> <span class="chip ok">Đã chốt 04.11</span> Team media làm theo kích thước chuẩn của từng nền tảng; FB tự sắp lưới nhiều ảnh theo tỉ lệ. Không cần quy ước riêng.</label></li>
+        <li><input type="checkbox" id="a3"><label for="a3"><strong>Thông số:</strong> <span class="chip ok">Đã chốt 04.11</span> Team media tự làm đúng kích thước chuẩn; khung xem trước báo khi file bị cắt. Độ dài video tối đa chốt sau nếu cần.</label></li>
+        <li><input type="checkbox" id="a4"><label for="a4"><strong>Cấu trúc caption:</strong> có khung cố định không (dòng mở, thân, CTA, hashtag)? Caption FB và IG giống hay khác nhau?</label></li>
+        <li><input type="checkbox" id="a5"><label for="a5"><strong>Hashtag:</strong> có hashtag thương hiệu cố định không? Áp giới hạn 5 hashtag cho cả FB hay chỉ IG?</label></li>
+        <li><input type="checkbox" id="a6"><label for="a6"><strong>Caption riêng từng ảnh:</strong> dùng khi nào? (API không làm được, nên những bài này sẽ thành việc làm tay.)</label></li>
+        <li><input type="checkbox" id="a7"><label for="a7"><strong>Mẫu câu:</strong> mẫu comment dưới bài cho FB và IG, mẫu câu giới thiệu link trong Story, nguồn tiêu đề Reels FB.</label></li>
+        <li><input type="checkbox" id="a8"><label for="a8"><strong>Nhạc:</strong> danh sách hoặc nguồn nhạc được phép dùng.</label></li>
+        <li><input type="checkbox" id="a9"><label for="a9"><strong>Lịch:</strong> khoảng cách 1h30 tính chung FB + IG hay riêng từng nền tảng? Bài gấp ngoài khung giờ thì ai được duyệt?</label></li>
+        <li><input type="checkbox" id="a10"><label for="a10"><strong>Giọng văn TDC</strong> cho Claude viết: xưng hô, độ dài, từ nên dùng và từ tránh. Ví dụ lấy 10–20 caption tiêu biểu từ bài đã đăng trên Page và IG, không cần làm bài mới. Chỉ cần trước khi bật Claude viết content.</label></li>
+      </ul>
+    </section>
+
+    <section id="quy-tac">
+      <header><span class="paren">( Bộ quy tắc )</span><h2>R01–R15: không chặn bài, cảnh báo rõ và bắt xác nhận lại</h2></header>
+      <p class="answer">Không quy tắc nào chặn bài. Vấn đề nghiêm trọng hiện thành <span class="chip block">Cần xác nhận</span>: người gửi phải đọc, chọn cách xử lý nếu có, ghi lý do; người duyệt phải xác nhận lại từng vấn đề rồi mới duyệt. Mọi lần xác nhận được lưu lại, ai làm, lúc nào, vì sao.</p>
+      <p>Engine chạy khi nhận file, khi lưu nháp, khi gửi duyệt và ngay trước khi đăng. R01–R09 là 9 quy tắc ở mục 2 của bản flow; R10–R13 chống dư thừa; R14–R15 là vận hành. Tham số (khung giờ, 1h30, 5 hashtag…) nằm trong <code>rule_settings</code>, admin đổi được mà không sửa code.</p>
+      <h3>Bốn mức</h3>
+      <div class="tbl"><table class="plain">
+        <tbody>
+          <tr><td><span class="chip block">Cần xác nhận</span></td><td>Hiện đỏ, nằm đầu danh sách. Gửi duyệt vẫn được, nhưng phải xác nhận kèm lý do; người duyệt xác nhận lại.</td></tr>
+          <tr><td><span class="chip warn">Cảnh báo</span></td><td>Hiện vàng để người đọc lưu ý; không cần xác nhận.</td></tr>
+          <tr><td><span class="chip ok">Gợi ý / Tự động</span></td><td>Engine đề xuất cách sửa một chạm, hoặc tự làm (ví dụ kiểm tra sau đăng).</td></tr>
+          <tr><td><span class="chip hand">Cố định</span></td><td>Cách đăng luôn như vậy, không phải lựa chọn (FB và IG là 2 mục riêng).</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Xác nhận hai lớp</h3>
+      <ol class="steps">
+        <li><div><strong>Khi gửi duyệt.</strong> Người gửi thấy hộp "Xác nhận N vấn đề": đọc từng vấn đề, xem "nếu xác nhận thì hệ thống làm gì", chọn cách xử lý nếu vấn đề có nhiều cách, ghi lý do (bắt buộc). Xong mới gửi được.</div></li>
+        <li><div><strong>Khi duyệt.</strong> Người duyệt thấy các vấn đề đã xác nhận ở đầu thẻ bài, kèm lý do. Phải tick "Tôi đã đọc lý do và đồng ý" cho từng vấn đề thì nút Duyệt mới mở. Vấn đề mới phát sinh sau khi gửi thì người duyệt tự xác nhận kèm lý do.</div></li>
+        <li><div><strong>Ngay trước khi đăng.</strong> Engine chạy lại với giờ thật và lịch mới nhất. Có vấn đề mới chưa ai xác nhận (ví dụ giờ đăng đã qua, lịch Page vừa có bài đăng tay) thì bài dừng ở trạng thái <span class="chip warn">Chờ xác nhận</span> và báo người duyệt qua Telegram. Bài không bị bỏ qua âm thầm, cũng không tự đăng khi chưa ai đồng ý.</div></li>
+        <li><div><strong>Claude không tự xác nhận thay người.</strong> Khi soạn hay gửi bài có vấn đề, Claude hỏi người dùng trong chat; chỉ ghi xác nhận khi người trả lời, lý do lưu kèm "Claude thay mặt X, người xác nhận trong chat".</div></li>
+      </ol>
+      <div class="tbl wide"><table>
+        <thead><tr><th>Mã</th><th>Quy tắc</th><th>Mức</th><th>Gợi ý</th><th>Nếu vẫn xác nhận</th></tr></thead>
+        <tbody>
+          <tr><td>R01</td><td>Giờ đăng trong 10:00–13:00 hoặc 19:00–22:00</td><td><span class="chip warn">Cảnh báo</span></td><td>Giờ trống gần nhất</td><td>—</td></tr>
+          <tr><td>R02</td><td>Cách bài khác cùng tài khoản ≥ 1h30</td><td><span class="chip block">Cần xác nhận</span></td><td>3 giờ trống hợp lệ</td><td>Giữ giờ đã chọn; lịch ghi chú hai bài sát nhau</td></tr>
+          <tr><td>R03</td><td>Lên lịch cách hiện tại ≥ 20 phút; giờ đăng chưa qua</td><td><span class="chip warn">Cảnh báo</span> · <span class="chip block">Cần xác nhận</span> khi đã quá giờ</td><td>Đưa vào đợt sau</td><td>Chọn: đăng ngay ở đợt kế tiếp, hoặc dời sang giờ trống. Dưới 20 phút (Trình duyệt): chờ đến giờ rồi bấm Đăng</td></tr>
+          <tr><td>R04</td><td>Không trùng lịch, kể cả bài đăng tay ngoài hệ thống</td><td><span class="chip block">Cần xác nhận</span></td><td>Hiện bài đang chiếm giờ</td><td>Đăng sát bài ngoài hệ thống</td></tr>
+          <tr><td>R05</td><td>Một bài một folder; thứ tự = số trên tên file, liên tục từ 1, không trùng</td><td><span class="chip block">Cần xác nhận</span></td><td>Chỉ ra số thiếu hoặc trùng</td><td>Đăng theo các số hiện có; số trùng xếp theo tên file</td></tr>
+          <tr><td>R06</td><td>Số file carousel IG</td><td><span class="chip block">Cần xác nhận</span></td><td>Tách 2 bài</td><td>Meta không nhận quá giới hạn, nên phải chọn: chuyển bài sang API (≤ 20), đăng IG bằng app (việc làm tay, ≤ 20), hoặc chỉ đăng 10/20 tấm đầu</td></tr>
+          <tr><td>R07</td><td>Caption IG ≤ 2.200 ký tự, ≤ 5 hashtag; Reels FB có tiêu đề; comment IG có link</td><td><span class="chip block">Cần xác nhận</span> · comment có link: <span class="chip warn">Cảnh báo</span></td><td>Claude rút gọn, gợi ý tiêu đề</td><td>Quá 2.200 ký tự: chọn dùng bản rút gọn hoặc chấp nhận IG bỏ caption. Quá 5 hashtag: đăng nguyên trạng. Thiếu tiêu đề Reels: dùng dòng đầu caption</td></tr>
+          <tr><td>R08</td><td>Video, Reels, slide đầu motion: frame đầu là cover</td><td><span class="chip warn">Cảnh báo</span></td><td>Trích frame đầu để người duyệt xem</td><td>—</td></tr>
+          <tr><td>R09</td><td>Chế độ đăng làm được loại bài này</td><td><span class="chip warn">Cảnh báo</span></td><td>Đổi chế độ, hoặc tạo việc làm tay</td><td>—</td></tr>
+          <tr><td>R10</td><td>File trùng bài đã đăng / đã xếp (hash)</td><td><span class="chip warn">Cảnh báo</span></td><td>Hiện bài cũ dùng file đó</td><td>—</td></tr>
+          <tr><td>R11</td><td>Caption gần giống bài trong 90 ngày</td><td><span class="chip warn">Cảnh báo</span></td><td>Đối chiếu, Claude viết lại</td><td>—</td></tr>
+          <tr><td>R12</td><td>FB và IG là 2 mục riêng, tắt "Chia sẻ lên Facebook" trên IG; bài FB để Công khai</td><td><span class="chip hand">Cố định</span></td><td>—</td><td>—</td></tr>
+          <tr><td>R13</td><td>Không tạo Story trùng</td><td><span class="chip block">Cần xác nhận</span></td><td>Kiểm tra Story hiện có</td><td>Vẫn tạo Story thứ hai</td></tr>
+          <tr><td>R14</td><td>Bài vào hàng đợi khi người duyệt bấm Duyệt và đã xác nhận lại mọi vấn đề</td><td><span class="chip hand">Bước duyệt</span></td><td>—</td><td>—</td></tr>
+          <tr><td>R15</td><td>Sau giờ đăng: đối chiếu caption, số file, cover; comment dưới bài FB và IG</td><td><span class="chip ok">Tự động</span></td><td>Báo ngay nếu lệch</td><td>—</td></tr>
+        </tbody>
+      </table></div>
+      <p>Mỗi lần kiểm tra được ghi vào <code>rule_evaluations</code>; mỗi lần xác nhận được ghi vào <code>rule_overrides</code> (quy tắc, người xác nhận, người xác nhận lại, lý do, cách xử lý đã chọn). Hai bảng này cho biết khi nào người thật đồng ý hay bỏ qua máy, là dữ liệu training giá trị nhất để chỉnh quy tắc.</p>
+    </section>
+
+    <section id="api">
+      <header><span class="paren">( Meta API )</span><h2>API làm được phần lớn, trừ sticker link, bài trộn và nhạc cho ảnh</h2></header>
+      <p>Áp dụng cho chế độ API. Qua API, carousel IG nhận tối đa <strong>20</strong> ảnh/video, nhiều hơn giới hạn 10 của Business Suite.</p>
+      <div class="tbl wide"><table>
+        <thead><tr><th>Bước</th><th>Qua API</th><th>Cách làm</th></tr></thead>
+        <tbody>
+          <tr><td>FB ảnh đơn / carousel</td><td><span class="chip ok">Được</span></td><td>Upload từng ảnh vào <code>/{page-id}/photos</code> ở chế độ chưa đăng, gộp bằng <code>attached_media</code></td></tr>
+          <tr><td>FB Reels</td><td><span class="chip ok">Được</span></td><td><code>/{page-id}/video_reels</code> (start → upload → finish)</td></tr>
+          <tr><td>FB bài trộn ảnh + video</td><td><span class="chip warn">Chưa chắc</span></td><td>Không có tài liệu chính thức; dùng chế độ Trình duyệt</td></tr>
+          <tr><td>Lên lịch FB</td><td><span class="chip ok">Được</span></td><td><code>scheduled_publish_time</code> (10 phút đến 30 ngày) hoặc worker tự đăng</td></tr>
+          <tr><td>Comment dưới bài FB</td><td><span class="chip ok">Được</span></td><td><code>POST /{post-id}/comments</code> bằng Page token</td></tr>
+          <tr><td>Comment dưới bài IG</td><td><span class="chip ok">Được</span></td><td><code>POST /{ig-media-id}/comments</code> (quyền <code>instagram_manage_comments</code>); link trong comment không bấm được</td></tr>
+          <tr><td>IG carousel, Reels</td><td><span class="chip ok">Được</span></td><td>Container → <code>media_publish</code>; ảnh phải là JPEG; Reels có <code>cover_url</code></td></tr>
+          <tr><td>Lên lịch IG</td><td><span class="chip ok">Worker</span></td><td>IG API không hẹn giờ; worker publish đúng giờ</td></tr>
+          <tr><td>Caption riêng từng ảnh IG</td><td><span class="chip block">Không</span></td><td>Chỉ có 1 caption chung</td></tr>
+          <tr><td>Nhạc IG Reels</td><td><span class="chip ok">Được</span></td><td>Instagram Audio API: tìm bằng <code>GET /ig_audio</code>, gắn bằng <code>audio_configuration</code> (<code>audio_id</code>, <code>audio_volume</code>, <code>video_volume</code>) khi tạo container Reels. Chỉ có nhạc Meta cho phép bên thứ ba dùng, nên ít hơn app IG. Cần User access token qua Facebook Login (không dùng được System User token), phải thử lại ở tuần 1</td></tr>
+          <tr><td>Nhạc FB Reels, video FB</td><td><span class="chip warn">Ghép sẵn</span></td><td>Không có API chọn nhạc thư viện. Engine ghép nhạc đã có quyền (Meta Sound Collection, nhạc TDC đã mua) vào bản đăng bằng ffmpeg; file gốc trên Drive giữ nguyên</td></tr>
+          <tr><td>Nhạc cho ảnh, carousel ảnh, Story</td><td><span class="chip block">Không</span></td><td>Thành việc làm tay trên app, kèm ghi chú nhạc</td></tr>
+          <tr><td>Story IG</td><td><span class="chip warn">Một phần</span></td><td>Đăng được Story nhưng không gắn được sticker link</td></tr>
+        </tbody>
+      </table></div>
+      <p>Giới hạn: 100 bài đăng qua API mỗi 24 giờ cho IG (có chỗ trong tài liệu ghi 50, kiểm tra bằng <code>content_publishing_limit</code>); container hết hạn sau 24 giờ.</p>
+      <p class="sources">Nguồn: <a href="https://developers.facebook.com/docs/instagram-platform/content-publishing/audio-api/" target="_blank" rel="noopener">Instagram Audio API</a> · <a href="https://developers.facebook.com/docs/instagram-platform/content-publishing" target="_blank" rel="noopener">IG content publishing</a> · <a href="https://developers.facebook.com/docs/instagram-platform/instagram-graph-api/reference/ig-user/media" target="_blank" rel="noopener">IG media reference</a> · <a href="https://developers.facebook.com/docs/pages-api/posts" target="_blank" rel="noopener">Pages API posts</a> · <a href="https://developers.facebook.com/docs/graph-api/reference/page/video_reels" target="_blank" rel="noopener">Page video_reels</a></p>
+    </section>
+
+    <section id="xac-thuc">
+      <header><span class="paren">( Xác thực Meta )</span><h2>Không cần App Review: Standard Access + System User + Live mode</h2></header>
+      <p>Làm song song, không chặn chế độ Trình duyệt. App Review chỉ bắt buộc khi cần <strong>Advanced Access</strong>, tức là khi đụng đến dữ liệu của người không có vai trò trên app. Tool nội bộ đăng lên Page và IG của chính TDC dùng <strong>Standard Access</strong>, mà Meta tự cấp cho app loại Business, nhưng chỉ cho người có vai trò trên app.</p>
+      <div class="note key"><span class="label">( Cái bẫy )</span><p>Khi app còn ở <strong>Development mode</strong>, bài đăng qua API chỉ người có vai trò trên app mới thấy. Phải chuyển sang <strong>Live mode</strong> (cần link chính sách quyền riêng tư, hướng dẫn xoá dữ liệu, icon, danh mục; không cần App Review).</p></div>
+      <ol class="steps">
+        <li><div>Trong Business Portfolio TDC: xác nhận Page và IG Business thuộc portfolio và đã liên kết với nhau.</div></li>
+        <li><div>Tạo app loại <strong>Business</strong> gắn vào portfolio; thêm use case quản lý Trang và Instagram API.</div></li>
+        <li><div>Tạo <strong>System User</strong> (Admin), gán Page, IG và app cho nó.</div></li>
+        <li><div>Tạo token với <code>pages_manage_posts</code>, <code>pages_manage_engagement</code>, <code>pages_read_engagement</code>, <code>publish_video</code>, <code>instagram_basic</code>, <code>instagram_content_publish</code>, <code>instagram_manage_comments</code>.</div></li>
+        <li><div>Chuyển Live mode, đăng thử, mở bằng trình duyệt ẩn danh để xác nhận bài công khai.</div></li>
+        <li><div>Lưu token trong secret manager của server; không bao giờ đưa vào frontend hay cho Claude.</div></li>
+      </ol>
+      <p>Nếu vẫn bị chặn: dùng token của người dùng có vai trò Admin trên app (dễ hơn, phụ thuộc tài khoản cá nhân), hoặc dịch vụ trung gian có API như Ayrshare, Publer, Buffer (mất phí tháng).</p>
+      <p class="sources">Nguồn: <a href="https://developers.facebook.com/docs/graph-api/overview/access-levels" target="_blank" rel="noopener">Access levels</a> · <a href="https://developers.facebook.com/docs/development/build-and-test/app-modes" target="_blank" rel="noopener">App modes</a> · <a href="https://developers.facebook.com/docs/business-management-apis/system-users/install-apps-and-generate-tokens" target="_blank" rel="noopener">System user tokens</a> · <a href="https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp" target="_blank" rel="noopener">Claude custom connectors</a></p>
+    </section>
+
+    <section id="tuong-lai">
+      <header><span class="paren">( Tính năng tương lai )</span><h2>Agent kiểm tra sau đăng: có ảnh chụp từng tấm làm bằng chứng</h2></header>
+      <p class="answer">Đợt kiểm tra sau đăng hiện nay (R15) đọc lại bài và đối chiếu dữ liệu. Agent tương lai làm thêm một bước: dùng <strong>Playwright CLI</strong> mở bài như người xem thật, bấm qua từng tấm, chụp lại, rồi gửi báo cáo có ảnh cho người kiểm duyệt. Người kiểm duyệt nhìn thấy đúng thứ khách hàng thấy, không chỉ số liệu. Chỉ làm sau khi hệ thống chính đã ổn định (xem <a href="roadmap.html#tuong-lai">Roadmap</a>).</p>
+      <ol class="steps">
+        <li><div><strong>Kích hoạt.</strong> Sau khi bài lên và đợt kiểm tra ghi được permalink, hệ thống tạo job <code>inspect.post</code>, chạy sau khoảng 10 phút để Meta xử lý xong ảnh và video.</div></li>
+        <li><div><strong>Mở bài.</strong> Playwright mở permalink FB và IG bằng phiên đăng nhập đã lưu của tài khoản xem, ở cả khung máy tính và khung điện thoại.</div></li>
+        <li><div><strong>Bấm qua từng tấm.</strong> FB: mở từng ảnh trong bài, chụp từng tấm, chụp comment dưới bài. IG: bấm "tiếp" qua từng slide, chụp từng tấm, chụp ô bài trên lưới profile để xem cover, kiểm tra Story.</div></li>
+        <li><div><strong>So khớp.</strong> Số tấm đúng số file; thứ tự đúng (so hash ảnh chụp với bản nén đã duyệt); caption đủ, không bị cắt; cover đúng; không có bài trùng.</div></li>
+        <li><div><strong>Lưu và báo cáo.</strong> Ảnh lưu lên R2; báo cáo ghi vào database, mỗi tấm một dòng kèm kết quả so khớp.</div></li>
+        <li><div><strong>Gửi người kiểm duyệt.</strong> Người kiểm duyệt nhận báo cáo, xem ảnh từng tấm, bấm Đạt hoặc Có lỗi (chọn tấm lỗi, ghi chú). Có lỗi thì hệ thống tạo việc sửa như việc làm tay hiện nay.</div></li>
+      </ol>
+      <ul>
+        <li><strong>Hai cách dựng, chốt khi bắt đầu:</strong> (a) script Playwright cố định làm phần bấm và chụp, rẻ và ổn định; (b) Claude điều khiển Playwright CLI, linh hoạt hơn khi Meta đổi giao diện nhưng tốn hạn mức. Đề xuất: (a) làm chính, (b) làm dự phòng khi script gặp giao diện lạ.</li>
+        <li><strong>Rủi ro:</strong> tự động xem bài vẫn là vùng xám trong điều khoản Meta, và IG hay chặn khi xem nhiều bằng một tài khoản. Vì vậy agent dùng tài khoản phụ chỉ để xem, chạy chậm như người, và dừng khi gặp checkpoint.</li>
+        <li><strong>Giá trị cho training:</strong> mỗi lần người kiểm duyệt bấm Đạt hoặc Có lỗi là một nhãn do người thật gán, gắn với ảnh chụp thật trên Meta.</li>
+      </ul>
+      <p>Bốn câu hỏi cần chốt khi bắt đầu (kênh gửi, người nhận, thao tác của người kiểm duyệt, tài khoản agent dùng) và đề xuất mặc định nằm ở <a href="roadmap.html#tuong-lai">Roadmap</a>.</p>
+    </section>
+
+    <section id="rui-ro">
+      <header><span class="paren">( Rủi ro &amp; câu hỏi )</span><h2>Rủi ro lớn nhất là giao diện Meta thay đổi và file sai chuẩn</h2></header>
+      <div class="tbl wide"><table>
+        <thead><tr><th>Rủi ro</th><th>Khả năng</th><th>Cách giảm</th></tr></thead>
+        <tbody>
+          <tr><td>Meta đổi giao diện Business Suite, Claude thao tác sai</td><td><span class="chip warn">Cao theo thời gian</span></td><td>Chụp màn hình xác nhận từng bài; kiểm tra sau đăng (R15); chuyển dần sang API</td></tr>
+          <tr><td>Checkpoint, CAPTCHA, tài khoản bị hạn chế</td><td><span class="chip warn">Trung bình</span></td><td>Dùng tài khoản admin thật, nhịp thao tác như người; Claude dừng và báo, không vượt CAPTCHA</td></tr>
+          <tr><td>File designer không theo chuẩn đặt tên</td><td><span class="chip warn">Cao lúc đầu</span></td><td>Báo lỗi ngay khi nhận file, kèm tên đúng; hồ sơ định dạng có ví dụ</td></tr>
+          <tr><td>Hạn mức Claude không đủ cho số bài</td><td><span class="chip warn">Trung bình</span></td><td>Gom lô; engine chuẩn bị sẵn mọi thứ để Claude chỉ thao tác; chuyển API</td></tr>
+          <tr><td>Đăng tay song song gây trùng bài</td><td><span class="chip warn">Trung bình</span></td><td>R04 đồng bộ lịch; bài đã vào hệ thống thì không đăng tay</td></tr>
+          <tr><td>Mất file gốc</td><td><span class="chip ok">Thấp</span></td><td>R2 + bản sao thứ hai; backup database mỗi đêm</td></tr>
+          <tr><td>Meta đổi phiên bản Graph API (chế độ API)</td><td><span class="chip warn">Chắc chắn, theo chu kỳ</span></td><td>Ghim phiên bản; mọi lệnh gọi nằm trong <code>Publisher</code></td></tr>
+        </tbody>
+      </table></div>
+      <h3>Câu hỏi cần chốt</h3>
+      <ul class="checklist" id="questions">
+        <li><input type="checkbox" id="q1" checked><label for="q1"><span class="done-note">Đã có:</span> Business Portfolio TDC, bạn là admin (xác nhận 30.10). Còn kiểm tra: Page và IG đã nằm trong portfolio và liên kết với nhau chưa?</label></li>
+        <li><input type="checkbox" id="q2"><label for="q2">Chốt dần 8 điểm còn lại trong mục <a href="#chuan-tdc">Chuẩn định dạng</a> (2 điểm về kích thước đã xong). Không cần bài mẫu; việc xây app không chờ buổi họp này.</label></li>
+        <li><input type="checkbox" id="q3"><label for="q3">Máy nào chạy Chrome cho Claude (luôn bật, đăng nhập tài khoản admin Page)?</label></li>
+        <li><input type="checkbox" id="q4"><label for="q4"><span class="done-note">Đã chốt:</span> Claude kết nối bằng luồng đăng nhập. Còn hỏi: ai có Claude subscription, ai ra lệnh mỗi đợt đăng, ai là người duyệt?</label></li>
+        <li><input type="checkbox" id="q5"><label for="q5"><span class="done-note">Đã chốt:</span> file giao và lưu trên Google Drive. Còn hỏi: tài khoản Drive của TDC là Google Workspace hay Google One, còn trống bao nhiêu dung lượng?</label></li>
+        <li><input type="checkbox" id="q6"><label for="q6">Khối lượng: bao nhiêu bài mỗi tuần, tỉ lệ video, có lưu cả file nguồn PSD/AI không?</label></li>
+        <li><input type="checkbox" id="q7" checked><label for="q7"><span class="done-note">Đã chốt:</span> giữ toàn bộ file gốc, vĩnh viễn, trên Google Drive (có bản sao thứ hai trên R2).</label></li>
+        <li><input type="checkbox" id="q8"><label for="q8"><span class="done-note">Đã chốt hướng:</span> ưu tiên VPS Việt Nam; tuần 1 đo băng thông quốc tế, không đạt thì dùng Singapore (xem <a href="techstack.html#hosting">Tech stack</a>).</label></li>
+        <li><input type="checkbox" id="q9"><label for="q9">Mục tiêu training: viết caption theo giọng TDC, dự đoán hiệu quả bài, hay gợi ý giờ đăng?</label></li>
+        <li><input type="checkbox" id="q10"><label for="q10">Thông báo lỗi qua Telegram, Zalo hay email?</label></li>
+        <li><input type="checkbox" id="q11"><label for="q11">Có thử tạo app Meta song song ngay từ tuần 1 không?</label></li>
+        <li><input type="checkbox" id="q12"><label for="q12">Sau này có thêm nền tảng khác (TikTok, Threads, Zalo OA) không?</label></li>
+      </ul>
+      <p class="sources">Ô đánh dấu chỉ lưu trên trình duyệt của bạn.</p>
+    </section>
+
+    <div class="next-page"><span class="label">Tiếp theo</span><a href="roadmap.html">Roadmap triển khai</a></div>
+  </main>
+</div>
+
+<footer class="foot"><span>TDC Post · Phương án · 30.10.2026</span><span>Phương án · <a href="roadmap.html">Roadmap</a> · <a href="techstack.html">Tech stack</a> · <a href="designsystem.html">Design system</a> · <a href="mockup.html">Giao diện</a> · <a href="trienkhai.html">Triển khai</a> · <a href="huongdan.html">Hướng dẫn</a></span></footer>
+</div>
+
+<script>
+(function () {
+  var key = 'tdcpost-questions';
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(key) || '{}'); } catch (e) { saved = {}; }
+  document.querySelectorAll('#questions input[type=checkbox], #agenda input[type=checkbox]').forEach(function (box) {
+    if (Object.prototype.hasOwnProperty.call(saved, box.id)) box.checked = !!saved[box.id];
+    box.addEventListener('change', function () {
+      saved[box.id] = box.checked;
+      try { localStorage.setItem(key, JSON.stringify(saved)); } catch (e) {}
+    });
+  });
+})();
+</script>

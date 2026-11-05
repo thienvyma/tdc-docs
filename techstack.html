@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>TDC Post · Tech stack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;500;600;700&family=Arimo:wght@400;700&display=swap">
+<style>
+/* Layout: thanh trang trên cùng · khối LAB mở đầu · mục lục dính bên trái (desktop) + cột nội dung ~760px.
+   Nhận diện theo design system TDC Coaching: giấy ấm, chữ condensed để nói, chữ thường để đọc,
+   mỗi trang 1 màu LAB. Một theme sáng, có chủ đích (TDC không dùng dark mode). */
+:root {
+  --paper: #F8F7F5;
+  --raised: #FFFFFF;
+  --sunk: #EFECE7;
+  --line: #E3DFD8;
+  --line-strong: #8C867D;
+  --ink: #121211;
+  --ink-soft: #3A3835;
+  --ink-muted: #6B6760;
+  --red: #E22E32;
+  --red-deep: #B8232A;
+  --red-tint: #FBE7E5;
+  --ok: #276B43;
+  --ok-tint: #E7F2EA;
+  --warn: #9A5B0B;
+  --warn-tint: #FBEFD9;
+  --lab: #C994EB;
+  --lab-soft: #E1C3F4;
+  --lab-strong: #C994EB;
+  --f-display: "Archivo Narrow", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --f-body: Arimo, Arial, "Helvetica Neue", sans-serif;
+  --f-mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  color-scheme: light;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+body.lab-sky { --lab: #C0DEFC; --lab-soft: #E0EFFE; --lab-strong: #9CCBFA; }
+body.lab-lime { --lab: #BEE059; --lab-soft: #D9ED9D; --lab-strong: #BEE059; }
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 72px; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 15px/1.6 var(--f-body);
+}
+img { max-width: 100%; }
+a { color: var(--ink); text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--ink); }
+:focus-visible { outline: 2px solid var(--red-deep); outline-offset: 2px; border-radius: 4px; }
+
+/* ---------- Thanh trang ---------- */
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 10; background: var(--paper);
+}
+.topbar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.topbar-in {
+  max-width: 1180px; margin: 0 auto;
+  padding-block: 10px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.brand { display: flex; align-items: baseline; gap: 8px; text-decoration: none; margin-right: auto; }
+.brand-mark { font: 700 20px/1 var(--f-display); color: var(--red); letter-spacing: -0.2px; }
+.brand-name { font: 600 12px/1 var(--f-display); letter-spacing: 0.8px; text-transform: uppercase; color: var(--ink-muted); }
+.pages { display: flex; gap: 4px; padding: 4px; background: var(--sunk); border-radius: 999px; }
+.pages a {
+  font: 600 14px/1 var(--f-display); letter-spacing: 0.3px;
+  text-decoration: none; color: var(--ink-soft);
+  padding: 8px 14px; border-radius: 999px;
+}
+.pages a:hover { background: var(--raised); color: var(--ink); }
+.pages a[aria-current="page"] { background: var(--lab-strong); color: var(--ink); }
+
+/* ---------- Mở đầu ---------- */
+.hero-wrap {
+  max-width: 1180px; margin: 0 auto;
+  padding-top: 24px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.hero {
+  background: var(--lab);
+  border-radius: var(--radius-lg);
+  padding: clamp(24px, 4vw, 44px);
+  position: relative; overflow: hidden;
+  display: grid; gap: 14px;
+}
+.hero::after {
+  content: ""; position: absolute; right: -40px; top: -40px;
+  width: 220px; height: 220px; border-radius: 50%;
+  background: var(--lab-soft); opacity: 0.9; pointer-events: none;
+}
+.hero > * { position: relative; z-index: 1; }
+.paren { font: 600 13px/1.2 var(--f-display); letter-spacing: 0.6px; color: var(--ink-soft); }
+.hero h1 {
+  margin: 0; font: 700 clamp(32px, 5.2vw, 52px)/1.02 var(--f-display);
+  letter-spacing: -0.6px; text-wrap: balance; max-width: 18ch;
+}
+.hero .lead { margin: 0; font-size: 17px; line-height: 1.55; max-width: 62ch; color: var(--ink); }
+.hero .meta { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--ink-soft); }
+
+/* ---------- Khung trang ---------- */
+.layout {
+  max-width: 1180px; margin: 0 auto;
+  padding-block: 32px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; grid-template-columns: 1fr; gap: 32px;
+}
+@media (min-width: 1024px) {
+  .layout { grid-template-columns: 220px minmax(0, 1fr); gap: 48px; }
+}
+.toc { display: none; }
+@media (min-width: 1024px) {
+  .toc { display: block; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 72px); align-self: start; }
+}
+.toc .label { margin-bottom: 10px; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.toc a {
+  display: block; padding: 6px 10px; border-radius: 8px;
+  font: 500 14px/1.3 var(--f-display); text-decoration: none; color: var(--ink-soft);
+}
+.toc a:hover { background: var(--sunk); color: var(--ink); }
+
+.content { min-width: 0; max-width: 780px; display: grid; gap: 56px; }
+
+/* ---------- Chữ ---------- */
+.label {
+  font: 600 12px/16px var(--f-display); letter-spacing: 0.8px; text-transform: uppercase; color: var(--ink-muted);
+}
+section { display: grid; gap: 16px; min-width: 0; }
+section > header { display: grid; gap: 6px; }
+h2 {
+  margin: 0; font: 700 32px/1.08 var(--f-display); letter-spacing: -0.3px; text-wrap: balance;
+}
+h3 {
+  margin: 12px 0 0; font: 600 20px/1.2 var(--f-display); text-wrap: balance;
+}
+p { margin: 0; max-width: 68ch; }
+.answer { font-size: 17px; line-height: 1.55; }
+strong { font-weight: 700; }
+code {
+  font: 13px/1.4 var(--f-mono); background: var(--sunk); padding: 1px 5px; border-radius: 5px;
+  overflow-wrap: anywhere;
+}
+mark { background: var(--lab-soft); color: var(--ink); padding: 0 3px; border-radius: 3px; }
+ul, ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; max-width: 68ch; }
+li::marker { color: var(--ink-muted); }
+.steps { counter-reset: s; list-style: none; padding: 0; gap: 10px; }
+.steps > li {
+  counter-increment: s; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; align-items: start;
+}
+.steps > li::before {
+  content: counter(s, decimal-leading-zero);
+  font: 700 18px/1.45 var(--f-display); color: var(--ink-muted); font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Bảng ---------- */
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--raised); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; line-height: 1.45; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+th {
+  font: 600 12px/16px var(--f-display); letter-spacing: 0.8px; text-transform: uppercase;
+  color: var(--ink-muted); background: var(--paper); white-space: nowrap;
+}
+td:first-child { font-weight: 700; }
+table.plain td:first-child { font-weight: 400; }
+.tbl.wide table { min-width: 720px; }
+.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ---------- Chip trạng thái ---------- */
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  font: 600 12px/1 var(--f-body); padding: 5px 8px; border-radius: var(--radius-sm);
+  background: var(--sunk); color: var(--ink-soft);
+}
+.chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.chip.block { background: var(--red-tint); color: var(--red-deep); }
+.chip.warn { background: var(--warn-tint); color: var(--warn); }
+.chip.ok { background: var(--ok-tint); color: var(--ok); }
+.chip.hand { background: var(--sunk); color: var(--ink-soft); }
+
+/* ---------- Khối phụ ---------- */
+.note {
+  background: var(--sunk); border-radius: var(--radius-md); padding: 16px 18px;
+  display: grid; gap: 8px; max-width: 72ch;
+}
+.note.key { background: var(--lab-soft); }
+.note .label { color: var(--ink-soft); }
+.grid-2 { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.card {
+  background: var(--raised); border: 1px solid var(--line); border-radius: var(--radius-md);
+  padding: 16px 18px; display: grid; gap: 8px; align-content: start; min-width: 0;
+}
+.card h4 { margin: 0; font: 600 18px/1.25 var(--f-display); }
+pre {
+  margin: 0; overflow-x: auto; background: var(--ink); color: var(--paper);
+  border-radius: var(--radius-md); padding: 16px 18px; font: 13px/1.6 var(--f-mono);
+}
+.checklist { list-style: none; padding: 0; gap: 8px; }
+.checklist li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; align-items: start; }
+.checklist input { margin: 3px 0 0; width: 16px; height: 16px; accent-color: var(--ink); }
+.checklist label { cursor: pointer; }
+.checklist .done-note { color: var(--ok); font-weight: 700; }
+.sources { font-size: 13px; color: var(--ink-muted); }
+.sources a { color: var(--ink-soft); }
+
+/* ---------- Sơ đồ SVG ---------- */
+.diagram { overflow-x: auto; background: var(--raised); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 12px; }
+.diagram svg { display: block; width: 100%; min-width: 640px; height: auto; }
+.diagram figcaption { font-size: 13px; color: var(--ink-muted); padding: 8px 4px 2px; }
+.d-box { fill: var(--raised); stroke: var(--line-strong); stroke-width: 1.25; }
+.d-accent { fill: var(--lab-soft); stroke: var(--ink); stroke-width: 1.5; }
+.d-lane { fill: var(--sunk); stroke: none; }
+.d-line { fill: none; stroke: var(--ink-muted); stroke-width: 1.25; }
+.d-dash { fill: none; stroke: var(--ink-muted); stroke-width: 1.25; stroke-dasharray: 4 4; }
+.d-head { fill: var(--ink-muted); }
+.d-t { fill: var(--ink); font: 600 14px var(--f-display); }
+.d-s { fill: var(--ink-muted); font: 400 12px var(--f-body); }
+.d-l { fill: var(--ink-soft); font: 400 11.5px var(--f-body); }
+.d-big { fill: var(--ink); font: 700 16px var(--f-display); }
+.d-gate { fill: var(--lab-strong); stroke: var(--ink); stroke-width: 1.25; }
+.d-gate-q { fill: var(--raised); stroke: var(--ink-muted); stroke-width: 1.25; }
+
+.foot {
+  max-width: 1180px; margin: 0 auto; padding-block: 24px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-muted);
+  display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between;
+}
+.next-page {
+  display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+  background: var(--raised); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 18px 20px;
+}
+.next-page a { font: 700 20px/1.2 var(--f-display); text-decoration: none; }
+.next-page a::after { content: " ↘"; color: var(--red); }
+
+@media (max-width: 560px) {
+  h2 { font-size: 27px; }
+  .pages a { padding: 8px 10px; font-size: 13px; }
+  .brand-name { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+
+</style>
+</head>
+<body class="lab-sky">
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="index.html"><span class="brand-mark">TDC Post</span><span class="brand-name">Hệ thống đăng bài FB &amp; IG</span></a>
+    <nav class="pages" aria-label="Tài liệu">
+      <a href="index.html">Phương án</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="techstack.html" aria-current="page">Tech stack</a>
+      <a href="designsystem.html">Design system</a>
+      <a href="mockup.html">Giao diện</a>
+      <a href="trienkhai.html">Triển khai</a>
+      <a href="huongdan.html">Hướng dẫn</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero-wrap">
+  <div class="hero">
+    <span class="paren">( Tech stack · bản 30.10.2026 )</span>
+    <h1>Một VPS, một database, file trên R2</h1>
+    <p class="lead">TypeScript trong một repo, chạy bằng Docker Compose trên một VPS: web app, worker, MCP server và PostgreSQL. Bản gốc ảnh và video giữ vĩnh viễn trên Google Drive theo cấu trúc thư mục chuẩn; bản nén trên Cloudflare R2 để Meta tải về. Giao diện dựng trên Next.js + shadcn/ui theo nhận diện TDC.</p>
+    <div class="meta"><span>Chi phí dự kiến khoảng 10–30 USD/tháng, chưa tính Claude subscription</span><span>·</span><span>File gốc giữ vĩnh viễn</span></div>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="toc" aria-label="Mục lục">
+    <div class="label">Trên trang này</div>
+    <ol>
+      <li><a href="#kien-truc">Kiến trúc</a></li>
+      <li><a href="#backend">Bên trong Backend API</a></li>
+      <li><a href="#rule-engine">Engine quy tắc</a></li>
+      <li><a href="#stack">Các lớp công nghệ</a></li>
+      <li><a href="#hosting">Chọn nơi host</a></li>
+      <li><a href="#database">Database</a></li>
+      <li><a href="#kho-file">Kho file &amp; lưu trữ</a></li>
+      <li><a href="#design-system">Design system</a></li>
+    </ol>
+  </aside>
+
+  <main class="content">
+
+    <section id="kien-truc">
+      <header><span class="paren">( Kiến trúc )</span><h2>Hai cửa vào, một backend, hai nhánh đăng</h2></header>
+      <p class="answer">Web app và Claude cùng đi qua một backend và một bộ quy tắc. Từ hàng đợi, bài đi theo một trong hai nhánh: worker gọi Graph API (chế độ API), hoặc Claude in Chrome lên lịch trên Business Suite từ thư mục <code>outbox/</code> (chế độ Trình duyệt). Token Meta chỉ nằm ở worker.</p>
+      <figure class="diagram" style="margin:0">
+        <svg viewBox="0 0 760 676" role="img" aria-label="Sơ đồ kiến trúc: hai chế độ đăng dùng chung một backend và một database">
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="d-head" d="M0 0L10 5L0 10z"/></marker>
+          </defs>
+          <!-- connectors -->
+          <g>
+            <path class="d-line" d="M134 76V136H270" marker-end="url(#ah)"/>
+            <path class="d-line" d="M380 76V108" marker-end="url(#ah)"/>
+            <path class="d-line" d="M626 76V108" marker-end="url(#ah)"/>
+            <path class="d-line" d="M380 164V196" marker-end="url(#ah)"/>
+            <path class="d-line" d="M626 164V196" marker-end="url(#ah)"/>
+            <path class="d-line" d="M380 252V284" marker-end="url(#ah)"/>
+            <path class="d-line" d="M626 252V284" marker-end="url(#ah)"/>
+            <path class="d-line" d="M380 340V372" marker-end="url(#ah)"/>
+            <path class="d-line" d="M626 340V372" marker-end="url(#ah)"/>
+            <path class="d-line" d="M134 340V392H270" marker-end="url(#ah)"/>
+            <path class="d-line" d="M270 412H200V460" marker-end="url(#ah)"/>
+            <path class="d-line" d="M380 428V460" marker-end="url(#ah)"/>
+            <path class="d-line" d="M626 428V460" marker-end="url(#ah)"/>
+            <path class="d-line" d="M380 516V548" marker-end="url(#ah)"/>
+            <path class="d-line" d="M626 516V548" marker-end="url(#ah)"/>
+          </g>
+          <!-- row 1 -->
+          <rect class="d-box" x="24" y="20" width="220" height="56" rx="10"/>
+          <text class="d-t" x="38" y="44">Designer</text><text class="d-s" x="38" y="63">Thả folder vào Drive _inbox</text>
+          <rect class="d-box" x="270" y="20" width="220" height="56" rx="10"/>
+          <text class="d-t" x="284" y="44">Team content, người duyệt</text><text class="d-s" x="284" y="63">Soạn, duyệt, xem lịch</text>
+          <rect class="d-box" x="516" y="20" width="220" height="56" rx="10"/>
+          <text class="d-t" x="530" y="44">Claude Pro/Max</text><text class="d-s" x="530" y="63">Soạn, xếp lịch, vận hành đăng</text>
+          <!-- row 2 -->
+          <rect class="d-box" x="270" y="108" width="220" height="56" rx="10"/>
+          <text class="d-t" x="284" y="132">Web app (Next.js)</text><text class="d-s" x="284" y="151">Giao diện cho cả team</text>
+          <rect class="d-box" x="516" y="108" width="220" height="56" rx="10"/>
+          <text class="d-t" x="530" y="132">MCP server</text><text class="d-s" x="530" y="151">Đăng nhập OAuth theo vai trò</text>
+          <!-- row 3 -->
+          <rect class="d-accent" x="270" y="196" width="466" height="56" rx="10"/>
+          <text class="d-t" x="284" y="220">Backend API</text><text class="d-s" x="284" y="239" style="fill:var(--ink-soft)">Engine quy tắc R01–R15 + hồ sơ định dạng TDC · tạo publish_jobs</text>
+          <!-- row 4 -->
+          <rect class="d-box" x="24" y="284" width="220" height="56" rx="10"/>
+          <text class="d-t" x="38" y="308">Secret manager</text><text class="d-s" x="38" y="327">Token Meta (khi có API)</text>
+          <rect class="d-box" x="270" y="284" width="220" height="56" rx="10"/>
+          <text class="d-t" x="284" y="308">PostgreSQL</text><text class="d-s" x="284" y="327">posts, jobs, rules, metrics</text>
+          <rect class="d-box" x="516" y="284" width="220" height="56" rx="10"/>
+          <text class="d-t" x="530" y="308">Google Drive + R2</text><text class="d-s" x="530" y="327">Gốc trên Drive, nén trên R2</text>
+          <!-- row 5 -->
+          <rect class="d-box" x="270" y="372" width="220" height="56" rx="10"/>
+          <text class="d-t" x="284" y="396">Worker (pg-boss)</text><text class="d-s" x="284" y="415">Chế độ API: đăng, CTA, verify</text>
+          <rect class="d-box" x="516" y="372" width="220" height="56" rx="10"/>
+          <text class="d-t" x="530" y="396">Claude in Chrome</text><text class="d-s" x="530" y="415">Chế độ Trình duyệt · outbox/</text>
+          <!-- row 6 -->
+          <rect class="d-box" x="24" y="460" width="220" height="56" rx="10"/>
+          <text class="d-t" x="38" y="484">Thông báo</text><text class="d-s" x="38" y="503">Telegram/Zalo: lỗi, việc tay</text>
+          <rect class="d-box" x="270" y="460" width="220" height="56" rx="10"/>
+          <text class="d-t" x="284" y="484">Meta Graph API</text><text class="d-s" x="284" y="503">Tải file qua signed URL</text>
+          <rect class="d-box" x="516" y="460" width="220" height="56" rx="10"/>
+          <text class="d-t" x="530" y="484">Meta Business Suite</text><text class="d-s" x="530" y="503">Lên lịch, Meta tự đăng</text>
+          <!-- row 7 -->
+          <rect class="d-box" x="270" y="548" width="466" height="56" rx="10"/>
+          <text class="d-t" x="284" y="572">Page Facebook + Instagram TDC</text><text class="d-s" x="284" y="591">Bài công khai · bước verify ghi permalink về database</text>
+          <!-- edge labels -->
+          <text class="d-l" x="142" y="98">giao file</text>
+          <text class="d-l" x="634" y="96">custom connector</text>
+          <text class="d-l" x="142" y="362">token</text>
+          <text class="d-l" x="388" y="360">job đến giờ</text>
+          <text class="d-l" x="634" y="360">Drive for desktop</text>
+          <!-- legend -->
+          <rect class="d-accent" x="24" y="632" width="16" height="16" rx="4"/>
+          <text class="d-l" x="48" y="644">Nơi duy nhất chứa quy tắc và ghi dữ liệu</text>
+          <text class="d-l" x="300" y="644">Cột giữa: chế độ API · Cột phải: chế độ Trình duyệt</text>
+        </svg>
+        <figcaption>Cuộn ngang trên điện thoại để xem hết sơ đồ.</figcaption>
+      </figure>
+    </section>
+
+    <section id="backend">
+      <header><span class="paren">( Bên trong Backend API )</span><h2>Một lớp service, hai cửa vào, một bộ đăng có hai tay</h2></header>
+      <p class="answer">Backend là một ứng dụng Node.js duy nhất. Web app gọi qua REST, Claude gọi qua MCP, nhưng cả hai chỉ là lớp vỏ: mọi việc thật đều đi qua cùng một lớp service, nên quy tắc và dữ liệu không thể bị đi vòng. Phần cần chạy lâu (nén video, đăng bài, kiểm tra) không chạy trong request mà được đẩy thành job cho worker.</p>
+      <figure class="diagram" style="margin:0">
+        <svg viewBox="0 0 760 540" role="img" aria-label="Các module bên trong Backend API và dữ liệu chúng ghi">
+          <defs>
+            <marker id="bh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="d-head" d="M0 0L10 5L0 10z"/></marker>
+          </defs>
+          <text class="d-l" x="24" y="40">CỬA VÀO</text>
+          <rect class="d-box" x="24" y="48" width="226" height="56" rx="10"/>
+          <text class="d-t" x="38" y="72">REST API (web app)</text><text class="d-s" x="38" y="91">/posts, /reviews, /jobs, /settings</text>
+          <rect class="d-box" x="267" y="48" width="226" height="56" rx="10"/>
+          <text class="d-t" x="281" y="72">MCP server (Claude)</text><text class="d-s" x="281" y="91">create_post_draft, validate_post…</text>
+          <rect class="d-box" x="510" y="48" width="226" height="56" rx="10"/>
+          <text class="d-t" x="524" y="72">Sự kiện &amp; lịch nền</text><text class="d-s" x="524" y="91">Drive watcher, pg-boss, cron đêm</text>
+
+          <path class="d-line" d="M137 104V128" marker-end="url(#bh)"/>
+          <path class="d-line" d="M380 104V128" marker-end="url(#bh)"/>
+          <path class="d-line" d="M623 104V128" marker-end="url(#bh)"/>
+          <rect class="d-box" x="24" y="128" width="712" height="40" rx="10"/>
+          <text class="d-t" x="38" y="153">Xác thực &amp; phân quyền</text><text class="d-s" x="236" y="147">Better Auth · vai trò content / duyệt / admin</text><text class="d-s" x="236" y="162">Claude qua OAuth mang đúng quyền người dùng · job nền: vai trò hệ thống</text>
+
+          <path class="d-line" d="M380 168V192" marker-end="url(#bh)"/>
+          <text class="d-l" x="24" y="186">LỚP SERVICE · nơi duy nhất ghi dữ liệu</text>
+          <rect class="d-accent" x="24" y="192" width="712" height="96" rx="10"/>
+          <rect class="d-box" x="36" y="204" width="108" height="72" rx="8"/>
+          <text class="d-t" x="46" y="226">Nhận file</text><text class="d-s" x="46" y="244">Drive API</text><text class="d-s" x="46" y="260">R05, R10, spec</text>
+          <rect class="d-box" x="154" y="204" width="108" height="72" rx="8"/>
+          <text class="d-t" x="164" y="226">Bài &amp; bản sửa</text><text class="d-s" x="164" y="244">posts, revisions</text><text class="d-s" x="164" y="260">ai sửa, lúc nào</text>
+          <rect class="d-box" x="272" y="204" width="108" height="72" rx="8"/>
+          <text class="d-t" x="282" y="226">Engine quy tắc</text><text class="d-s" x="282" y="244">R01–R15, hồ sơ</text><text class="d-s" x="282" y="260">định dạng TDC</text>
+          <rect class="d-box" x="390" y="204" width="108" height="72" rx="8"/>
+          <text class="d-t" x="400" y="226">Lập lịch job</text><text class="d-s" x="400" y="244">publish_jobs</text><text class="d-s" x="400" y="260">idempotency</text>
+          <rect class="d-box" x="508" y="204" width="108" height="72" rx="8"/>
+          <text class="d-t" x="518" y="226">Kiểm tra</text><text class="d-s" x="518" y="244">6 lỗi mục 5</text><text class="d-s" x="518" y="260">→ việc làm tay</text>
+          <rect class="d-box" x="626" y="204" width="98" height="72" rx="8"/>
+          <text class="d-t" x="636" y="226">Thông báo</text><text class="d-s" x="636" y="244">Telegram/Zalo</text><text class="d-s" x="636" y="260">+ audit</text>
+
+          <path class="d-line" d="M257 288V312" marker-end="url(#bh)"/>
+          <path class="d-line" d="M623 288V312" marker-end="url(#bh)"/>
+          <rect class="d-box" x="24" y="312" width="466" height="84" rx="10"/>
+          <text class="d-t" x="38" y="334">Publisher (interface) · chọn theo publish_mode của tài khoản hoặc của bài</text>
+          <rect class="d-box" x="38" y="346" width="214" height="40" rx="8"/>
+          <text class="d-t" x="48" y="363">BrowserPublisher</text><text class="d-s" x="48" y="379">đợt Claude · Business Suite</text>
+          <rect class="d-box" x="264" y="346" width="214" height="40" rx="8"/>
+          <text class="d-t" x="274" y="363">ApiPublisher</text><text class="d-s" x="274" y="379">worker · Graph API · signed URL R2</text>
+          <rect class="d-box" x="510" y="312" width="226" height="84" rx="10"/>
+          <text class="d-t" x="524" y="334">Media worker</text><text class="d-s" x="524" y="353">Tải gốc từ Drive → sharp / ffmpeg</text><text class="d-s" x="524" y="369">→ bản nén lên R2, hash ảnh (R10)</text><text class="d-s" x="524" y="385">Chạy trong job, không trong request</text>
+
+          <path class="d-line" d="M199 396V428" marker-end="url(#bh)"/>
+          <path class="d-line" d="M445 396V428" marker-end="url(#bh)"/>
+          <path class="d-line" d="M623 396V428" marker-end="url(#bh)"/>
+          <text class="d-l" x="24" y="420">DỮ LIỆU</text>
+          <rect class="d-lane" x="24" y="428" width="712" height="88" rx="10"/>
+          <rect class="d-box" x="36" y="440" width="330" height="64" rx="8"/>
+          <text class="d-t" x="46" y="461">PostgreSQL · 7 schema</text><text class="d-s" x="46" y="479">content · workflow · publishing · rules</text><text class="d-s" x="46" y="495">analytics · audit · ml · hàng đợi pg-boss</text>
+          <rect class="d-box" x="378" y="440" width="112" height="64" rx="8"/>
+          <text class="d-t" x="388" y="461">R2</text><text class="d-s" x="388" y="479">bản nén, ảnh</text><text class="d-s" x="388" y="495">chụp, backup</text>
+          <rect class="d-box" x="502" y="440" width="112" height="64" rx="8"/>
+          <text class="d-t" x="512" y="461">Google Drive</text><text class="d-s" x="512" y="479">bản gốc, chỉ</text><text class="d-s" x="512" y="495">đọc + di chuyển</text>
+          <rect class="d-box" x="626" y="440" width="98" height="64" rx="8"/>
+          <text class="d-t" x="636" y="461">Secret</text><text class="d-s" x="636" y="479">token Meta,</text><text class="d-s" x="636" y="495">Drive, OAuth</text>
+          <text class="d-l" x="24" y="534">Khối nền màu: mọi lệnh ghi đi qua đây. Mũi tên: hướng gọi chính.</text>
+        </svg>
+        <figcaption>Cuộn ngang trên điện thoại để xem hết sơ đồ.</figcaption>
+      </figure>
+
+      <h3>Luồng xử lý một bài, từ folder đến đã kiểm tra</h3>
+      <p>Mỗi bước ghi rõ module nào làm, ghi vào bảng nào, và khác nhau ra sao giữa hai chế độ. Mã bước trùng với nhật ký trong tab <a href="mockup.html">Giao diện</a>.</p>
+      <div class="tbl wide"><table>
+        <thead><tr><th>Bước</th><th>Kích hoạt</th><th>Module làm gì</th><th>Ghi vào</th><th>Theo chế độ</th></tr></thead>
+        <tbody>
+          <tr><td>1 · Nhận folder</td><td>Drive watcher thấy folder mới trong <code>_inbox/</code> (push notification, dự phòng quét mỗi 2 phút)</td><td><strong>Nhận file</strong> liệt kê file, tính <code>sha256</code> khi tải stream, đọc kích thước/tỉ lệ/codec, chạy R05, R10, kiểm tra thông số. Sai thì báo designer, folder giữ nguyên trong <code>_inbox/</code>.</td><td><code>media_assets</code> (trạng thái nhận), <code>audit.events</code></td><td>—</td></tr>
+          <tr><td>2 · Chuẩn hoá</td><td>Bước 1 đạt</td><td>Cấp mã bài theo dãy số của tháng, đổi tên folder, chuyển vào <code>năm/tháng/</code> qua Drive API; tạo bài nháp gắn với folder. Bản gốc không bị sửa.</td><td><code>posts</code> (nháp, Drive folder ID), <code>post_media</code> (position)</td><td>—</td></tr>
+          <tr><td>3 · Tạo bản nén</td><td>Job <code>media.render</code></td><td><strong>Media worker</strong> tải bản gốc từ Drive, tạo ig_feed / fb_feed / reel / cover / thumb, đẩy lên R2, tính hash ảnh để so trùng.</td><td><code>media_renditions</code> (R2 key, kích thước)</td><td>Trình duyệt: Google Drive for desktop đồng bộ folder về máy chạy Chrome</td></tr>
+          <tr><td>4 · Soạn</td><td>Content trên web, hoặc Claude qua <code>create_post_draft</code> / <code>update_post_draft</code></td><td><strong>Bài &amp; bản sửa</strong> lưu từng bản sửa kèm tác giả (người hay Claude). Mỗi lần lưu, <strong>Engine quy tắc</strong> chạy toàn bộ R01–R15 theo hồ sơ định dạng và trả về cần xác nhận / cảnh báo / gợi ý kèm cách sửa.</td><td><code>post_revisions</code>, <code>rule_evaluations</code> (kết quả và gợi ý có được chấp nhận không)</td><td>Giới hạn R03, R06, R09 đổi theo <code>publish_mode</code></td></tr>
+          <tr><td>5 · Gửi duyệt</td><td>Nút Gửi duyệt hoặc <code>submit_for_approval</code></td><td>Engine chạy lại. Còn vấn đề "cần xác nhận" chưa ai xác nhận thì trả về danh sách đó (HTTP 409 / lỗi MCP kèm mã quy tắc, cách xử lý có thể chọn); người gửi xác nhận kèm lý do rồi gửi lại. Claude không tự xác nhận mà hỏi người trong chat. Xong thì tạo yêu cầu duyệt và báo người duyệt.</td><td><code>reviews</code> (chờ), <code>rule_overrides</code>, <code>audit.events</code></td><td>—</td></tr>
+          <tr><td>6 · Duyệt</td><td>Người duyệt xác nhận lại từng vấn đề rồi bấm Duyệt, hoặc <code>approve_post</code> (chỉ vai trò Người duyệt, Admin)</td><td><strong>Lập lịch job</strong> sinh một job cho mỗi nền tảng và hành động: đăng FB, đăng IG, comment dưới bài FB, comment dưới bài IG, Story, kiểm tra. Mỗi job có <code>run_at</code> và <code>idempotency_key</code>. Ngay trước khi đăng, engine chạy lại; vấn đề mới chưa xác nhận thì job dừng ở "Chờ xác nhận" và báo người duyệt.</td><td><code>reviews</code> (đã duyệt), <code>rule_overrides</code> (xác nhận lại), <code>publish_jobs</code></td><td>API: job ở trạng thái chờ giờ · Trình duyệt: job ở trạng thái chờ đợt</td></tr>
+          <tr><td>7 · Đăng</td><td>API: pg-boss đến <code>run_at</code> · Trình duyệt: người ra lệnh, Claude gọi <code>get_publish_batch</code></td><td><strong>ApiPublisher</strong>: cấp signed URL R2 (hạn 1 giờ) → Graph API (FB: photos chưa đăng → feed; IG: container → publish; Reels: upload 3 bước) → lưu ID bài. Lỗi thì thử lại 3 lần với khoảng cách tăng dần, rồi báo. <strong>BrowserPublisher</strong>: trả danh sách bài kèm caption, thứ tự file, giờ; Claude thao tác Business Suite rồi gọi <code>report_scheduled</code> kèm ảnh chụp màn hình (lưu R2).</td><td><code>job_attempts</code> (mỗi lần thử, phản hồi Meta nguyên văn), <code>platform_posts</code> (ID bài)</td><td>Bài trộn ảnh + video, IG có nhạc / caption từng ảnh → job chuyển thành việc làm tay ở cả hai chế độ</td></tr>
+          <tr><td>8 · Comment dưới bài</td><td>API: ngay khi bài lên · Trình duyệt: trong đợt kiểm tra</td><td>FB: <code>/{post-id}/comments</code> bằng Page token. IG: <code>/{ig-media-id}/comments</code>. Ở chế độ Trình duyệt, Claude comment bằng tài khoản TDC (FB trên Page, IG trên instagram.com) rồi báo lại. Trường để trống thì không comment.</td><td><code>publish_jobs</code> (xong), <code>job_attempts</code></td><td>—</td></tr>
+          <tr><td>9 · Kiểm tra sau đăng</td><td>API: job <code>verify.post</code> sau 5 phút · Trình duyệt: Claude gọi <code>get_verify_batch</code> sau giờ đăng</td><td><strong>Kiểm tra</strong> đọc lại bài (Graph API hoặc Claude mở bài): có lên không, caption đủ không, số file, cover trên lưới IG, không trùng bài, không trùng Story. Lệch thì tạo việc làm tay và báo.</td><td><code>platform_posts</code> (permalink), <code>posts</code> (đã kiểm tra / cần người), <code>manual_tasks</code></td><td>—</td></tr>
+          <tr><td>10 · Việc làm tay</td><td>Sinh ra ở bước 7 hoặc 9</td><td><strong>Thông báo</strong> gửi Telegram/Zalo kèm các bước và nội dung sao chép sẵn. Người làm xong bấm Xong trên web hoặc <code>complete_manual_task</code>.</td><td><code>manual_tasks</code>, <code>audit.events</code></td><td>—</td></tr>
+          <tr><td>11 · Số liệu</td><td>Job <code>metrics.snapshot</code> ở mốc 1 giờ, 24 giờ, 7 ngày</td><td>API: đọc insights từ Graph API. Trình duyệt: Claude đọc trên Business Suite và gọi <code>record_metrics</code>.</td><td><code>metric_snapshots</code></td><td>—</td></tr>
+          <tr><td>12 · Hằng đêm</td><td>Cron 02:00</td><td>Backup PostgreSQL lên R2; đồng bộ bản gốc mới từ Drive sang R2 Infrequent Access; đối chiếu <code>sha256</code> một phần file; xuất bộ dữ liệu training khi có yêu cầu.</td><td><code>dataset_exports</code>, <code>audit.events</code></td><td>—</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Ba kiểu cửa vào gọi cùng một service</h3>
+      <div class="tbl wide"><table>
+        <thead><tr><th>Service</th><th>REST (web app)</th><th>MCP tool (Claude)</th><th>Job nền (pg-boss)</th></tr></thead>
+        <tbody>
+          <tr><td>Nhận file</td><td><code>GET /inbox</code>, <code>POST /inbox/:folder/accept</code></td><td><code>list_assets</code></td><td><code>intake.scan</code>, <code>media.render</code></td></tr>
+          <tr><td>Bài &amp; bản sửa</td><td><code>POST /posts</code>, <code>PATCH /posts/:id</code>, <code>GET /posts/:id/revisions</code></td><td><code>get_writing_context</code>, <code>create_post_draft</code>, <code>update_post_draft</code></td><td>—</td></tr>
+          <tr><td>Engine quy tắc</td><td><code>POST /posts/:id/validate</code>, <code>GET /slots</code></td><td><code>validate_post</code>, <code>suggest_slots</code>, <code>get_calendar</code></td><td>Chạy lại khi <code>rule_settings</code> đổi</td></tr>
+          <tr><td>Duyệt</td><td><code>POST /posts/:id/submit</code>, <code>POST /reviews/:id/approve</code></td><td><code>submit_for_approval</code>, <code>approve_post</code></td><td>—</td></tr>
+          <tr><td>Publisher</td><td><code>GET /jobs</code>, <code>POST /jobs/:id/retry</code></td><td><code>get_publish_batch</code>, <code>report_scheduled</code>, <code>report_blocked</code>, <code>retry_job</code></td><td><code>publish.fb</code>, <code>publish.ig</code>, <code>publish.comment</code></td></tr>
+          <tr><td>Kiểm tra</td><td><code>GET /posts/:id/verification</code></td><td><code>get_verify_batch</code>, <code>report_published</code>, <code>record_metrics</code></td><td><code>verify.post</code>, <code>metrics.snapshot</code></td></tr>
+          <tr><td>Việc làm tay &amp; thông báo</td><td><code>GET /manual-tasks</code>, <code>POST /manual-tasks/:id/done</code></td><td><code>list_manual_tasks</code>, <code>complete_manual_task</code></td><td><code>notify.send</code></td></tr>
+          <tr><td>Quản trị</td><td><code>GET/PUT /settings</code>, <code>GET /audit</code></td><td>—</td><td><code>backup.nightly</code>, <code>sync.originals</code>, <code>dataset.export</code></td></tr>
+        </tbody>
+      </table></div>
+      <p>Quy ước chung: mọi lỗi trả về kèm mã quy tắc (ví dụ <code>R07</code>) và gợi ý sửa, để web app và Claude hiển thị giống nhau. Mọi lệnh ghi đều kèm <code>actor</code> (người, "Claude thay mặt người X", hoặc "hệ thống") và được ghi vào <code>audit.events</code> trong cùng một giao dịch với dữ liệu chính.</p>
+    </section>
+
+    <section id="rule-engine">
+      <header><span class="paren">( Engine quy tắc )</span><h2>Một hàm thuần: nhận bài và bối cảnh, trả về việc phải làm</h2></header>
+      <p class="answer">Engine quy tắc là trái tim của hệ thống, nên được tách thành một gói riêng (<code>@tdc/rules</code>) không gọi mạng, không ghi database. Web app, MCP server và worker đều gọi đúng gói này, nên không có đường nào đi vòng. Quy tắc được định nghĩa bằng dữ liệu, tham số nằm trong <code>rule_settings</code>, nên đổi ngưỡng hay thêm quy tắc mới không phải sửa lõi.</p>
+      <figure class="diagram" style="margin:0">
+        <svg viewBox="0 0 760 500" role="img" aria-label="Mô hình engine quy tắc: đầu vào, năm bước xử lý, đầu ra và vòng phản hồi">
+          <defs>
+            <marker id="rh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="d-head" d="M0 0L10 5L0 10z"/></marker>
+          </defs>
+          <text class="d-l" x="24" y="40">ĐẦU VÀO</text>
+          <rect class="d-box" x="24" y="48" width="169" height="72" rx="10"/>
+          <text class="d-t" x="36" y="70">Bài đang xét</text><text class="d-s" x="36" y="88">file, caption, nền tảng,</text><text class="d-s" x="36" y="104">giờ, cover, nhạc</text>
+          <rect class="d-box" x="205" y="48" width="169" height="72" rx="10"/>
+          <text class="d-t" x="217" y="70">Hồ sơ định dạng TDC</text><text class="d-s" x="217" y="88">đặt tên, caption, cover…</text><text class="d-s" x="217" y="104">có phiên bản (v1 → v2)</text>
+          <rect class="d-box" x="386" y="48" width="169" height="72" rx="10"/>
+          <text class="d-t" x="398" y="70">Tham số rule_settings</text><text class="d-s" x="398" y="88">khung giờ, 1h30, 20 phút,</text><text class="d-s" x="398" y="104">2.200, 5, 10/20</text>
+          <rect class="d-box" x="567" y="48" width="169" height="72" rx="10"/>
+          <text class="d-t" x="579" y="70">Bối cảnh</text><text class="d-s" x="579" y="88">lịch Page + hệ thống, giờ</text><text class="d-s" x="579" y="104">hiện tại, chế độ, 90 ngày</text>
+
+          <path class="d-line" d="M108 120V144" marker-end="url(#rh)"/>
+          <path class="d-line" d="M289 120V144" marker-end="url(#rh)"/>
+          <path class="d-line" d="M470 120V144" marker-end="url(#rh)"/>
+          <path class="d-line" d="M651 120V144" marker-end="url(#rh)"/>
+
+          <rect class="d-accent" x="24" y="144" width="712" height="150" rx="10"/>
+          <text class="d-l" x="36" y="166" style="fill:var(--ink)">ENGINE QUY TẮC · hàm thuần, không gọi mạng · cùng một mã cho web, MCP và worker</text>
+          <rect class="d-box" x="36" y="176" width="126" height="72" rx="8"/>
+          <text class="d-t" x="46" y="198">1 Chuẩn hoá</text><text class="d-s" x="46" y="216">loại bài, thứ tự,</text><text class="d-s" x="46" y="232">ký tự, hashtag, hash</text>
+          <path class="d-line" d="M162 212H174" marker-end="url(#rh)"/>
+          <rect class="d-box" x="174" y="176" width="126" height="72" rx="8"/>
+          <text class="d-t" x="184" y="198">2 Chọn quy tắc</text><text class="d-s" x="184" y="216">theo loại bài, nền</text><text class="d-s" x="184" y="232">tảng, chế độ, lúc</text>
+          <path class="d-line" d="M300 212H312" marker-end="url(#rh)"/>
+          <rect class="d-box" x="312" y="176" width="126" height="72" rx="8"/>
+          <text class="d-t" x="322" y="198">3 Chạy quy tắc</text><text class="d-s" x="322" y="216">R01–R15, mỗi quy</text><text class="d-s" x="322" y="232">tắc một kết quả</text>
+          <path class="d-line" d="M438 212H450" marker-end="url(#rh)"/>
+          <rect class="d-box" x="450" y="176" width="126" height="72" rx="8"/>
+          <text class="d-t" x="460" y="198">4 Sinh gợi ý sửa</text><text class="d-s" x="460" y="216">giờ trống, rút gọn,</text><text class="d-s" x="460" y="232">đổi chế độ, tên file</text>
+          <path class="d-line" d="M576 212H588" marker-end="url(#rh)"/>
+          <rect class="d-box" x="588" y="176" width="126" height="72" rx="8"/>
+          <text class="d-t" x="598" y="198">5 Tổng hợp mức</text><text class="d-s" x="598" y="216">xác nhận › cảnh báo ›</text><text class="d-s" x="598" y="232">gợi ý › tự động</text>
+          <text class="d-s" x="36" y="276" style="fill:var(--ink)">Chạy ở 5 thời điểm: nhận file · lưu nháp · gửi duyệt · trước khi đăng · sau khi đăng (cùng một định nghĩa quy tắc)</text>
+
+          <path class="d-line" d="M380 294V318" marker-end="url(#rh)"/>
+          <text class="d-l" x="24" y="312">ĐẦU RA</text>
+          <rect class="d-box" x="24" y="318" width="169" height="88" rx="10"/>
+          <text class="d-t" x="36" y="340">Kết quả hiển thị</text><text class="d-s" x="36" y="358">mã R, mức, lời giải thích,</text><text class="d-s" x="36" y="374">nút sửa một chạm; web và</text><text class="d-s" x="36" y="390">Claude thấy giống nhau</text>
+          <rect class="d-box" x="205" y="318" width="169" height="88" rx="10"/>
+          <text class="d-t" x="217" y="340">Quyết định tự động</text><text class="d-s" x="217" y="358">R06 giới hạn theo chế độ</text><text class="d-s" x="217" y="374">R08 cover = frame đầu</text><text class="d-s" x="217" y="390">R09 tạo việc làm tay</text>
+          <rect class="d-box" x="386" y="318" width="169" height="88" rx="10"/>
+          <text class="d-t" x="398" y="340">Xác nhận 2 lớp</text><text class="d-s" x="398" y="358">người gửi ghi lý do,</text><text class="d-s" x="398" y="374">người duyệt xác nhận</text><text class="d-s" x="398" y="390">lại; lưu rule_overrides</text>
+          <rect class="d-box" x="567" y="318" width="169" height="88" rx="10"/>
+          <text class="d-t" x="579" y="340">rule_evaluations</text><text class="d-s" x="579" y="358">mỗi lần chạy: đầu vào,</text><text class="d-s" x="579" y="374">kết quả, gợi ý nào được</text><text class="d-s" x="579" y="390">chấp nhận</text>
+
+          <path class="d-dash" d="M651 406V432" marker-end="url(#rh)"/>
+          <rect class="d-lane" x="24" y="432" width="712" height="40" rx="10"/>
+          <text class="d-t" x="36" y="451">Vòng phản hồi</text><text class="d-s" x="150" y="451">thống kê rule_evaluations → chỉnh tham số, nâng hồ sơ định dạng lên v2, bộ dữ liệu training</text>
+          <text class="d-s" x="150" y="466">(quy tắc nào hay bị vi phạm, gợi ý nào hay được chấp nhận, người hay bỏ qua cảnh báo nào)</text>
+          <path class="d-dash" d="M24 452H12V84H22" marker-end="url(#rh)"/>
+        </svg>
+        <figcaption>Nét đứt: vòng phản hồi từ kết quả chạy quay lại tham số và hồ sơ. Cuộn ngang trên điện thoại để xem hết.</figcaption>
+      </figure>
+
+      <h3>Một quy tắc được định nghĩa bằng dữ liệu</h3>
+      <p>Mỗi quy tắc là một bản ghi trong <code>rule_definitions</code> với các trường dưới đây. Phần lõi của engine chỉ biết đọc định nghĩa và chạy; thêm quy tắc mới là thêm một định nghĩa cùng bộ test, không chạm vào lõi.</p>
+      <div class="tbl wide"><table>
+        <thead><tr><th>Trường</th><th>Ý nghĩa</th><th>Ví dụ (R06)</th></tr></thead>
+        <tbody>
+          <tr><td><code>code</code>, <code>name</code>, <code>source</code></td><td>Mã, tên, mục trong báo cáo gốc</td><td>R06 · Số file carousel IG · mục 2, 4.1</td></tr>
+          <tr><td><code>stages</code></td><td>Thời điểm chạy</td><td>lưu nháp, gửi duyệt, trước khi đăng</td></tr>
+          <tr><td><code>applies_to</code></td><td>Điều kiện để quy tắc có hiệu lực: nền tảng, loại bài, chế độ đăng</td><td>IG · carousel, carousel video · mọi chế độ</td></tr>
+          <tr><td><code>inputs</code></td><td>Dữ liệu cần: từ bài, hồ sơ, tham số hay bối cảnh</td><td>số file; <code>settings.carousel_max[mode]</code>; <code>publish_mode</code></td></tr>
+          <tr><td><code>check</code></td><td>Biểu thức hoặc hàm nhỏ trả về đạt / không đạt kèm số liệu</td><td><code>files &lt;= max</code></td></tr>
+          <tr><td><code>level</code></td><td>Mức khi không đạt: cần xác nhận · cảnh báo · gợi ý · tự động. Không có mức chặn</td><td>cần xác nhận</td></tr>
+          <tr><td><code>if_confirm</code>, <code>choices</code></td><td>Hệ thống làm gì nếu người vẫn xác nhận; các cách xử lý cho người chọn khi Meta không nhận nguyên trạng</td><td>chuyển sang API · đăng IG bằng app · chỉ đăng 10 tấm đầu</td></tr>
+          <tr><td><code>message</code></td><td>Lời hiển thị, có chỗ điền số liệu, viết cho content đọc</td><td>"Carousel IG có {n} file, vượt giới hạn {max} của chế độ {mode}."</td></tr>
+          <tr><td><code>fixes</code></td><td>Cách sửa engine tự sinh, mỗi cách có điều kiện</td><td>đổi sang API nếu n ≤ 20 · tách thành 2 bài</td></tr>
+          <tr><td><code>params</code></td><td>Tham số đọc từ <code>rule_settings</code>, admin đổi được</td><td><code>carousel_max = { trình_duyệt: 10, api: 20 }</code></td></tr>
+          <tr><td><code>version</code>, <code>tests</code></td><td>Phiên bản gắn với hồ sơ định dạng; bộ bài thử (test case) phải đạt / phải cần xác nhận</td><td>v1 · 3 bài đạt, 2 bài cần xác nhận</td></tr>
+        </tbody>
+      </table></div>
+<pre>code: R06
+name: Số file carousel IG
+source: "Flow 28.10.2026, mục 2 và 4.1"
+stages: [luu_nhap, gui_duyet, truoc_khi_dang]
+applies_to: { platform: IG, post_type: [carousel, carousel_video] }
+inputs: [post.files, settings.carousel_max, context.publish_mode]
+check: "count(post.files) <= settings.carousel_max[context.publish_mode]"
+level: can_xac_nhan
+message: "Carousel IG có {n} file, vượt giới hạn {max} của chế độ {mode}."
+if_confirm: "Meta không nhận quá {max} tấm ở chế độ này, nên cần chọn một cách xử lý."
+choices:
+  - { kind: doi_che_do, to: api, when: "mode == trinh_duyet && n <= settings.carousel_max.api" }
+  - { kind: dang_bang_app, when: "n <= 20" }
+  - { kind: chi_dang_dau, n: "{max}" }
+fixes:
+  - { kind: tach_bai }
+params: { carousel_max: { trinh_duyet: 10, api: 20 } }
+version: 1</pre>
+      <p>Quy tắc có thể "nặng" hơn một biểu thức (R10 so hash ảnh, R11 so caption) thì phần tính toán nằm ở bước 1 Chuẩn hoá, còn định nghĩa vẫn chỉ là so sánh kết quả với ngưỡng. Engine không chặn: vấn đề nghiêm trọng là "cần xác nhận", người gửi ghi lý do, người duyệt xác nhận lại, mỗi lần lưu một dòng <code>rule_overrides</code>. Vì người được phép vượt quy tắc, các quy tắc nghiệp vụ (1h30, độ dài caption…) không đặt thành ràng buộc cứng trong PostgreSQL; database chỉ giữ ràng buộc toàn vẹn dữ liệu.</p>
+
+      <h3>Toàn bộ quy tắc theo thời điểm chạy</h3>
+      <div class="tbl wide"><table>
+        <thead><tr><th>Thời điểm</th><th>Quy tắc</th><th>Đầu vào cần</th><th>Gợi ý sửa engine sinh ra</th></tr></thead>
+        <tbody>
+          <tr><td>Nhận file (Drive <code>_inbox</code>)</td><td>R05 thứ tự file · R10 file trùng · thông số ảnh/video theo hồ sơ</td><td>Danh sách file, sha256, hash ảnh, kích thước, codec</td><td>Số nào thiếu hoặc trùng; bài cũ đã dùng file này; thông số cần đổi</td></tr>
+          <tr><td>Lưu nháp, gửi duyệt</td><td>R01 khung giờ · R02 cách 1h30 · R03 cách hiện tại · R04 trùng lịch Page · R06 số file IG · R07 caption, tiêu đề Reels · R08 cover · R09 chế độ làm được không · R11 caption trùng · R12 hai mục riêng · R14 phải duyệt</td><td>Bài, hồ sơ, tham số, lịch (hệ thống + Page), giờ hiện tại, chế độ, caption 90 ngày</td><td>3 giờ trống hợp lệ; Claude rút gọn caption; dùng frame đầu làm cover; đổi chế độ; tạo việc làm tay</td></tr>
+          <tr><td>Ngay trước khi đăng</td><td>Chạy lại toàn bộ với giờ thật và lịch mới nhất; R03 quyết định lên lịch hay đăng ngay; R12 kiểm tra "Chia sẻ lên Facebook" đã tắt</td><td>Như trên, tại thời điểm đợt đăng</td><td>Hoãn sang đợt sau nếu lịch đã đổi; chuyển bài sang chờ đến giờ</td></tr>
+          <tr><td>Sau khi đăng</td><td>R15 sáu điểm kiểm tra của mục 5 · R13 Story trùng</td><td>Bài thật trên Meta (Graph API hoặc Claude đọc), permalink, Story hiện có</td><td>Việc làm tay: đăng lại bằng app IG, chọn lại Ảnh bìa, bỏ qua Story đã có</td></tr>
+          <tr><td>Khi đổi tham số hoặc hồ sơ</td><td>Chạy lại cho mọi bài chưa đăng</td><td>Tham số mới</td><td>Danh sách bài bị ảnh hưởng để content xem lại</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Nguyên tắc để engine dễ sửa, dễ test</h3>
+      <ul>
+        <li><strong>Hàm thuần:</strong> cùng đầu vào luôn cho cùng kết quả; lịch, giờ hiện tại, chế độ được truyền vào chứ engine không tự đi lấy. Nhờ vậy test được bằng bài cũ mà không cần Meta hay database.</li>
+        <li><strong>Định nghĩa bằng dữ liệu, tham số ngoài code:</strong> admin đổi ngưỡng trong Cài đặt, engine chạy lại ngay cho mọi bài chưa đăng.</li>
+        <li><strong>Mỗi quy tắc có bộ test từ bài thật:</strong> trước khi qua Cổng 2 của Roadmap, chạy engine trên một tháng bài cũ; mọi lỗi team từng gặp trong mục 5 phải bị bắt, mọi bài đã đăng tốt phải đạt.</li>
+        <li><strong>Phiên bản đi cùng hồ sơ định dạng:</strong> hồ sơ lên v2 sau buổi họp content thì bộ quy tắc cũng ghi v2; <code>rule_evaluations</code> lưu kèm phiên bản để so sánh trước sau.</li>
+        <li><strong>Cùng một lời cho mọi cửa:</strong> web app, Claude và thông báo Telegram đều hiển thị đúng <code>message</code> và <code>fixes</code> của định nghĩa, không ai tự diễn giải lại.</li>
+        <li><strong>Gợi ý được ghi nhận có chấp nhận hay không:</strong> đây là dữ liệu training tốt nhất, vì nó cho biết người thật đồng ý hay không đồng ý với máy.</li>
+      </ul>
+    </section>
+
+    <section id="stack">
+      <header><span class="paren">( Các lớp công nghệ )</span><h2>Ít nhà cung cấp, mỗi lớp có phương án thay thế</h2></header>
+      <div class="tbl wide"><table>
+        <thead><tr><th>Lớp</th><th>Đề xuất</th><th>Vì sao</th><th>Thay thế</th></tr></thead>
+        <tbody>
+          <tr><td>Web app</td><td>Next.js (App Router) + Tailwind CSS + shadcn/ui</td><td>Nền tốt cho design system TDC; Claude Code viết tốt stack này</td><td>Vite + React</td></tr>
+          <tr><td>Database</td><td>PostgreSQL tự chạy trên VPS, backup mỗi đêm lên R2</td><td>Chủ động cấu trúc và dữ liệu training; dùng được pgvector</td><td>Supabase (chỉ database + đăng nhập)</td></tr>
+          <tr><td>ORM + migration</td><td>Drizzle ORM + drizzle-kit</td><td>Schema viết bằng code, migration có số phiên bản</td><td>Prisma</td></tr>
+          <tr><td>Đăng nhập + OAuth cho Claude</td><td>Better Auth</td><td>Một tài khoản dùng cho cả web app và luồng đăng nhập khi kết nối Claude; quyền theo vai trò content / duyệt / admin</td><td>Auth.js + thư viện OAuth riêng</td></tr>
+          <tr><td>Claude viết trong web app (tuỳ chọn, sau MVP)</td><td>Claude API gọi từ backend</td><td>Cho người không có Claude subscription; tính phí theo lượng dùng</td><td>Chỉ viết qua Claude subscription (MCP)</td></tr>
+          <tr><td>Bản gốc</td><td>Google Drive (thư mục chia sẻ <code>TDC Post/</code>), engine sắp xếp qua Drive API</td><td>Designer đã làm việc ở đó; có lịch sử phiên bản; cả team mở được</td><td>— (quyết định đã chốt)</td></tr>
+          <tr><td>Bản nén + bản sao</td><td>Cloudflare R2: Standard cho bản nén, Infrequent Access cho bản sao thứ hai của bản gốc</td><td>Meta cần link công khai ổn định (signed URL); băng thông ra miễn phí</td><td>Backblaze B2</td></tr>
+          <tr><td>Hàng đợi + hẹn giờ</td><td>pg-boss, chạy trên chính Postgres</td><td>Không thêm hệ thống mới; có thử lại và hẹn giờ</td><td>BullMQ + Redis</td></tr>
+          <tr><td>Xử lý media</td><td>sharp (ảnh), ffmpeg (video), hash hình ảnh</td><td>Bản nén, cắt cover, kiểm tra thông số, phát hiện trùng (R10)</td><td>—</td></tr>
+          <tr><td>Chế độ Trình duyệt</td><td>Claude Desktop/Code + Claude in Chrome; <code>outbox/</code> đồng bộ bằng rclone</td><td>Không cần xác thực app Meta</td><td>—</td></tr>
+          <tr><td>Chế độ API</td><td>Graph API qua <code>fetch</code>, ghim phiên bản</td><td>Rẻ, nhanh, không cần người trực</td><td>Ayrshare, Publer…</td></tr>
+          <tr><td>Agent kiểm tra (tương lai)</td><td>Playwright CLI + Chromium chạy headless trên VPS; ảnh chụp lưu R2; bảng <code>inspection_reports</code>, <code>inspection_shots</code></td><td>Bấm qua từng tấm như người xem thật; có ảnh làm bằng chứng cho người kiểm duyệt</td><td>Claude điều khiển Playwright CLI khi script gặp giao diện lạ</td></tr>
+          <tr><td>MCP server</td><td><code>@modelcontextprotocol/sdk</code>, Streamable HTTP</td><td>Đúng chuẩn custom connector của Claude</td><td>—</td></tr>
+          <tr><td>Thông báo</td><td>Telegram bot hoặc Zalo OA</td><td>Báo lỗi, nhắc đợt đăng, việc làm tay</td><td>Email</td></tr>
+          <tr><td>Hạ tầng</td><td>1 VPS ở Việt Nam (bắt đầu 2–4 vCPU, 4–8 GB RAM), Docker Compose, Caddy lo HTTPS</td><td>Một chỗ, dễ backup; ffmpeg cần CPU (xem <a href="#hosting">Chọn nơi host</a>)</td><td>VPS Singapore</td></tr>
+          <tr><td>Giám sát</td><td>Sentry + kiểm tra uptime</td><td>Biết ngay khi job hoặc server lỗi</td><td>Better Stack</td></tr>
+        </tbody>
+      </table></div>
+      <p>Chi phí: VPS Việt Nam khoảng 250.000–600.000 VND/tháng; R2 vài USD/tháng và tăng dần vì file gốc giữ vĩnh viễn (xem <a href="#kho-file">Kho file</a>); phần còn lại miễn phí hoặc có gói free. Khi chuyển sang chế độ API, hạn mức Claude dành cho việc đăng giảm gần về 0.</p>
+    </section>
+
+    <section id="hosting">
+      <header><span class="paren">( Chọn nơi host )</span><h2>VPS Việt Nam trước; đo băng thông quốc tế, chưa đạt thì chuyển Singapore</h2></header>
+      <p class="answer">App không chỉ phục vụ giao diện. Nó còn chạy worker xử lý video (tải bản gốc từ R2, nén bằng ffmpeg, đẩy lại lên R2), chạy PostgreSQL và gọi Meta. Nhiều việc trong số này đi qua đường truyền quốc tế, nên tiêu chí chính là <mark>đường truyền quốc tế ổn định</mark>, rồi mới đến giá.</p>
+      <div class="tbl wide"><table>
+        <thead><tr><th>Lựa chọn</th><th>Giá tham khảo</th><th>Ưu</th><th>Nhược</th></tr></thead>
+        <tbody>
+          <tr><td>VPS Việt Nam (Viettel IDC, BizFly Cloud, Vietnix, AZDIGI…)</td><td>Khoảng 250.000–600.000 VND/tháng cho 4 vCPU / 4 GB; Viettel IDC 4 vCPU / 16 GB khoảng 2.000.000 VND</td><td>Rẻ; gần team; trả VND, có hoá đơn; hỗ trợ tiếng Việt</td><td>Băng thông quốc tế có lúc chậm, nhất là khi cáp quang biển gặp sự cố; nhiều gói chỉ ghi băng thông trong nước</td></tr>
+          <tr><td>VPS Singapore (DigitalOcean, Vultr, Hetzner…)</td><td>DigitalOcean: 24 USD (2 vCPU / 4 GB), 48 USD (4 vCPU / 8 GB)</td><td>Đường quốc tế tốt tới Meta và R2; ổn định; kèm nhiều TB băng thông</td><td>Đắt hơn; trả USD. Hetzner đã tăng giá mạnh trong 2026 và băng thông vượt mức ở Singapore đắt</td></tr>
+          <tr><td>Vercel (chỉ web app)</td><td>Pro 20 USD/thành viên/tháng; Hobby không cho dùng thương mại</td><td>Triển khai rất tiện, có bản xem trước</td><td>Function chạy tối đa 800 giây và body tối đa 4,5 MB, nên không chạy được worker ffmpeg và không nhận upload file lớn. Vẫn phải thuê thêm database và chỗ chạy worker, nên đắt và rời rạc hơn một VPS</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note key">
+        <span class="label">( Khuyến nghị )</span>
+        <p>Thuê <strong>VPS Việt Nam</strong> của nhà cung cấp có cam kết băng thông quốc tế; bắt đầu 2 vCPU / 4 GB, nâng lên 4 vCPU / 8 GB khi lượng video tăng. Ngay tuần 1, chạy thử: tải 1 GB lên và xuống R2, gọi <code>graph.facebook.com</code> nhiều lần trong ngày. Nếu chậm hoặc chập chờn, chuyển sang VPS Singapore. Vì mọi thứ chạy bằng Docker, việc chuyển mất khoảng nửa ngày. <strong>Không dùng Vercel</strong> ở giai đoạn này: với một app nội bộ vài người dùng, Vercel không đem lại đủ giá trị để bù cho việc phải tách thêm database và worker.</p>
+      </div>
+      <p>Designer thả file vào Google Drive như thường lệ; worker tải bản gốc từ Drive về VPS để tạo bản nén rồi đẩy lên R2. Cả Drive lẫn R2 đều ở nước ngoài, nên băng thông quốc tế của VPS là tiêu chí quan trọng nhất khi chọn nhà cung cấp.</p>
+      <p class="sources">Nguồn: <a href="https://vercel.com/pricing" target="_blank" rel="noopener">Vercel pricing</a> · <a href="https://vercel.com/docs/functions/limitations" target="_blank" rel="noopener">Vercel Functions limits</a> · <a href="https://www.digitalocean.com/pricing/droplets" target="_blank" rel="noopener">DigitalOcean Droplets</a> · <a href="https://www.whtop.com/plans/viettelidc.com.vn/147283" target="_blank" rel="noopener">Viettel IDC T2.Gen 04</a> · <a href="https://bizflycloud.vn/en/cloud-vps" target="_blank" rel="noopener">BizFly Cloud VPS</a> · <a href="https://findstack.com/resources/hetzner-price-increase-2026" target="_blank" rel="noopener">Hetzner tăng giá 2026</a> (giá xem ngày 30.10.2026, cần kiểm tra lại khi thuê)</p>
+    </section>
+
+    <section id="database">
+      <header><span class="paren">( Database )</span><h2>Một nguồn sự thật, chỉ thêm không sửa</h2></header>
+      <p class="answer">Web app, MCP và worker đều ghi qua cùng một lớp service; không nơi nào ghi thẳng vào database. Dữ liệu có giá trị cho training được lưu theo kiểu <mark>chỉ thêm, không sửa</mark>, nên lịch sử không bao giờ bị ghi đè.</p>
+      <h3>8 nguyên tắc để database chặt và không rải rác</h3>
+      <ol class="steps">
+        <li><div>Mỗi dữ kiện nằm một chỗ (chuẩn hoá). Số tổng hợp là view, không sao chép ra bảng khác.</div></li>
+        <li><div>Database giữ toàn vẹn dữ liệu: khoá ngoại, <code>UNIQUE (post_id, position)</code> cho thứ tự file, bảng lịch sử chỉ thêm. Quy tắc nghiệp vụ (1h30, độ dài caption…) không đặt thành ràng buộc cứng vì người được phép xác nhận để vượt; engine kiểm tra và mọi lần vượt được ghi vào <code>rule_overrides</code>.</div></li>
+        <li><div>Bảng lịch sử (bản sửa, quyết định duyệt, kết quả kiểm tra, chỉ số, sự kiện) chỉ thêm dòng.</div></li>
+        <li><div>Không xoá cứng, chỉ đánh dấu <code>archived_at</code>.</div></li>
+        <li><div>ID dạng UUIDv7 (xếp được theo thời gian); giờ lưu <code>timestamptz</code> UTC, hiển thị giờ Việt Nam.</div></li>
+        <li><div>Danh mục cố định (loại bài, trạng thái, nền tảng, nhóm nội dung) là bảng tra cứu hoặc enum.</div></li>
+        <li><div>JSONB chỉ để lưu nguyên văn phản hồi từ Meta hoặc Claude, không thay cho cột.</div></li>
+        <li><div>Mọi thay đổi cấu trúc qua migration có số phiên bản; tên snake_case, bảng số nhiều, khoá ngoại <code>&lt;bảng&gt;_id</code>.</div></li>
+      </ol>
+      <h3>Các bảng theo miền</h3>
+      <div class="tbl wide"><table>
+        <thead><tr><th>Schema</th><th>Bảng</th><th>Vai trò</th><th>Giá trị cho training</th></tr></thead>
+        <tbody>
+          <tr><td><code>content</code></td><td><code>posts</code> <code>post_revisions</code> <code>post_media</code> <code>media_assets</code> <code>media_renditions</code></td><td>Bài, từng bản sửa (người hay Claude sửa), file và bản nén</td><td>Cặp "nháp → bản duyệt", ảnh/video kèm nhãn</td></tr>
+          <tr><td><code>content</code></td><td><code>campaigns</code> <code>content_pillars</code> <code>tags</code> <code>post_tags</code></td><td>Phân loại theo danh mục cố định</td><td>Nhãn để lọc, chia dữ liệu</td></tr>
+          <tr><td><code>workflow</code></td><td><code>reviews</code> <code>manual_tasks</code></td><td>Duyệt hoặc từ chối kèm lý do; việc làm tay</td><td>Dữ liệu "ưu tiên": bản nào được chọn, vì sao</td></tr>
+          <tr><td><code>publishing</code></td><td><code>social_accounts</code> <code>publish_jobs</code> <code>job_attempts</code> <code>platform_posts</code></td><td>Việc đăng, từng lần thử, bài thật trên Meta (permalink, chế độ đã dùng)</td><td>Giờ đăng thật, tỉ lệ lỗi theo chế độ</td></tr>
+          <tr><td><code>rules</code></td><td><code>format_profiles</code> <code>rule_definitions</code> <code>rule_settings</code> <code>rule_evaluations</code> <code>rule_overrides</code></td><td>Hồ sơ định dạng TDC, quy tắc, tham số, kết quả mỗi lần kiểm tra, mỗi lần người xác nhận vượt quy tắc (ai, lý do, cách xử lý, ai xác nhận lại)</td><td>Tinh chỉnh quy tắc; biết khi nào người thật bỏ qua máy</td></tr>
+          <tr><td><code>analytics</code></td><td><code>metric_snapshots</code></td><td>Reach, tương tác, lưu, chia sẻ tại mốc 1 giờ, 24 giờ, 7 ngày</td><td>Nhãn kết quả: bài nào hiệu quả</td></tr>
+          <tr><td><code>audit</code></td><td><code>events</code></td><td>Mọi hành động, ai làm, qua kênh nào (web, MCP, worker)</td><td>Truy vết nguồn gốc dữ liệu</td></tr>
+          <tr><td><code>ml</code></td><td><code>dataset_exports</code></td><td>Mỗi lần xuất: phiên bản, bộ lọc, số dòng, sha256 file JSONL trên R2</td><td>Xuất lại y hệt bộ dữ liệu cũ</td></tr>
+        </tbody>
+      </table></div>
+      <p>Vòng đời một bài: nháp → chờ duyệt → đã duyệt → đã lên lịch → đã đăng → đã kiểm tra, mỗi bước có thể rẽ sang "cần người" hoặc "lỗi". Trạng thái bài tính từ các job, không ghi tay. Dự kiến thêm pgvector để lưu embedding caption và ảnh. Comment của người ngoài là dữ liệu cá nhân, phải ẩn danh trước khi đưa vào bộ training.</p>
+    </section>
+
+    <section id="kho-file">
+      <header><span class="paren">( Kho file &amp; lưu trữ )</span><h2>Bản gốc trên Google Drive, bản nén trên R2</h2></header>
+      <p class="answer">Google Drive là nơi duy nhất giữ bản gốc: designer đã làm việc ở đó, có lịch sử phiên bản và thùng rác, cả team mở được bằng tài khoản quen. Engine giữ Drive gọn bằng cách tự chuyển mỗi folder vào đúng chỗ theo cấu trúc chuẩn. R2 chỉ giữ bản nén, vì Meta cần tải file từ một đường link công khai ổn định, điều Drive không làm được.</p>
+      <h3>Cấu trúc thư mục trên Drive</h3>
+<pre>TDC Post/                               ← thư mục chia sẻ của TDC
+  _inbox/                               ← designer thả folder bài mới vào đây
+  2026/
+    11/
+      20261104_TDC-2611-001_portfolio-k12/
+        01.jpg … 06.jpg
+        caption.md
+        post.yaml                       ← engine sinh: nền tảng, giờ, CTA, trạng thái
+      20261104_TDC-2611-002_lab-branding-reel/
+        00_cover.jpg
+        01_reel.mp4
+  _archive/                             ← bài huỷ hoặc không dùng, chuyển vào đây, không xoá</pre>
+      <ol class="steps">
+        <li><div>Designer thả folder vào <code>_inbox/</code>, file đã đánh số.</div></li>
+        <li><div>Engine (qua Drive API) phát hiện folder mới trong vài phút, kiểm tra R05, R10 và thông số file. Sai thì báo ngay và để nguyên trong <code>_inbox/</code>.</div></li>
+        <li><div>Đạt thì engine gắn mã bài, đổi tên folder theo chuẩn, chuyển vào <code>năm/tháng/</code>, ghi <code>sha256</code> và Drive file ID vào <code>media_assets</code>. Bản gốc không bị sửa, chỉ được di chuyển và đổi tên.</div></li>
+        <li><div>Worker tải bản gốc về VPS, tạo bản nén (bảng dưới), đẩy lên R2. Khi đăng, Meta tải bản nén qua signed URL của R2.</div></li>
+        <li><div>Máy chạy Chrome cho chế độ Trình duyệt dùng Google Drive for desktop để thấy ngay folder bài; không cần rclone.</div></li>
+      </ol>
+      <p>Mã bài và tên folder theo chuẩn v1 là đề xuất, chốt lại trong buổi họp với content (trang <a href="index.html#chuan-tdc">Phương án</a>).</p>
+      <h3>Một bản gốc, nhiều bản nén</h3>
+      <p>Mỗi file trên Drive là một <code>media_assets</code> (giữ nguyên từng byte, có <code>sha256</code> và Drive file ID), sinh ra nhiều <code>media_renditions</code> trên R2. Bản nén luôn tạo lại được từ bản gốc, nên R2 không cần backup.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Bản</th><th>Dùng cho</th><th>Thông số đề xuất</th></tr></thead>
+        <tbody>
+          <tr><td><code>original</code></td><td>Lưu trữ, training (trên Drive)</td><td>Giữ nguyên file</td></tr>
+          <tr><td><code>ig_feed</code></td><td>Đăng IG</td><td>JPEG sRGB, rộng 1080 px, 4:5 hoặc 1:1</td></tr>
+          <tr><td><code>fb_feed</code></td><td>Đăng FB</td><td>JPEG, cạnh dài 2048 px</td></tr>
+          <tr><td><code>reel</code></td><td>Reels FB/IG</td><td>MP4 H.264 + AAC, 1080×1920</td></tr>
+          <tr><td><code>reel_music</code></td><td>Video có nhạc ghép sẵn (FB, hoặc IG khi chọn ghép)</td><td>Như <code>reel</code>, trộn nhạc đã có quyền bằng ffmpeg theo âm lượng đã chọn; ghi <code>track_id</code> vào rendition</td></tr>
+          <tr><td><code>cover</code></td><td>Cover video</td><td>JPEG cùng tỉ lệ video</td></tr>
+          <tr><td><code>thumb</code></td><td>Xem trước trong app</td><td>WebP, cạnh dài 480 px</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Chi phí ở mức 1 TB</h3>
+      <div class="tbl wide"><table>
+        <thead><tr><th>Lựa chọn</th><th>Chi phí</th><th>Vai trò</th><th>Ghi chú</th></tr></thead>
+        <tbody>
+          <tr><td>Google Workspace Business Standard</td><td class="num">14 USD/người/tháng (trả năm), 2 TB gộp mỗi người</td><td>Bản gốc</td><td>Nếu TDC đã dùng Workspace thì gần như không thêm chi phí; dung lượng gộp cả tổ chức</td></tr>
+          <tr><td>Google One 2 TB (tài khoản cá nhân)</td><td class="num">Giá cần kiểm tra lại</td><td>Bản gốc (tạm)</td><td>Gắn với một tài khoản cá nhân, rủi ro khi người đó nghỉ; chỉ dùng nếu chưa có Workspace</td></tr>
+          <tr><td>Cloudflare R2 Standard</td><td class="num">15 USD/TB/tháng</td><td>Bản nén</td><td>Băng thông ra miễn phí; có signed URL cho Meta</td></tr>
+          <tr><td>Cloudflare R2 Infrequent Access</td><td class="num">10 USD/TB/tháng</td><td>Bản sao thứ hai của bản gốc</td><td>Đồng bộ mỗi đêm từ Drive, để không phụ thuộc một nhà cung cấp</td></tr>
+          <tr><td>Supabase Storage (Pro)</td><td class="num">≈ 45 USD/TB/tháng</td><td>Không dùng</td><td>Đắt và tính phí băng thông ra</td></tr>
+          <tr><td>Ổ đĩa VPS</td><td>Theo gói, thường 40–160 GB</td><td>Chỉ là chỗ tạm khi tạo bản nén</td><td>Không giữ file lâu dài</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note key">
+        <span class="label">( Khuyến nghị )</span>
+        <p><strong>Google Drive</strong> (tài khoản Workspace của TDC, thư mục chia sẻ <code>TDC Post/</code>) giữ toàn bộ bản gốc theo cấu trúc trên. <strong>R2</strong> giữ bản nén và một bản sao thứ hai của bản gốc ở lớp Infrequent Access. <strong>VPS</strong> chạy app, worker, MCP và PostgreSQL; database backup mỗi đêm lên R2.</p>
+      </div>
+      <h3>Giữ toàn bộ bản gốc, vĩnh viễn</h3>
+      <ul>
+        <li>Tài khoản dịch vụ của engine chỉ có quyền đọc, di chuyển và đổi tên trong <code>TDC Post/</code>; <strong>không có quyền xoá</strong>. Bài huỷ chuyển vào <code>_archive/</code>.</li>
+        <li>Drive giữ lịch sử phiên bản và thùng rác 30 ngày, nhưng vẫn cần <strong>bản sao thứ hai</strong> ở R2 Infrequent Access, đồng bộ mỗi đêm, để không phụ thuộc một nhà cung cấp và không phụ thuộc một tài khoản.</li>
+        <li>Mỗi đêm, worker đối chiếu <code>sha256</code> của một phần file ở Drive và ở R2 để phát hiện file hỏng, thiếu hoặc bị sửa.</li>
+        <li>Bản nén thì không cần giữ mãi: xoá được bất cứ lúc nào, vì luôn tạo lại được từ bản gốc.</li>
+      </ul>
+      <p><strong>Ước tính</strong> (giả định, cần số thật): 90 bài/tháng; 70% bài ảnh × 8 file × 4 MB, 30% bài video × 400 MB. Khoảng 13 GB bản gốc mỗi tháng, 160 GB mỗi năm, sau 5 năm khoảng 800 GB, vẫn nằm trong 2 TB của một tài khoản Workspace. Bản sao thứ hai trên R2 khi đó tốn khoảng 8 USD/tháng. Nếu lưu cả file nguồn PSD/AI/project dựng video thì dung lượng có thể lớn hơn nhiều lần; khi đó cần thêm người dùng Workspace để tăng dung lượng gộp, kiến trúc giữ nguyên.</p>
+      <p class="sources">Nguồn: <a href="https://knowledge.workspace.google.com/admin/getting-started/editions/business-editions" target="_blank" rel="noopener">Google Workspace Business editions</a> · <a href="https://developers.cloudflare.com/r2/pricing/" target="_blank" rel="noopener">Cloudflare R2 pricing</a> · <a href="https://supabase.com/pricing" target="_blank" rel="noopener">Supabase pricing</a> (giá xem ngày 30.10.2026)</p>
+    </section>
+
+    <section id="design-system">
+      <header><span class="paren">( Design system )</span><h2>Dựng trên design system TDC đã có</h2></header>
+      <p class="answer">TDC đã có design system "TDC Coaching": nền giấy ấm, Archivo Narrow cho tiêu đề, Arimo cho nội dung, màu LAB, nhãn trong ngoặc, đỏ chỉ dành cho thương hiệu. App đăng bài dùng lại bộ token này, chỉ thêm các component riêng cho nghiệp vụ đăng bài. Các trang tài liệu này cũng đang dùng chính bộ token đó.</p>
+      <p class="note">Bản đầy đủ (token màu, chữ, khoảng cách; component kèm trạng thái; mẫu bố cục; giọng văn; tương phản) nằm ở tab <a href="designsystem.html">Design system</a>. Mục này chỉ tóm tắt phần kỹ thuật.</p>
+      <h3>Ba nguyên tắc riêng cho app đăng bài</h3>
+      <ol class="steps">
+        <li><div>Luôn thấy bài lên nền tảng nào, bằng chế độ nào: huy hiệu FB / IG và Trình duyệt / API có ở mọi màn.</div></li>
+        <li><div>Xem trước giống hệt lúc lên thật: khung FB, khung IG, ô lưới profile IG có cover.</div></li>
+        <li><div>Mỗi trạng thái một màu và chữ cố định; "cần người" luôn nổi bật cho đến khi xử lý xong.</div></li>
+      </ol>
+      <h3>Component nghiệp vụ</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Component</th><th>Làm gì</th><th>Ở đâu</th></tr></thead>
+        <tbody>
+          <tr><td><code>FileNameCheck</code></td><td>Đối chiếu tên file với hồ sơ định dạng, đề xuất tên đúng</td><td>Nhận file</td></tr>
+          <tr><td><code>MediaOrderGrid</code></td><td>Lưới file theo số thứ tự, cảnh báo thiếu số</td><td>Soạn bài</td></tr>
+          <tr><td><code>FormatProfileEditor</code></td><td>Sửa hồ sơ định dạng TDC theo loại bài, có phiên bản</td><td>Cài đặt</td></tr>
+          <tr><td><code>CaptionEditor</code></td><td>Chia khối theo mẫu caption, đếm ký tự và hashtag, nút "Claude rút gọn"</td><td>Soạn bài</td></tr>
+          <tr><td><code>SlotPicker</code></td><td>Chọn giờ, tô khung giờ đăng và vùng cách bài khác dưới 1h30</td><td>Soạn bài</td></tr>
+          <tr><td><code>CalendarWeek</code></td><td>Lịch tuần, kéo thả đổi giờ</td><td>Lịch</td></tr>
+          <tr><td><code>PostPreview</code></td><td>Khung iPhone 390 × 844 pt dựng theo từng lớp của FB và IG: bảng tin, lưới profile 3:4, Reels, Story; tỉ lệ cắt, số dòng caption đo bằng chữ thật, vùng an toàn, đặt ảnh chụp thật lên để căn</td><td>Soạn bài, duyệt</td></tr>
+          <tr><td><code>MusicPicker</code></td><td>Chọn nhạc cho FB và IG theo khả năng từng loại bài: thư viện nhạc IG (Audio API), ghép sẵn vào video, thêm bằng app; âm lượng nhạc và âm gốc</td><td>Soạn bài</td></tr>
+          <tr><td><code>RuleResult</code> + <code>ConfirmIssues</code></td><td>Cần xác nhận / Cảnh báo / Gợi ý theo R01–R15; hộp xác nhận có lựa chọn xử lý và lý do bắt buộc</td><td>Soạn bài, duyệt</td></tr>
+          <tr><td><code>JobTimeline</code></td><td>Các job của một bài và trạng thái từng job</td><td>Chi tiết bài</td></tr>
+          <tr><td><code>ManualTaskCard</code></td><td>Việc làm tay, kèm hướng dẫn từng bước lấy từ flow</td><td>Trang chủ</td></tr>
+          <tr><td><code>PlatformBadge</code> · <code>ModeBadge</code> · <code>StatusChip</code></td><td>Huy hiệu nền tảng, chế độ, trạng thái</td><td>Mọi nơi</td></tr>
+        </tbody>
+      </table></div>
+      <p><strong>Màn hình MVP:</strong> Lịch · Soạn bài · Hàng chờ duyệt · Kho media · Việc cần làm tay · Nhật ký lỗi · Cài đặt (quy tắc, hồ sơ định dạng). Thuật ngữ giao diện theo bảng ở mục 6 của bản flow: giữ caption, cover, carousel, Reels, Story, hashtag; tên nút bằng tiếng Việt.</p>
+    </section>
+
+    <div class="next-page"><span class="label">Quay lại</span><a href="index.html">Phương án</a></div>
+  </main>
+</div>
+
+<footer class="foot"><span>TDC Post · Tech stack · 30.10.2026</span><span><a href="index.html">Phương án</a> · <a href="roadmap.html">Roadmap</a> · Tech stack · <a href="designsystem.html">Design system</a> · <a href="mockup.html">Giao diện</a> · <a href="trienkhai.html">Triển khai</a> · <a href="huongdan.html">Hướng dẫn</a></span></footer>
+</body>
+</html>

@@ -1,0 +1,2443 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>TDC Post · Giao diện</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;500;600;700&family=Arimo:wght@400;700&display=swap">
+<style>
+/* Layout: thanh trang trên cùng · khối LAB mở đầu · mục lục dính bên trái (desktop) + cột nội dung ~760px.
+   Nhận diện theo design system TDC Coaching: giấy ấm, chữ condensed để nói, chữ thường để đọc,
+   mỗi trang 1 màu LAB. Một theme sáng, có chủ đích (TDC không dùng dark mode). */
+:root {
+  --paper: #F8F7F5;
+  --raised: #FFFFFF;
+  --sunk: #EFECE7;
+  --line: #E3DFD8;
+  --line-strong: #8C867D;
+  --ink: #121211;
+  --ink-soft: #3A3835;
+  --ink-muted: #6B6760;
+  --red: #E22E32;
+  --red-deep: #B8232A;
+  --red-tint: #FBE7E5;
+  --ok: #276B43;
+  --ok-tint: #E7F2EA;
+  --warn: #9A5B0B;
+  --warn-tint: #FBEFD9;
+  --lab: #C994EB;
+  --lab-soft: #E1C3F4;
+  --lab-strong: #C994EB;
+  --f-display: "Archivo Narrow", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --f-body: Arimo, Arial, "Helvetica Neue", sans-serif;
+  --f-mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  color-scheme: light;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+body.lab-sky { --lab: #C0DEFC; --lab-soft: #E0EFFE; --lab-strong: #9CCBFA; }
+body.lab-lime { --lab: #BEE059; --lab-soft: #D9ED9D; --lab-strong: #BEE059; }
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 72px; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 15px/1.6 var(--f-body);
+}
+img { max-width: 100%; }
+a { color: var(--ink); text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--ink); }
+:focus-visible { outline: 2px solid var(--red-deep); outline-offset: 2px; border-radius: 4px; }
+
+/* ---------- Thanh trang ---------- */
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 10; background: var(--paper);
+}
+.topbar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.topbar-in {
+  max-width: 1180px; margin: 0 auto;
+  padding-block: 10px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.brand { display: flex; align-items: baseline; gap: 8px; text-decoration: none; margin-right: auto; }
+.brand-mark { font: 700 20px/1 var(--f-display); color: var(--red); letter-spacing: -0.2px; }
+.brand-name { font: 600 12px/1 var(--f-display); letter-spacing: 0.8px; text-transform: uppercase; color: var(--ink-muted); }
+.pages { display: flex; gap: 4px; padding: 4px; background: var(--sunk); border-radius: 999px; }
+.pages a {
+  font: 600 14px/1 var(--f-display); letter-spacing: 0.3px;
+  text-decoration: none; color: var(--ink-soft);
+  padding: 8px 14px; border-radius: 999px;
+}
+.pages a:hover { background: var(--raised); color: var(--ink); }
+.pages a[aria-current="page"] { background: var(--lab-strong); color: var(--ink); }
+
+/* ---------- Mở đầu ---------- */
+.hero-wrap {
+  max-width: 1180px; margin: 0 auto;
+  padding-top: 24px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.hero {
+  background: var(--lab);
+  border-radius: var(--radius-lg);
+  padding: clamp(24px, 4vw, 44px);
+  position: relative; overflow: hidden;
+  display: grid; gap: 14px;
+}
+.hero::after {
+  content: ""; position: absolute; right: -40px; top: -40px;
+  width: 220px; height: 220px; border-radius: 50%;
+  background: var(--lab-soft); opacity: 0.9; pointer-events: none;
+}
+.hero > * { position: relative; z-index: 1; }
+.paren { font: 600 13px/1.2 var(--f-display); letter-spacing: 0.6px; color: var(--ink-soft); }
+.hero h1 {
+  margin: 0; font: 700 clamp(32px, 5.2vw, 52px)/1.02 var(--f-display);
+  letter-spacing: -0.6px; text-wrap: balance; max-width: 18ch;
+}
+.hero .lead { margin: 0; font-size: 17px; line-height: 1.55; max-width: 62ch; color: var(--ink); }
+.hero .meta { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--ink-soft); }
+
+/* ---------- Khung trang ---------- */
+.layout {
+  max-width: 1180px; margin: 0 auto;
+  padding-block: 32px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; grid-template-columns: 1fr; gap: 32px;
+}
+@media (min-width: 1024px) {
+  .layout { grid-template-columns: 220px minmax(0, 1fr); gap: 48px; }
+}
+.toc { display: none; }
+@media (min-width: 1024px) {
+  .toc { display: block; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 72px); align-self: start; }
+}
+.toc .label { margin-bottom: 10px; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.toc a {
+  display: block; padding: 6px 10px; border-radius: 8px;
+  font: 500 14px/1.3 var(--f-display); text-decoration: none; color: var(--ink-soft);
+}
+.toc a:hover { background: var(--sunk); color: var(--ink); }
+
+.content { min-width: 0; max-width: 780px; display: grid; gap: 56px; }
+
+/* ---------- Chữ ---------- */
+.label {
+  font: 600 12px/16px var(--f-display); letter-spacing: 0.8px; text-transform: uppercase; color: var(--ink-muted);
+}
+section { display: grid; gap: 16px; min-width: 0; }
+section > header { display: grid; gap: 6px; }
+h2 {
+  margin: 0; font: 700 32px/1.08 var(--f-display); letter-spacing: -0.3px; text-wrap: balance;
+}
+h3 {
+  margin: 12px 0 0; font: 600 20px/1.2 var(--f-display); text-wrap: balance;
+}
+p { margin: 0; max-width: 68ch; }
+.answer { font-size: 17px; line-height: 1.55; }
+strong { font-weight: 700; }
+code {
+  font: 13px/1.4 var(--f-mono); background: var(--sunk); padding: 1px 5px; border-radius: 5px;
+  overflow-wrap: anywhere;
+}
+mark { background: var(--lab-soft); color: var(--ink); padding: 0 3px; border-radius: 3px; }
+ul, ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; max-width: 68ch; }
+li::marker { color: var(--ink-muted); }
+.steps { counter-reset: s; list-style: none; padding: 0; gap: 10px; }
+.steps > li {
+  counter-increment: s; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; align-items: start;
+}
+.steps > li::before {
+  content: counter(s, decimal-leading-zero);
+  font: 700 18px/1.45 var(--f-display); color: var(--ink-muted); font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Bảng ---------- */
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--raised); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; line-height: 1.45; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+th {
+  font: 600 12px/16px var(--f-display); letter-spacing: 0.8px; text-transform: uppercase;
+  color: var(--ink-muted); background: var(--paper); white-space: nowrap;
+}
+td:first-child { font-weight: 700; }
+table.plain td:first-child { font-weight: 400; }
+.tbl.wide table { min-width: 720px; }
+.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ---------- Chip trạng thái ---------- */
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  font: 600 12px/1 var(--f-body); padding: 5px 8px; border-radius: var(--radius-sm);
+  background: var(--sunk); color: var(--ink-soft);
+}
+.chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.chip.block { background: var(--red-tint); color: var(--red-deep); }
+.chip.warn { background: var(--warn-tint); color: var(--warn); }
+.chip.ok { background: var(--ok-tint); color: var(--ok); }
+.chip.hand { background: var(--sunk); color: var(--ink-soft); }
+
+/* ---------- Khối phụ ---------- */
+.note {
+  background: var(--sunk); border-radius: var(--radius-md); padding: 16px 18px;
+  display: grid; gap: 8px; max-width: 72ch;
+}
+.note.key { background: var(--lab-soft); }
+.note .label { color: var(--ink-soft); }
+.grid-2 { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.card {
+  background: var(--raised); border: 1px solid var(--line); border-radius: var(--radius-md);
+  padding: 16px 18px; display: grid; gap: 8px; align-content: start; min-width: 0;
+}
+.card h4 { margin: 0; font: 600 18px/1.25 var(--f-display); }
+pre {
+  margin: 0; overflow-x: auto; background: var(--ink); color: var(--paper);
+  border-radius: var(--radius-md); padding: 16px 18px; font: 13px/1.6 var(--f-mono);
+}
+.checklist { list-style: none; padding: 0; gap: 8px; }
+.checklist li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; align-items: start; }
+.checklist input { margin: 3px 0 0; width: 16px; height: 16px; accent-color: var(--ink); }
+.checklist label { cursor: pointer; }
+.checklist .done-note { color: var(--ok); font-weight: 700; }
+.sources { font-size: 13px; color: var(--ink-muted); }
+.sources a { color: var(--ink-soft); }
+
+/* ---------- Sơ đồ SVG ---------- */
+.diagram { overflow-x: auto; background: var(--raised); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 12px; }
+.diagram svg { display: block; width: 100%; min-width: 640px; height: auto; }
+.diagram figcaption { font-size: 13px; color: var(--ink-muted); padding: 8px 4px 2px; }
+.d-box { fill: var(--raised); stroke: var(--line-strong); stroke-width: 1.25; }
+.d-accent { fill: var(--lab-soft); stroke: var(--ink); stroke-width: 1.5; }
+.d-lane { fill: var(--sunk); stroke: none; }
+.d-line { fill: none; stroke: var(--ink-muted); stroke-width: 1.25; }
+.d-dash { fill: none; stroke: var(--ink-muted); stroke-width: 1.25; stroke-dasharray: 4 4; }
+.d-head { fill: var(--ink-muted); }
+.d-t { fill: var(--ink); font: 600 14px var(--f-display); }
+.d-s { fill: var(--ink-muted); font: 400 12px var(--f-body); }
+.d-l { fill: var(--ink-soft); font: 400 11.5px var(--f-body); }
+.d-big { fill: var(--ink); font: 700 16px var(--f-display); }
+.d-gate { fill: var(--lab-strong); stroke: var(--ink); stroke-width: 1.25; }
+.d-gate-q { fill: var(--raised); stroke: var(--ink-muted); stroke-width: 1.25; }
+
+.foot {
+  max-width: 1180px; margin: 0 auto; padding-block: 24px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-muted);
+  display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between;
+}
+.next-page {
+  display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+  background: var(--raised); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 18px 20px;
+}
+.next-page a { font: 700 20px/1.2 var(--f-display); text-decoration: none; }
+.next-page a::after { content: " ↘"; color: var(--red); }
+
+@media (max-width: 560px) {
+  h2 { font-size: 27px; }
+  .pages a { padding: 8px 10px; font-size: 13px; }
+  .brand-name { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+
+
+/* ---------- Trang mô phỏng: khung app desktop, màu nhấn Admin = lavender ---------- */
+body.lab-mint { --lab: #E0FEE1; --lab-soft: #BDF0C0; --lab-strong: #9FE3A8; }
+.mock-wrap {
+  max-width: 1320px; margin: 0 auto;
+  padding-block: 24px 24px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 12px;
+}
+.mock-hint { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--ink-muted); }
+.app {
+  --acc: #C994EB; --acc-soft: #E1C3F4;
+  display: grid; grid-template-columns: 212px minmax(0, 1fr);
+  background: var(--raised); border: 1px solid var(--line); border-radius: var(--radius-lg);
+  overflow: hidden; min-height: 720px;
+  box-shadow: 0 1px 2px rgba(43,47,54,0.06), 0 8px 28px rgba(43,47,54,0.08);
+}
+.side { background: var(--paper); border-right: 1px solid var(--line); padding: 18px 12px; display: flex; flex-direction: column; gap: 3px; }
+.side-logo { display: flex; align-items: baseline; gap: 6px; padding: 0 10px 14px; }
+.side-logo b { font: 700 20px/1 var(--f-display); color: var(--red); }
+.side-logo span { font: 600 11px/1 var(--f-display); letter-spacing: 0.8px; text-transform: uppercase; color: var(--ink-muted); }
+.side .label { padding: 10px 12px 4px; }
+.nav-btn {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%;
+  border: 0; background: none; padding: 9px 12px; border-radius: 12px; cursor: pointer; text-align: left;
+  font: 600 15px/1.2 var(--f-display); color: var(--ink-soft);
+}
+.nav-btn:hover { background: var(--sunk); color: var(--ink); }
+.nav-btn[aria-current="true"] { background: var(--acc); color: var(--ink); }
+.nav-btn .count { font: 700 12px/1 var(--f-body); background: var(--raised); color: var(--ink); border-radius: 999px; padding: 4px 8px; font-variant-numeric: tabular-nums; }
+.nav-btn .count.alert { background: var(--red-tint); color: var(--red-deep); }
+.side-foot { margin-top: auto; padding: 12px 10px 0; font-size: 12px; color: var(--ink-muted); display: grid; gap: 4px; }
+.side-foot b { color: var(--ink); }
+.side-foot .btn { justify-self: start; margin-top: 4px; }
+.app.signed-out { grid-template-columns: minmax(0, 1fr); }
+.app.signed-out .side, .app.signed-out .mode { display: none; }
+.login { width: 100%; max-width: 480px; margin: 24px auto; display: grid; gap: 14px; }
+.login .brandline { display: flex; align-items: baseline; gap: 8px; }
+.login .brandline b { font: 700 28px/1 var(--f-display); color: var(--red); }
+.google { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; font: 700 15px/1 var(--f-body); padding: 13px 16px; border-radius: 12px; border: 1px solid var(--line-strong); background: var(--raised); color: var(--ink); cursor: pointer; }
+.google:hover { background: var(--sunk); }
+.google i { width: 18px; height: 18px; border-radius: 50%; background: conic-gradient(#EA4335 0 25%, #FBBC05 0 50%, #34A853 0 75%, #4285F4 0); }
+.accts { display: grid; gap: 6px; }
+.acct { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 10px; align-items: center; text-align: left; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--raised); cursor: pointer; font: inherit; color: var(--ink); }
+.acct:hover { border-color: var(--ink); }
+.acct .av { width: 32px; height: 32px; border-radius: 50%; background: var(--acc-soft); display: grid; place-items: center; font: 700 13px/1 var(--f-display); }
+.err { background: var(--red-tint); color: var(--red-deep); border-radius: 12px; padding: 10px 12px; font-size: 14px; }
+.perm-note { background: var(--warn-tint); color: var(--warn); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
+.matrix td, .matrix th { text-align: center; }
+.matrix td:first-child, .matrix th:first-child { text-align: left; }
+.matrix .y { color: var(--ok); font-weight: 700; }
+.matrix .n { color: var(--ink-muted); }
+
+.main { min-width: 0; display: flex; flex-direction: column; }
+.appbar { display: flex; align-items: center; gap: 10px 16px; padding: 12px 20px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.appbar h3 { margin: 0 auto 0 0; font: 700 26px/1.1 var(--f-display); }
+.mode { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-muted); }
+.seg { display: inline-flex; background: var(--sunk); border-radius: 999px; padding: 3px; gap: 2px; flex-wrap: wrap; }
+.seg button { border: 0; background: none; padding: 7px 12px; border-radius: 999px; cursor: pointer; font: 600 13px/1 var(--f-display); color: var(--ink-soft); }
+.seg button[aria-pressed="true"] { background: var(--raised); color: var(--ink); box-shadow: 0 1px 2px rgba(43,47,54,0.12); }
+.seg button:disabled { opacity: 0.4; cursor: not-allowed; }
+.clock { font: 400 13px/1.4 var(--f-body); color: var(--ink); background: var(--paper); border: 1px solid var(--line-strong); border-radius: 10px; padding: 6px 10px; }
+.view { padding: 20px; min-width: 0; display: grid; gap: 16px; align-content: start; }
+
+.btn {
+  font: 700 14px/1 var(--f-body); border-radius: 12px; padding: 10px 14px; cursor: pointer;
+  border: 1px solid var(--line-strong); background: var(--raised); color: var(--ink);
+}
+.btn:hover:not(:disabled) { background: var(--sunk); }
+.btn.primary { background: var(--acc); border-color: var(--acc); }
+.btn.primary:hover:not(:disabled) { background: #BC7FE3; }
+.btn.ghost { border-color: transparent; background: none; }
+.btn.small { padding: 7px 10px; font-size: 13px; border-radius: 10px; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.muted { color: var(--ink-muted); font-size: 13px; }
+.badge { display: inline-flex; align-items: center; font: 700 11px/1 var(--f-body); padding: 4px 6px; border-radius: 6px; background: var(--sunk); color: var(--ink-soft); letter-spacing: 0.3px; white-space: nowrap; }
+.badge.fb { background: #E3ECFB; color: #1F3F7A; }
+.badge.ig { background: #F6E3EE; color: #7A1F55; }
+.badge.mode-b { background: var(--warn-tint); color: var(--warn); }
+.badge.mode-a { background: var(--ok-tint); color: var(--ok); }
+.badge.ext { background: var(--sunk); color: var(--ink-muted); border: 1px dashed var(--line-strong); }
+.chip.info { background: #E7EEF9; color: #284A7A; }
+.panel { background: var(--raised); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: grid; gap: 12px; min-width: 0; }
+.panel h4 { margin: 0; font: 600 18px/1.2 var(--f-display); }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.strip { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; background: var(--lab-soft); border-radius: 12px; padding: 10px 14px; font-size: 14px; }
+.strip b { font: 700 16px/1 var(--f-display); }
+
+/* Lịch */
+.cal { overflow-x: auto; border: 1px solid var(--line); border-radius: 16px; }
+.cal-grid { display: grid; grid-template-columns: 52px repeat(7, minmax(118px, 1fr)); min-width: 900px; }
+.cal-head { position: sticky; top: 0; background: var(--paper); border-bottom: 1px solid var(--line); padding: 10px 8px; text-align: center; }
+.cal-head b { display: block; font: 700 20px/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.cal-head span { font: 600 12px/1 var(--f-display); letter-spacing: 0.8px; color: var(--ink-muted); }
+.cal-hours { position: relative; height: 600px; border-right: 1px solid var(--line); }
+.cal-hours span { position: absolute; right: 6px; font: 400 11px/1 var(--f-body); color: var(--ink-muted); transform: translateY(-50%); font-variant-numeric: tabular-nums; }
+.cal-day { position: relative; height: 600px; border-right: 1px solid var(--line); background-image: repeating-linear-gradient(to bottom, transparent 0 39px, var(--line) 39px 40px); }
+.cal-day:last-child { border-right: 0; }
+.win { position: absolute; left: 0; right: 0; background: var(--acc-soft); opacity: 0.35; pointer-events: none; }
+.nowline { position: absolute; left: 0; right: 0; height: 0; border-top: 2px solid var(--red); z-index: 2; pointer-events: none; }
+.nowline::before { content: "hiện tại"; position: absolute; left: 4px; top: -16px; font: 700 10px/1 var(--f-display); color: var(--red-deep); letter-spacing: 0.5px; }
+.ev {
+  position: absolute; left: 4px; right: 4px; border-radius: 8px; padding: 4px 7px; cursor: pointer;
+  background: var(--raised); border: 1px solid var(--line-strong); text-align: left;
+  font: 400 12px/1.25 var(--f-body); color: var(--ink); overflow: hidden; display: grid; gap: 2px;
+}
+.ev:hover { border-color: var(--ink); }
+.ev .t { font: 700 12px/1 var(--f-display); font-variant-numeric: tabular-nums; display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+.ev .n { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ev.s-block { background: var(--red-tint); border-color: var(--red-deep); }
+.ev.ext { background: var(--sunk); border-style: dashed; cursor: default; color: var(--ink-soft); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 12px; color: var(--ink-muted); align-items: center; }
+.legend i { display: inline-block; width: 14px; height: 10px; border-radius: 3px; background: var(--acc-soft); vertical-align: middle; margin-right: 6px; }
+.legend i.ext { background: var(--sunk); border: 1px dashed var(--line-strong); }
+.legend i.red { background: var(--red-tint); border: 1px solid var(--red-deep); }
+
+/* Soạn bài */
+.compose { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1180px) { .compose { grid-template-columns: minmax(0, 1fr) 340px; } }
+.field { display: grid; gap: 6px; min-width: 0; }
+.field > label, .field > .flabel { font: 600 12px/16px var(--f-display); letter-spacing: 0.8px; text-transform: uppercase; color: var(--ink-muted); }
+.input, select.input, textarea.input {
+  width: 100%; font: 400 15px/1.5 var(--f-body); color: var(--ink);
+  background: var(--paper); border: 1px solid var(--line-strong); border-radius: 12px; padding: 9px 12px;
+}
+textarea.input { min-height: 170px; resize: vertical; }
+textarea.input.sm { min-height: 64px; font-size: 13px; }
+.counter { display: flex; flex-wrap: wrap; gap: 6px 14px; font: 600 13px/1.2 var(--f-body); font-variant-numeric: tabular-nums; }
+.counter .over { color: var(--red-deep); }
+.two { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.tiles { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); }
+.tile { position: relative; aspect-ratio: 4 / 5; border-radius: 10px; overflow: hidden; display: grid; place-items: center; max-width: 100%; }
+.tile .num { position: absolute; top: 6px; left: 6px; font: 700 13px/1 var(--f-display); background: var(--raised); border-radius: 6px; padding: 3px 6px; font-variant-numeric: tabular-nums; }
+.tile .kind { font: 700 22px/1 var(--f-display); color: var(--ink-soft); }
+.tile .fname { position: absolute; bottom: 0; left: 0; right: 0; font: 400 11px/1.2 var(--f-mono); background: rgba(255,255,255,0.85); padding: 4px 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tile.cover { outline: 2px solid var(--ink); outline-offset: -2px; }
+.gap-tile { border: 2px dashed var(--red-deep); background: var(--red-tint); color: var(--red-deep); font: 700 13px/1.2 var(--f-display); text-align: center; padding: 6px; }
+.rules { display: grid; gap: 8px; }
+.rule { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 10px; align-items: start; padding: 10px; border-radius: 12px; background: var(--paper); }
+.rule.block { background: var(--red-tint); }
+.rule.warn { background: var(--warn-tint); }
+.rule .code { font: 700 13px/1.4 var(--f-display); font-variant-numeric: tabular-nums; }
+.rule p { font-size: 13px; line-height: 1.45; }
+.rule .fixes { grid-column: 2; display: flex; flex-wrap: wrap; gap: 6px; }
+.rule-sum { display: flex; flex-wrap: wrap; gap: 6px; }
+.rule.confirmed { background: var(--sunk); }
+.rule .conf { grid-column: 2; font-size: 12.5px; color: var(--ink-soft); }
+.confirm { border: 2px solid var(--red-deep); border-radius: 16px; padding: 16px; display: grid; gap: 12px; background: var(--raised); }
+.confirm h4 { margin: 0; font: 700 18px/1.25 var(--f-display); }
+.confirm-item { display: grid; gap: 6px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.confirm .flabel { font: 600 12px/16px var(--f-display); letter-spacing: 0.8px; text-transform: uppercase; color: var(--ink-muted); }
+.choices { display: grid; gap: 6px; }
+.review-check { display: flex; gap: 8px; align-items: flex-start; font-size: 13.5px; cursor: pointer; }
+.review-check input { width: 16px; height: 16px; margin: 2px 0 0; accent-color: var(--ink); }
+.passed { font-size: 12px; color: var(--ink-muted); }
+.toggle { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
+.toggle input { width: 16px; height: 16px; accent-color: var(--ink); margin: 0; }
+.slide-caps { display: grid; gap: 8px; }
+.slide-cap { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 8px; align-items: start; }
+.slide-cap .num { font: 700 14px/1 var(--f-display); padding-top: 10px; font-variant-numeric: tabular-nums; }
+
+/* Xem trước */
+.pv { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--raised); font-size: 13px; }
+.pv-head { display: flex; align-items: center; gap: 8px; padding: 10px 12px; font-weight: 700; }
+.pv-av { width: 28px; height: 28px; border-radius: 50%; background: var(--red); color: #fff; display: grid; place-items: center; font: 700 11px/1 var(--f-display); }
+.pv-media { aspect-ratio: 4 / 5; display: grid; place-items: center; position: relative; max-width: 100%; }
+.pv-media .kind { font: 700 40px/1 var(--f-display); color: var(--ink-soft); }
+.pv-media .tag { position: absolute; bottom: 8px; left: 8px; font: 700 11px/1 var(--f-body); background: rgba(255,255,255,0.9); padding: 4px 6px; border-radius: 6px; }
+.pv-dots { display: flex; justify-content: center; gap: 4px; padding: 8px; }
+.pv-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--line); }
+.pv-dots i.on { background: #3B82F6; }
+.pv-cap { padding: 0 12px 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.pv-cap .more { color: var(--ink-muted); }
+.pv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+.pv-grid div { aspect-ratio: 4 / 5; background: var(--sunk); display: grid; place-items: center; font: 700 12px var(--f-display); color: var(--ink-muted); text-align: center; padding: 4px; max-width: 100%; }
+.pv-fbmedia { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+.pv-fbmedia div { aspect-ratio: 1; display: grid; place-items: center; font: 700 20px var(--f-display); color: var(--ink-soft); max-width: 100%; }
+.pv-fbtext { padding: 0 12px 10px; white-space: pre-wrap; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
+.pv-story { aspect-ratio: 9 / 16; max-height: 360px; margin: 0 auto; width: 100%; max-width: 220px; border-radius: 18px; background: var(--ink); color: var(--paper); position: relative; display: grid; place-items: center; }
+.pv-story .inner { width: 70%; aspect-ratio: 4 / 5; border-radius: 8px; display: grid; place-items: center; font: 700 18px var(--f-display); color: var(--ink-soft); }
+.pv-story .sticker { position: absolute; bottom: 14%; left: 50%; transform: translateX(-50%); background: var(--raised); color: var(--ink); border-radius: 999px; padding: 6px 12px; font: 700 12px/1 var(--f-body); white-space: nowrap; max-width: 90%; overflow: hidden; text-overflow: ellipsis; }
+.pv-story .sticker::before { content: "🔗 "; }
+
+/* Danh sách, bảng */
+.cards { display: grid; gap: 12px; }
+.pcard { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 14px; align-items: start; }
+.pcard .thumb { aspect-ratio: 4 / 5; border-radius: 10px; display: grid; place-items: center; font: 700 16px var(--f-display); color: var(--ink-soft); text-align: center; max-width: 100%; }
+.pcard h5 { margin: 0; font: 600 18px/1.25 var(--f-display); }
+.jobs { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; }
+.jobs table { min-width: 760px; }
+.log {
+  background: var(--ink); color: var(--paper); border-radius: 12px; padding: 12px 14px;
+  font: 12.5px/1.65 var(--f-mono); max-height: 260px; overflow: auto; white-space: pre-wrap;
+}
+.log:empty::before { content: "Nhật ký sẽ hiện ở đây."; color: #9C978F; }
+.steps-sm { margin: 0; padding-left: 20px; display: grid; gap: 4px; font-size: 14px; }
+.copybox { display: flex; gap: 8px; align-items: center; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-size: 13px; overflow-wrap: anywhere; }
+.copybox span { flex: 1; min-width: 0; }
+.empty { padding: 28px; text-align: center; color: var(--ink-muted); border: 1px dashed var(--line-strong); border-radius: 16px; }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 10px 16px; border-radius: 12px; font-size: 14px; z-index: 20; max-width: 90vw; }
+.checks { display: grid; gap: 6px; }
+.check { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; align-items: start; font-size: 13.5px; }
+.check i { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; font: 700 11px/1 var(--f-body); }
+.check.ok i { background: var(--ok-tint); color: var(--ok); }
+.check.bad i { background: var(--red-tint); color: var(--red-deep); }
+.check.wait i { background: var(--sunk); color: var(--ink-muted); }
+.folder { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 16px; align-items: start; }
+.folder code { font-size: 12.5px; }
+.filelist { font: 12.5px/1.6 var(--f-mono); color: var(--ink-soft); display: flex; flex-wrap: wrap; gap: 2px 12px; }
+.filelist .bad { color: var(--red-deep); font-weight: 700; }
+.settings-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.settings-grid .field .muted { font-size: 12px; }
+.auditlist { display: grid; gap: 6px; }
+.audit { display: grid; grid-template-columns: 112px 118px minmax(0, 1fr); gap: 8px; font-size: 13px; padding: 8px 10px; border-radius: 10px; background: var(--paper); }
+.audit .who { font-weight: 700; }
+.kv { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; font-size: 13.5px; margin: 0; }
+.kv dt { color: var(--ink-muted); }
+.kv dd { margin: 0; }
+
+@media (max-width: 860px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .side { flex-direction: row; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 10px; align-items: center; }
+  .side-logo, .side-foot, .side .label { display: none; }
+  .nav-btn { width: auto; white-space: nowrap; }
+  .audit { grid-template-columns: 1fr; }
+  .folder { grid-template-columns: 1fr; }
+}
+.review-q { max-width: 1320px; margin: 0 auto; padding-block: 8px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 16px; }
+.review-q h2 { font-size: 28px; }
+
+/* ================= Bản 3: giao diện cho người dùng thật ================= */
+.mock-wrap { max-width: 1480px; padding-block: 12px 24px; gap: 10px; }
+.simbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; font-size: 13px; color: var(--ink-muted); padding: 0 4px; }
+.simbar label { color: var(--ink-soft); }
+.simbar a { color: var(--ink-soft); }
+.sim-tag { display: inline-flex; align-items: center; gap: 6px; font: 700 11px/1 var(--f-body); letter-spacing: 0.4px; text-transform: uppercase; color: var(--warn); background: var(--warn-tint); border: 1px dashed var(--warn); border-radius: 6px; padding: 4px 7px; }
+.sim-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding-top: 8px; border-top: 1px dashed var(--line); }
+.ann { display: none !important; }
+body.show-ann .ann { display: block !important; background: #FFF7D6; border-left: 3px solid #E0B400; color: #5C4A00; padding: 8px 12px; border-radius: 8px; font-size: 13px; }
+body.show-ann .ann::before { content: "Chú thích thiết kế · "; font-weight: 700; }
+
+.app { height: clamp(640px, calc(100dvh - 118px), 1000px); min-height: 0; border-radius: 20px; grid-template-columns: 236px minmax(0, 1fr); }
+.side { background: #FBFAF8; padding: 16px 12px 12px; gap: 2px; overflow-y: auto; }
+.side-logo { padding: 2px 10px 16px; }
+.side .label { padding: 14px 12px 6px; }
+.nav-btn { justify-content: flex-start; gap: 10px; padding: 8px 10px; border-radius: 10px; font: 500 14.5px/1.2 var(--f-body); color: var(--ink-soft); }
+.nav-btn .nv { display: inline-flex; color: var(--ink-muted); }
+.nav-btn .count { margin-left: auto; font-size: 11.5px; padding: 3px 7px; background: var(--sunk); }
+.nav-btn[aria-current="true"] { background: var(--acc-soft); color: var(--ink); font-weight: 700; }
+.nav-btn[aria-current="true"] .nv { color: var(--ink); }
+.nav-btn[aria-current="true"] .count { background: var(--raised); }
+.side-foot { padding: 12px 6px 0; border-top: 1px solid var(--line); gap: 8px; }
+.me-card { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; align-items: center; }
+.me-card .av { width: 34px; height: 34px; border-radius: 50%; background: var(--acc); display: grid; place-items: center; font: 700 14px/1 var(--f-display); color: var(--ink); }
+.me-card b { display: block; font-size: 14px; color: var(--ink); }
+.me-card small { font-size: 12px; color: var(--ink-muted); }
+.conn { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-muted); }
+.conn i { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); }
+.conn i.off { background: var(--line-strong); }
+.main { overflow: hidden; background: #FBFAF8; }
+.appbar { padding: 14px 24px; background: var(--raised); min-height: 64px; }
+.appbar h3 { font: 700 24px/1.1 var(--f-display); }
+.view { padding: 20px 24px 40px; overflow-y: auto; flex: 1; container-type: inline-size; }
+.panel { border-radius: 14px; }
+.input, select.input, textarea.input { background: var(--raised); border-color: #CFC9C0; }
+.input:focus, select.input:focus, textarea.input:focus { outline: 2px solid var(--acc); outline-offset: 0; border-color: var(--ink-soft); }
+.hint { font-size: 12.5px; color: var(--ink-muted); line-height: 1.45; }
+.chip.as-btn { border: 0; cursor: pointer; font: 600 12.5px/1 var(--f-body); }
+.chip.as-btn:hover { filter: brightness(0.96); }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.seg.wrap { flex-wrap: wrap; }
+
+/* Soạn bài */
+.cmp { display: grid; gap: 16px; }
+.cmp-head { position: sticky; top: -20px; z-index: 3; margin: -20px -24px 0; padding: 14px 24px; background: rgba(251,250,248,0.94); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 20px; }
+.cmp-id { display: grid; gap: 6px; min-width: 0; }
+.title-pick { font: 700 22px/1.15 var(--f-display); color: var(--ink); border: 0; background: transparent; padding: 2px 26px 2px 0; max-width: 100%; appearance: none; -webkit-appearance: none; cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-soft) 50%), linear-gradient(135deg, var(--ink-soft) 50%, transparent 50%);
+  background-position: calc(100% - 10px) 55%, calc(100% - 5px) 55%; background-size: 5px 5px; background-repeat: no-repeat; }
+.cmp-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 12.5px; color: var(--ink-muted); }
+.cmp-meta code { background: none; padding: 0; font-size: 12.5px; color: var(--ink-soft); }
+.cmp-meta .drive { max-width: 260px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cmp-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.dest { display: flex; align-items: center; gap: 6px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--raised); font-size: 13px; }
+.dest b { font: 700 14px/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.cmp-note { font-size: 13px; color: var(--ink-muted); }
+.cmp-body { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@container (min-width: 760px) { .cmp-body { grid-template-columns: minmax(0, 1fr) 360px; } }
+.field > .seg, .sec > .seg { justify-self: start; }
+.cmp-form, .cmp-side { display: grid; gap: 14px; min-width: 0; align-content: start; }
+.sec { background: var(--raised); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; display: grid; gap: 12px; min-width: 0; }
+.sec > header { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.sec > header h4 { margin: 0; font: 700 16px/1.2 var(--f-display); letter-spacing: 0.2px; }
+.sec-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+.sec textarea.input { min-height: 150px; }
+.sec textarea.input.sm { min-height: 64px; font-size: 14px; }
+.field > label, .field > .flabel, .flabel { font: 600 12px/16px var(--f-body); letter-spacing: 0.2px; text-transform: none; color: var(--ink-soft); }
+.lbl-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.lbl-row label:first-child { font: 600 12px/16px var(--f-body); color: var(--ink-soft); }
+.counter { font: 500 12.5px/1.2 var(--f-body); color: var(--ink-muted); }
+.tiles { grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); }
+.tile .kind { font: 700 15px/1 var(--f-display); }
+.rule-sum .chip { font-size: 12px; }
+.passed { font-size: 12.5px; color: var(--ink-muted); }
+.passed summary { cursor: pointer; }
+.passed ul { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 4px; }
+.mu { display: grid; gap: 8px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: #FCFBFA; }
+.mu-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.tracks { display: grid; gap: 4px; max-height: 220px; overflow: auto; }
+.track { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto 18px; gap: 10px; align-items: center; text-align: left; padding: 6px 8px; border: 1px solid transparent; border-radius: 10px; background: none; cursor: pointer; font: inherit; color: var(--ink); }
+.track:hover { background: var(--sunk); }
+.track.on { border-color: var(--ink); background: var(--raised); }
+.track .art { width: 36px; height: 36px; border-radius: 8px; display: grid; place-items: center; color: var(--ink); }
+.track .tt b { display: block; font-size: 14px; }
+.track .tt small { font-size: 12px; color: var(--ink-muted); }
+.track .tick { font-weight: 700; }
+input[type="range"] { width: 100%; accent-color: var(--ink); }
+.field output { font-weight: 700; color: var(--ink); }
+
+/* Xem trước: khung thiết bị */
+.pv-card { gap: 10px; }
+.pv-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.pv-tools .toggle { font-size: 13px; }
+.pv-tools .btn { cursor: pointer; }
+.pv-ref-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; }
+.pv-ref-row:empty { display: none; }
+.pv-ref-row input { width: 140px; }
+.pv-stage { display: grid; justify-items: center; padding: 8px 0; background: var(--sunk); border-radius: 12px; overflow: hidden; }
+.ph-fit { position: relative; }
+.ph { position: absolute; left: 0; top: 0; width: 390px; height: 844px; margin: 10px; border-radius: 55px; box-shadow: 0 0 0 10px #1C1C1E, 0 0 0 11px #3A3A3C, 0 18px 40px rgba(0,0,0,0.25); transform-origin: -10px -10px; background: #000; }
+.ph-scr { position: absolute; inset: 0; border-radius: 55px; overflow: hidden; background: #fff; color: #000; display: flex; flex-direction: column;
+  font: 400 14px/18px -apple-system, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+.ph-scr.fbfont { font-size: 15px; line-height: 20px; }
+.ph-scr.dark { background: #000; color: #fff; }
+.ph-island { position: absolute; top: 11px; left: 50%; width: 124px; height: 36px; margin-left: -62px; border-radius: 20px; background: #000; z-index: 9; }
+.ph-home { position: absolute; bottom: 8px; left: 50%; width: 134px; height: 5px; margin-left: -67px; border-radius: 3px; background: #000; z-index: 9; }
+.ph-home.light { background: #fff; }
+.ph-ref { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 8; pointer-events: none; }
+.ph-scr .ic { display: inline-flex; }
+.ly { position: relative; flex: none; }
+.show-layers .ly { outline: 1px dashed rgba(226, 46, 50, 0.85); outline-offset: -1px; }
+.show-layers .ly::after { content: attr(data-layer); position: absolute; left: 2px; top: 2px; z-index: 7; font: 600 9.5px/1.2 Arial, sans-serif; color: #fff; background: rgba(184, 35, 42, 0.92); padding: 2px 4px; border-radius: 3px; pointer-events: none; max-width: 92%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.scr-scroll { flex: 1; overflow: hidden; min-height: 0; }
+.sb { height: 54px; display: flex; justify-content: space-between; align-items: center; padding: 14px 30px 0 46px; font: 600 16px/1 -apple-system, "Segoe UI", Arial, sans-serif; }
+.sb.abs { position: absolute; top: 0; left: 0; right: 0; z-index: 4; }
+.sb.dark { color: #fff; }
+.sb-r { display: flex; align-items: center; gap: 6px; }
+.sb .sig { width: 17px; height: 11px; background: linear-gradient(to right, currentColor 0 3px, transparent 3px 4.5px, currentColor 4.5px 7.5px, transparent 7.5px 9px, currentColor 9px 12px, transparent 12px 13.5px, currentColor 13.5px); clip-path: polygon(0 75%, 25% 75%, 25% 50%, 50% 50%, 50% 25%, 75% 25%, 75% 0, 100% 0, 100% 100%, 0 100%); }
+.sb .bat { width: 25px; height: 12px; border: 1.5px solid currentColor; border-radius: 4px; position: relative; opacity: 0.9; }
+.sb .bat::after { content: ""; position: absolute; inset: 1.5px 5px 1.5px 1.5px; background: currentColor; border-radius: 1.5px; }
+.row-ic { display: inline-flex; align-items: center; gap: 18px; }
+.gray { color: #737373; }
+.dark .gray { color: rgba(255,255,255,0.75); }
+.pm { position: relative; overflow: hidden; display: grid; place-items: center; }
+.pm img, .pm video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.pm-n { font: 700 30px/1 var(--f-display); color: rgba(18,18,17,0.72); }
+.pm-d { position: absolute; left: 8px; bottom: 8px; font: 600 10.5px/1 Arial, sans-serif; color: rgba(18,18,17,0.7); background: rgba(255,255,255,0.7); padding: 3px 5px; border-radius: 4px; }
+.pm-crop { position: absolute; right: 8px; bottom: 8px; font: 700 10.5px/1 Arial, sans-serif; color: #fff; background: rgba(184, 35, 42, 0.9); padding: 3px 5px; border-radius: 4px; }
+.av24, .av32, .av40, .av20, .av86 { border-radius: 50%; background: var(--red); color: #fff; display: inline-grid; place-items: center; font: 700 9px/1 var(--f-display); flex: none; }
+.av20 { width: 20px; height: 20px; font-size: 7px; }
+.av24 { width: 26px; height: 26px; font-size: 8px; }
+.av32 { width: 32px; height: 32px; }
+.av40 { width: 40px; height: 40px; font-size: 11px; }
+.av86 { width: 86px; height: 86px; font-size: 20px; }
+.av32.ring { box-shadow: 0 0 0 2px #fff, 0 0 0 4px #D62976; width: 30px; height: 30px; margin: 2px; }
+/* IG bảng tin */
+.ig-top { height: 44px; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; }
+.ig-logo { font: italic 600 25px/1 "Snell Roundhand", "Brush Script MT", "Segoe Script", cursive; letter-spacing: -0.3px; }
+.pf-user { font-size: 20px; font-weight: 700; }
+.ig-ph { height: 54px; display: grid; grid-template-columns: 34px minmax(0, 1fr) 24px; gap: 10px; align-items: center; padding: 0 12px; }
+.ig-ph .who { display: grid; gap: 1px; min-width: 0; }
+.ig-ph .who b { font-size: 13.5px; font-weight: 600; }
+.ig-ph .who small { font-size: 12px; display: flex; align-items: center; gap: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ig-media { position: relative; }
+.ig-count { position: absolute; top: 14px; right: 14px; font: 600 12px/1 -apple-system, Arial, sans-serif; color: #fff; background: rgba(18,18,18,0.7); padding: 6px 8px; border-radius: 13px; }
+.ig-nav { position: absolute; top: 50%; width: 26px; height: 26px; margin-top: -13px; border-radius: 50%; border: 0; background: rgba(255,255,255,0.85); font: 700 18px/1 Arial, sans-serif; cursor: pointer; color: #000; }
+.ig-nav.prev { left: 10px; } .ig-nav.next { right: 10px; }
+.ig-reelmark { position: absolute; top: 12px; right: 12px; color: #fff; }
+.ig-act { height: 46px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 12px; }
+.ig-act > .ic:last-child { justify-self: end; }
+.ig-dots { display: flex; gap: 4px; }
+.ig-dots i { width: 6px; height: 6px; border-radius: 50%; background: #C7C7C7; }
+.ig-dots i.on { background: #0095F6; }
+.ig-likes { height: 18px; padding: 0 14px; font-size: 13.5px; font-weight: 600; }
+.ig-capwrap, .ig-cm, .ig-date { padding: 4px 14px 0; }
+.ig-cap { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; line-height: 18px; }
+.ig-cap b, .ig-cm b { font-weight: 600; }
+.ig-cap .more, .fb-text .more, .rl-cap .more { color: #737373; }
+.ig-cm { display: grid; gap: 3px; font-size: 14px; }
+.ig-date { font-size: 11.5px; height: 22px; }
+.tabs { height: 83px; display: flex; justify-content: space-around; align-items: flex-start; padding-top: 12px; border-top: 1px solid #EFEFEF; background: #fff; flex: none; margin-top: auto; }
+.tabs.dark { background: #000; border-color: #262626; color: #fff; }
+.tabs.fb { color: #65676B; }
+.tabs.fb .on { color: #0866FF; }
+.tabs.fb.dark { color: #B0B3B8; }
+/* IG lưới */
+.pf-head { display: flex; align-items: center; gap: 24px; padding: 6px 16px 10px; }
+.pf-stats { display: flex; gap: 18px; flex: 1; justify-content: space-around; }
+.pf-stats span { display: grid; justify-items: center; font-size: 13px; }
+.pf-stats b { font-size: 16px; font-weight: 700; }
+.pf-bio { display: grid; gap: 1px; padding: 0 16px 10px; font-size: 13.5px; }
+.pf-bio .lnk { color: #00376B; font-weight: 600; }
+.pf-btns { height: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 0 16px; margin-bottom: 10px; }
+.pf-btns span { display: grid; place-items: center; background: #EFEFEF; border-radius: 8px; font-size: 13.5px; font-weight: 600; }
+.pf-tabs { height: 44px; display: grid; grid-template-columns: repeat(3, 1fr); align-items: center; justify-items: center; color: #737373; border-bottom: 1px solid #EFEFEF; }
+.pf-tabs .on { color: #000; box-shadow: 0 13px 0 -12px #000; }
+.pf-grid { display: flex; flex-wrap: wrap; gap: 2px; }
+.gt { position: relative; flex: none; }
+.gt.old { background: #EDEDED; }
+.gt-ic { position: absolute; top: 6px; right: 6px; color: #fff; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.4)); }
+/* Reels */
+.rl-wrap { overflow: hidden; flex: 1 1 auto; }
+.rl-media { position: absolute; inset: 0; }
+.rl-top { position: absolute; top: 54px; left: 0; right: 0; height: 44px; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; font-size: 22px; font-weight: 700; color: #fff; z-index: 3; }
+.rl-rail { position: absolute; right: 10px; bottom: 16px; display: grid; justify-items: center; gap: 18px; color: #fff; z-index: 3; }
+.rl-btn { display: grid; justify-items: center; gap: 3px; }
+.rl-btn small { font-size: 12px; font-weight: 600; }
+.rl-disc { width: 28px; height: 28px; border-radius: 7px; border: 2px solid #fff; }
+.rl-bottom { position: absolute; left: 14px; right: 70px; bottom: 16px; display: grid; gap: 8px; color: #fff; z-index: 3; text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
+.rl-who { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.rl-follow { border: 1px solid rgba(255,255,255,0.8); border-radius: 8px; padding: 4px 9px; font-size: 13px; font-weight: 600; }
+.rl-cap { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; line-height: 18px; }
+.rl-cap .more { color: rgba(255,255,255,0.8); }
+.rl-audio { display: flex; align-items: center; gap: 6px; font-size: 13px; white-space: nowrap; overflow: hidden; }
+.sz { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.sz i { position: absolute; background: rgba(226, 46, 50, 0.22); }
+.sz span { position: absolute; font: 600 10px/1 Arial, sans-serif; color: #fff; background: rgba(0,0,0,0.55); padding: 3px 5px; border-radius: 3px; }
+/* Story */
+.st-wrap { overflow: hidden; }
+.st-area { position: relative; border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; align-items: center; }
+.st-prog { position: absolute; top: 8px; left: 8px; right: 8px; height: 3px; display: flex; gap: 3px; z-index: 3; }
+.st-prog i { flex: 1; background: rgba(255,255,255,0.4); border-radius: 2px; }
+.st-prog i.on { background: #fff; }
+.st-head { position: absolute; top: 16px; left: 0; right: 0; height: 44px; display: flex; align-items: center; gap: 8px; padding: 0 10px 0 12px; color: #fff; font-size: 14px; z-index: 3; }
+.st-head .sp { flex: 1; }
+.st-card { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -58%); background: #fff; color: #000; border-radius: 10px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.3); z-index: 1; }
+.st-card-h { display: flex; align-items: center; gap: 6px; padding: 7px 8px; font-size: 11.5px; }
+.st-link { position: absolute; left: 50%; bottom: 17%; transform: translateX(-50%); height: 36px; display: flex; align-items: center; gap: 6px; padding: 0 14px; border-radius: 8px; background: #fff; color: #0095F6; font: 700 15px/1 -apple-system, Arial, sans-serif; white-space: nowrap; max-width: 80%; z-index: 3; }
+.st-link span { overflow: hidden; text-overflow: ellipsis; }
+.st-reply { height: 50px; display: flex; align-items: center; gap: 14px; padding: 0 14px; color: #fff; }
+.st-reply .pill { flex: 1; border: 1px solid rgba(255,255,255,0.6); border-radius: 22px; padding: 10px 16px; font-size: 14px; color: rgba(255,255,255,0.85); }
+/* FB bảng tin */
+.fb-top { height: 44px; display: flex; justify-content: space-between; align-items: center; padding: 0 14px; }
+.fb-logo { font: 700 28px/1 Helvetica, Arial, sans-serif; color: #0866FF; letter-spacing: -1.2px; }
+.fb-bg { background: #E4E6EB; padding-top: 6px; }
+.fb-post { background: #fff; }
+.fb-ph { height: 60px; display: grid; grid-template-columns: 40px minmax(0, 1fr) 22px 22px; gap: 8px; align-items: center; padding: 0 12px; }
+.fb-ph .who { display: grid; gap: 2px; }
+.fb-ph .who b { font-size: 15px; font-weight: 600; }
+.fb-ph .who small { font-size: 13px; color: #65676B; display: flex; align-items: center; gap: 2px; }
+.fb-textwrap { padding: 0 12px 10px; }
+.fb-text { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 15px; line-height: 20px; }
+.fb-text .more { color: #65676B; font-weight: 600; }
+.fb-grid { position: relative; width: 390px; }
+.fb-cell { position: absolute; }
+.fb-more { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(0,0,0,0.45); color: #fff; font: 700 28px/1 Arial, sans-serif; }
+.fb-react { height: 36px; display: flex; justify-content: space-between; align-items: center; padding: 0 12px; font-size: 14px; color: #65676B; }
+.fb-react .rx { font-style: normal; }
+.fb-act { height: 44px; display: grid; grid-template-columns: repeat(3, 1fr); align-items: center; border-top: 1px solid #CED0D4; margin: 0 12px; color: #65676B; font-size: 14px; font-weight: 600; }
+.fb-act > span { display: inline-flex; justify-content: center; align-items: center; gap: 6px; }
+.fb-cm { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 8px; padding: 6px 12px 12px; font-size: 14px; line-height: 18px; }
+.fb-cm .bub { background: #F0F2F5; border-radius: 16px; padding: 8px 12px; }
+.fb-cm .bub b { font-size: 13px; margin-right: 6px; }
+.fb-author { font-size: 11px; color: #65676B; background: #E4E6EB; padding: 1px 5px; border-radius: 4px; }
+.pv-spec { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; font-size: 12.5px; margin: 0; }
+.pv-spec dt { color: var(--ink-muted); }
+.pv-spec dd { margin: 0; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+.review-q { padding-block: 0 48px; }
+.review-q > summary { cursor: pointer; font: 700 20px/1.3 var(--f-display); padding: 12px 0; list-style-position: inside; }
+.review-q[open] > summary { margin-bottom: 8px; }
+
+@media (max-width: 860px) {
+  .app { height: auto; grid-template-columns: minmax(0, 1fr); }
+  .main { overflow: visible; }
+  .view { overflow: visible; padding: 16px; }
+  .cmp-head { position: static; margin: 0; padding: 0 0 12px; background: none; backdrop-filter: none; }
+  .side { overflow-x: auto; overflow-y: hidden; }
+  .nav-btn { width: auto; }
+}
+@media (prefers-reduced-motion: reduce) { .ph video { display: none; } }
+</style>
+</head>
+<body class="lab-mint">
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="index.html"><span class="brand-mark">TDC Post</span><span class="brand-name">Hệ thống đăng bài FB &amp; IG</span></a>
+    <nav class="pages" aria-label="Tài liệu">
+      <a href="index.html">Phương án</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="techstack.html">Tech stack</a>
+      <a href="designsystem.html">Design system</a>
+      <a href="mockup.html" aria-current="page">Giao diện</a>
+      <a href="trienkhai.html">Triển khai</a>
+      <a href="huongdan.html">Hướng dẫn</a>
+    </nav>
+  </div>
+</header>
+
+<div class="mock-wrap">
+  <div class="simbar" role="region" aria-label="Điều khiển mô phỏng">
+    <span class="sim-tag">Bản mô phỏng</span>
+    <label for="clock">Giờ giả lập</label><select class="clock" id="clock"></select>
+    <label class="toggle" for="ann-toggle"><input type="checkbox" id="ann-toggle"> Chú thích thiết kế</label>
+    <a href="#review-notes">Đối chiếu với bản flow</a>
+    <span>Dữ liệu mẫu, mất khi tải lại trang</span>
+  </div>
+  <div class="app" id="app">
+    <aside class="side" aria-label="Điều hướng app">
+      <div class="side-logo"><b>TDC</b><span>Post</span></div>
+      <button class="nav-btn" data-view="calendar"><span class="nv" data-ic="calendar"></span>Lịch</button>
+      <button class="nav-btn" data-view="media"><span class="nv" data-ic="inbox"></span>Nhận file <span class="count" data-count="media"></span></button>
+      <button class="nav-btn" data-view="compose"><span class="nv" data-ic="edit"></span>Soạn bài</button>
+      <button class="nav-btn" data-view="review"><span class="nv" data-ic="review"></span>Chờ duyệt <span class="count" data-count="review"></span></button>
+      <button class="nav-btn" data-view="queue"><span class="nv" data-ic="queue"></span>Hàng đợi đăng <span class="count" data-count="queue"></span></button>
+      <button class="nav-btn" data-view="verify"><span class="nv" data-ic="verify"></span>Kiểm tra sau đăng <span class="count" data-count="verify"></span></button>
+      <button class="nav-btn" data-view="manual"><span class="nv" data-ic="hand"></span>Việc làm tay <span class="count alert" data-count="manual"></span></button>
+      <div class="label">Quản trị</div>
+      <button class="nav-btn" data-view="settings"><span class="nv" data-ic="sliders"></span>Cài đặt quy tắc</button>
+      <button class="nav-btn" data-view="users"><span class="nv" data-ic="users"></span>Người dùng &amp; quyền</button>
+      <button class="nav-btn" data-view="audit"><span class="nv" data-ic="log"></span>Nhật ký <span class="count" data-count="audit"></span></button>
+      <div class="side-foot" id="side-foot"></div>
+    </aside>
+    <div class="main">
+      <div class="appbar">
+        <h3 id="view-title">Lịch</h3>
+        <div class="mode"><span>Đăng qua</span>
+          <div class="seg" role="group" aria-label="Chế độ đăng">
+            <button type="button" data-mode="browser" aria-pressed="true">Trình duyệt</button>
+            <button type="button" data-mode="api" aria-pressed="false">API</button>
+          </div>
+        </div>
+      </div>
+      <div class="view" id="view"></div>
+    </div>
+  </div>
+</div>
+
+<details class="review-q" id="review-notes">
+  <summary>Đối chiếu với bản flow và câu hỏi review</summary>
+  <p class="muted">Luồng thử gợi ý: Nhận file → tạo bài từ folder "open-day-reel" · Soạn bài → chọn nhạc, xem trước từng bề mặt · Chờ duyệt → duyệt "Mở đăng ký K12" · Hàng đợi đăng → Mô phỏng đợt Claude · đổi giờ giả lập sang 19:35 → Kiểm tra sau đăng · xem Việc làm tay và Nhật ký.</p>
+  <h2 id="rq">Mỗi bước trong báo cáo nằm ở màn nào</h2>
+  <div class="tbl wide"><table>
+    <thead><tr><th>Bước trong báo cáo</th><th>Mục</th><th>Màn hình trong mockup</th></tr></thead>
+    <tbody>
+      <tr><td>Nhận bài từ team content: file đã đánh số, caption, nền tảng, giờ, comment/link</td><td class="num">1</td><td>Nhận file (folder từ Drive: kiểm tra số thứ tự, cover, file trùng; bản gốc giữ trên Drive, bản nén lên R2) → Soạn bài (các trường còn lại)</td></tr>
+      <tr><td>Bài có cả ảnh và video? → đăng thủ công trên Page</td><td class="num">1, 3.3</td><td>Soạn bài: R09 · Việc làm tay: "Đăng tay bài trộn trên Page" với 4 bước của mục 3.3</td></tr>
+      <tr><td>Planner: xem lịch đã xếp để tránh trùng</td><td class="num">2, 3.1</td><td>Lịch: có cả bài đăng tay ngoài hệ thống (nét đứt), R02/R04</td></tr>
+      <tr><td>Kiểm tra nền tảng đang chọn (FB / FB + IG)</td><td class="num">1, 3.1</td><td>Soạn bài: dải "Nền tảng đang chọn" trước nút Gửi duyệt · Chờ duyệt · nhật ký đợt đăng</td></tr>
+      <tr><td>Giờ đăng cách hiện tại ≥ 20 phút? → lên lịch hoặc chờ đến giờ, đăng ngay</td><td class="num">1, 2</td><td>Đổi "Giờ hiện tại" ở thanh trên; R03 rẽ nhánh; Hàng đợi đăng hiện "Đăng ngay khi đến giờ"</td></tr>
+      <tr><td>Reels FB: tiêu đề, mô tả, chọn frame cover, kiểm tra bản quyền, lên chậm hơn</td><td class="num">3.2</td><td>Soạn bài: tiêu đề, mô tả, chọn cover · Hàng đợi đăng: việc "Meta kiểm tra bản quyền"</td></tr>
+      <tr><td>Bấm Đăng, chờ tải xong mới rời trang</td><td class="num">1, 5</td><td>Nhật ký đợt đăng của Claude · Kiểm tra sau đăng: lỗi "bài không lên"</td></tr>
+      <tr><td>Comment CTA bằng tài khoản TDC sau khi bài lên (bổ sung: cả IG)</td><td class="num">3.4</td><td>Soạn bài: comment dưới bài FB và IG (có "Giống Facebook"), cảnh báo link trong comment IG · Kiểm tra sau đăng: Claude/worker comment</td></tr>
+      <tr><td>Bổ sung: không chặn bài, cảnh báo rõ và xác nhận lại</td><td class="num">—</td><td>Soạn bài: hộp xác nhận khi Gửi duyệt · Chờ duyệt: người duyệt tick xác nhận lại từng lý do · Hàng đợi: vấn đề mới thì bài dừng ở "Chờ xác nhận"</td></tr>
+      <tr><td>Bổ sung: đăng nhập và phân quyền</td><td class="num">—</td><td>Màn đăng nhập Google Workspace (thử tài khoản chưa mời, đã khoá) · Người dùng &amp; quyền (admin) · đổi tài khoản ở chân menu để thử từng vai trò</td></tr>
+      <tr><td>IG carousel: tối đa 20 (app) / 10 (Business Suite), chọn theo thứ tự</td><td class="num">2, 4.1</td><td>Soạn bài: R06 đổi theo chế độ · Cài đặt quy tắc</td></tr>
+      <tr><td>IG: cover cho slide đầu motion, thêm nhạc không lời</td><td class="num">4.1</td><td>Soạn bài: chọn cover · mục Nhạc cho FB và IG: thư viện nhạc IG (Reels), ghép sẵn vào video, hoặc thêm bằng app (việc làm tay)</td></tr>
+      <tr><td>IG: 1 caption chung hoặc caption riêng từng ảnh, ≤ 2.200 ký tự, ≤ 5 hashtag</td><td class="num">2, 4.1</td><td>Soạn bài: công tắc "Caption riêng từng ảnh", đếm từng caption, R07</td></tr>
+      <tr><td>FB đã đăng riêng chưa? → tắt "Chia sẻ lên Facebook"</td><td class="num">1, 4.1, 5</td><td>R12 cố định; nhật ký đợt đăng ghi "Chia sẻ lên Facebook: TẮT"</td></tr>
+      <tr><td>Story dẫn link thay cho comment CTA; IG đôi khi tự đăng Story</td><td class="num">4.3, 5</td><td>Soạn bài: link + câu giới thiệu, xem trước Story · Kiểm tra sau đăng: phát hiện Story tự động · Việc làm tay: 4 bước mục 4.3</td></tr>
+      <tr><td>6 lỗi thường gặp và cách kiểm tra</td><td class="num">5</td><td>Kiểm tra sau đăng: danh sách kiểm tra từng bài, lỗi sinh ra việc làm tay</td></tr>
+      <tr><td>Thuật ngữ: giữ caption, cover, carousel, Reels, Story, hashtag; tên nút tiếng Việt</td><td class="num">6</td><td>Cài đặt quy tắc: bảng thuật ngữ; các bước việc làm tay dùng đúng tên nút</td></tr>
+    </tbody>
+  </table></div>
+  <header><span class="paren">( Khi đánh giá )</span><h2>Những điểm cần bạn nhận xét</h2></header>
+  <ul class="checklist" id="review-list">
+    <li><input type="checkbox" id="e1"><label for="e1">Màn Lịch đủ thông tin để content xếp bài chưa (giờ, nền tảng, trạng thái, bài ngoài hệ thống)?</label></li>
+    <li><input type="checkbox" id="e2"><label for="e2">Màn Nhận file: cấu trúc thư mục Drive và cách engine tự sắp xếp có hợp với cách designer đang làm không?</label></li>
+    <li><input type="checkbox" id="e3"><label for="e3">Màn Soạn bài có thiếu trường nào so với cách team đang giao bài không? Lời cảnh báo có dễ hiểu không?</label></li>
+    <li><input type="checkbox" id="e4"><label for="e4">Luồng nhận file → soạn → duyệt → hàng đợi → kiểm tra → việc làm tay có khớp cách TDC làm việc không?</label></li>
+    <li><input type="checkbox" id="e5"><label for="e5">Danh sách kiểm tra sau đăng đã đủ 6 lỗi trong báo cáo chưa; còn lỗi nào team hay gặp mà báo cáo chưa ghi?</label></li>
+    <li><input type="checkbox" id="e6"><label for="e6">Ai sẽ dùng màn nào hằng ngày; màn nào cần dùng được trên điện thoại?</label></li>
+  </ul>
+</details>
+
+<footer class="foot"><span>TDC Post · Giao diện mô phỏng · 30.10.2026</span><span><a href="index.html">Phương án</a> · <a href="roadmap.html">Roadmap</a> · <a href="techstack.html">Tech stack</a> · <a href="designsystem.html">Design system</a> · Giao diện · <a href="trienkhai.html">Triển khai</a> · <a href="huongdan.html">Hướng dẫn</a></span></footer>
+
+<script>
+(function () {
+  'use strict';
+  var COLORS = ['#C994EB', '#BEE059', '#C0DEFC', '#BDF0C0', '#DECDBC', '#E1C3F4'];
+  var DRIVE = 'TDC Post/2026/11/';
+  var DAYS = [
+    { d: '2026-11-02', w: 'T2', n: '02.11' }, { d: '2026-11-03', w: 'T3', n: '03.11' },
+    { d: '2026-11-04', w: 'T4', n: '04.11' }, { d: '2026-11-05', w: 'T5', n: '05.11' },
+    { d: '2026-11-06', w: 'T6', n: '06.11' }, { d: '2026-11-07', w: 'T7', n: '07.11' },
+    { d: '2026-11-08', w: 'CN', n: '08.11' }
+  ];
+  var NOW_OPTIONS = [
+    { date: '2026-11-03', time: '21:30', label: 'T3 03.11 · 21:30 (đợt tối hôm trước)' },
+    { date: '2026-11-04', time: '10:45', label: 'T4 04.11 · 10:45 (đợt sáng)' },
+    { date: '2026-11-04', time: '19:15', label: 'T4 04.11 · 19:15 (sát giờ đăng)' },
+    { date: '2026-11-04', time: '19:35', label: 'T4 04.11 · 19:35 (sau giờ đăng)' },
+    { date: '2026-11-07', time: '09:00', label: 'T7 07.11 · 09:00' }
+  ];
+  var STATUS = {
+    draft: ['Nháp', ''], review: ['Chờ duyệt', 'warn'], approved: ['Đã duyệt', 'info'],
+    scheduled: ['Đã lên lịch', 'ok'], published: ['Đã đăng', 'ok'], verified: ['Đã kiểm tra', 'ok'], needs: ['Cần người', 'block'], hold: ['Chờ xác nhận', 'warn']
+  };
+  var JOBST = {
+    waiting: ['Chờ đợt đăng', 'warn'], running: ['Claude đang làm', 'info'], scheduled: ['Đã lên lịch trên Meta', 'ok'],
+    now: ['Đăng ngay khi đến giờ', 'warn'], queued: ['Worker đăng đúng giờ', 'ok'], later: ['Sau giờ đăng', ''],
+    copyright: ['Meta đang kiểm tra bản quyền', 'info'], manual: ['Việc làm tay', 'block'], done: ['Xong', 'ok'], failed: ['Lỗi', 'block'], hold: ['Chờ xác nhận lại', 'warn']
+  };
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function imgs(n, start) { var a = []; for (var i = 0; i < n; i++) { var k = (start || 1) + i; a.push({ n: k, name: pad(k) + '.jpg', kind: 'img' }); } return a; }
+
+  var state = {
+    mode: 'browser', view: 'calendar', current: 'p1', previewTab: 'ig', confirmFor: null, user: null, loginStep: 'start', loginError: '',
+    users: [
+      { id: 'u1', name: 'Phuong', role: 'admin', status: 'active', claude: true, last: '04.11 08:12' },
+      { id: 'u2', name: 'Người duyệt (mẫu)', role: 'reviewer', status: 'active', claude: true, last: '03.11 18:40' },
+      { id: 'u3', name: 'Content 1 (mẫu)', role: 'content', status: 'active', claude: false, last: '04.11 09:05' },
+      { id: 'u4', name: 'Designer 1 (mẫu)', role: 'designer', status: 'active', claude: false, last: '02.11 16:20' },
+      { id: 'u5', name: 'Content 2 (mẫu)', role: 'content', status: 'invited', claude: false, last: '—' },
+      { id: 'u6', name: 'Cộng tác viên cũ (mẫu)', role: 'content', status: 'locked', claude: false, last: '12.09 10:02' }
+    ],
+    now: { date: '2026-11-04', time: '10:45' },
+    settings: { win1a: '10:00', win1b: '13:00', win2a: '19:00', win2b: '22:00', gap: 90, lead: 20, capMax: 2200, tagMax: 5, carB: 10, carA: 20, simDays: 90 },
+    posts: [
+      { id: 'p1', code: 'TDC-2611-001', title: 'Mở đăng ký Portfolio Program K12', platforms: 'FBIG', date: '2026-11-04', time: '19:30', status: 'review', folder: '20261104_TDC-2611-001_portfolio-k12',
+        files: imgs(6), cover: null, musicIG: noMusic(), musicFB: noMusic(), perSlide: false, slideCaptions: [],
+        caption: 'Portfolio Program K12 chính thức mở đăng ký.\n\n8 LAB, 8 project thật, mentor đồng hành 1-1 từ ý tưởng đến hồ sơ hoàn chỉnh. Lớp khai giảng tháng 12, số chỗ có hạn.\n\nXem lộ trình chi tiết và đăng ký ở link trong bình luận.\n\n#TheDesignCouncil #PortfolioProgram #DesignEducation #TDCK12',
+        cmtFB: 'Lộ trình và đăng ký K12: pp.thedesigncouncil.vn', cmtIG: 'Lộ trình K12 và form đăng ký có ở Story và link trên bio nhé.', storyLink: 'pp.thedesigncouncil.vn', storyText: 'Đăng ký K12 ↘' },
+      { id: 'p2', code: 'TDC-2611-002', title: 'Hành trình LAB Branding', platforms: 'FBIG', date: '2026-11-04', time: '11:00', status: 'scheduled', folder: '20261104_TDC-2611-002_lab-branding-reel',
+        files: [{ n: 1, name: '01_reel.mp4', kind: 'video' }], cover: { mode: 'first' }, reelTitle: 'Hành trình LAB Branding', reelDesc: '', musicIG: noMusic(), musicFB: noMusic(), perSlide: false, slideCaptions: [],
+        caption: 'Một học kỳ, một bộ nhận diện hoàn chỉnh. Cùng xem lại hành trình của các bạn LAB Branding.\n\n#TheDesignCouncil #LABBranding #Branding',
+        cmtFB: '', cmtIG: '', storyLink: '', storyText: '' },
+      { id: 'p3', code: 'TDC-2611-003', title: 'Workshop Type Design', platforms: 'FBIG', date: '2026-11-05', time: '20:00', status: 'draft', folder: '20261105_TDC-2611-003_workshop-type-design',
+        files: imgs(1), cover: null, musicIG: noMusic(), musicFB: noMusic(), perSlide: false, slideCaptions: [],
+        caption: 'Workshop Type Design tối thứ Năm: thiết kế chữ n, o, H cùng mentor.\n\n#TheDesignCouncil #TypeDesign #Typography #Workshop #DesignEducation #Lettering #VietnameseType',
+        cmtFB: 'Đăng ký workshop: pp.thedesigncouncil.vn', cmtIG: 'Đăng ký workshop: pp.thedesigncouncil.vn', storyLink: 'pp.thedesigncouncil.vn', storyText: 'Giữ chỗ workshop ↘' },
+      { id: 'p4', code: 'TDC-2611-004', title: 'Hậu trường buổi chấm LAB', platforms: 'FB', date: '2026-11-06', time: '12:00', status: 'needs', folder: '20261106_TDC-2611-004_hau-truong-cham-lab',
+        files: [{ n: 1, name: '01.jpg', kind: 'img' }, { n: 2, name: '02.jpg', kind: 'img' }, { n: 3, name: '03_hau-truong.mp4', kind: 'video' }, { n: 4, name: '04.jpg', kind: 'img' }],
+        cover: null, musicIG: noMusic(), musicFB: noMusic(), perSlide: false, slideCaptions: [],
+        caption: 'Một buổi chấm LAB nhìn từ phía sau: mentor, học viên và rất nhiều bản in.\n\n#TheDesignCouncil #BehindTheScenes', cmtFB: '', cmtIG: '', storyLink: '', storyText: '' },
+      { id: 'p5', code: 'TDC-2611-005', title: 'Recap Coaching 1-1 tháng 10', platforms: 'FBIG', date: '2026-11-07', time: '10:30', status: 'review', folder: '20261107_TDC-2611-005_recap-coaching',
+        files: imgs(12), cover: null, musicIG: { src: 'app', track: null, note: 'Lo-fi piano, không lời', vol: 80, vvol: 100 }, musicFB: noMusic(), perSlide: false, slideCaptions: [],
+        caption: '12 buổi Coaching 1-1 trong tháng 10, 12 câu chuyện khác nhau. Lướt để xem học viên đã đi được bao xa.\n\n#TheDesignCouncil #Coaching #DesignMentor',
+        cmtFB: 'Đặt lịch Coaching 1-1: pp.thedesigncouncil.vn', cmtIG: 'Bạn muốn đặt lịch 1-1? Xem Story của TDC nhé.', storyLink: 'pp.thedesigncouncil.vn', storyText: 'Đặt lịch 1-1 ↘' },
+      { id: 'p6', code: 'TDC-2611-006', title: 'Lịch học tháng 12', platforms: 'FB', date: '2026-11-04', time: '12:00', status: 'draft', folder: '20261104_TDC-2611-006_lich-hoc-thang-12',
+        files: imgs(1), cover: null, musicIG: noMusic(), musicFB: noMusic(), perSlide: false, slideCaptions: [], dupOf: 'Lịch học tháng 11 (đăng 02.10)',
+        caption: 'Lịch học tháng 12 đã có. Lưu lại để không lỡ buổi nào nhé.\n\n#TheDesignCouncil', cmtFB: '', cmtIG: '', storyLink: '', storyText: '' }
+    ],
+    externals: [
+      { date: '2026-11-05', time: '19:00', title: 'Livestream Q&A (đăng tay trên Page)', plat: 'FB' },
+      { date: '2026-11-06', time: '19:30', title: 'Chia sẻ bài báo (đăng tay)', plat: 'FB' }
+    ],
+    folders: [
+      { name: '20261104_TDC-2611-001_portfolio-k12', files: imgs(6), post: 'p1' },
+      { name: '20261104_TDC-2611-002_lab-branding-reel', files: [{ n: 1, name: '01_reel.mp4', kind: 'video' }], post: 'p2' },
+      { name: '20261105_TDC-2611-003_workshop-type-design', files: imgs(1), post: 'p3' },
+      { name: '20261106_TDC-2611-004_hau-truong-cham-lab', files: [{ n: 1, name: '01.jpg', kind: 'img' }, { n: 2, name: '02.jpg', kind: 'img' }, { n: 3, name: '03_hau-truong.mp4', kind: 'video' }, { n: 4, name: '04.jpg', kind: 'img' }], post: 'p4' },
+      { name: '20261107_TDC-2611-005_recap-coaching', files: imgs(12), post: 'p5' },
+      { name: '20261104_TDC-2611-006_lich-hoc-thang-12', files: imgs(1), post: 'p6', dup: 'Lịch học tháng 11 (đăng 02.10)' },
+      { name: 'mentor-spotlight', inbox: true, files: [{ n: 1, name: '01.jpg', kind: 'img' }, { n: 2, name: '02.jpg', kind: 'img' }, { n: 4, name: '04.jpg', kind: 'img' }, { n: 5, name: '05.jpg', kind: 'img' }], post: null },
+      { name: 'open-day-reel', inbox: true, files: [{ n: 0, name: '00_cover.jpg', kind: 'cover' }, { n: 1, name: '01_open-day.mp4', kind: 'video' }], post: null }
+    ],
+    jobs: {}, manualDone: {}, extraTasks: [], verified: {}, audit: [], evalCount: 0
+  };
+  byId('p5').files.forEach(function (f) { f.w = 1080; f.h = 1440; });
+  byId('p6').files[0].w = 1080; byId('p6').files[0].h = 1080; byId('p4').files[3].w = 1080; byId('p4').files[3].h = 1080;
+  byId('p2').musicIG = { src: 'lib', track: { id: 'ig-1', title: 'Morning Light', artist: 'Lo-Fi Studio' }, note: '', vol: 70, vvol: 40 };
+  state.jobs['p2:fb'] = 'scheduled'; state.jobs['p2:ig'] = 'scheduled';
+  audit('engine', 'Drive API', 'Nhận 2 folder mới trong TDC Post/_inbox: mentor-spotlight (thiếu file 03), open-day-reel (đạt)');
+  audit('Claude', 'MCP (thay mặt ' + me() + ')', 'get_publish_batch → lên lịch TDC-2611-002 trên Business Suite (FB, IG)');
+
+  // ---------- tiện ích ----------
+  function h(tag, attrs) {
+    var el = document.createElement(tag);
+    if (attrs) for (var k in attrs) {
+      if (k === 'class') el.className = attrs[k];
+      else if (k === 'text') el.textContent = attrs[k];
+      else if (k.slice(0, 2) === 'on') el.addEventListener(k.slice(2), attrs[k]);
+      else if (attrs[k] !== false && attrs[k] != null) el.setAttribute(k, attrs[k] === true ? '' : attrs[k]);
+    }
+    for (var i = 2; i < arguments.length; i++) {
+      var c = arguments[i];
+      if (c == null || c === false) continue;
+      if (Array.isArray(c)) c.forEach(function (x) { if (x != null && x !== false) el.appendChild(typeof x === 'string' ? document.createTextNode(x) : x); });
+      else el.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+    }
+    return el;
+  }
+  function audit(who, via, action) { state.audit.unshift({ at: state.now.date.slice(8) + '.' + state.now.date.slice(5, 7) + ' ' + state.now.time, who: who, via: via, action: action }); }
+  function byId(id) { for (var i = 0; i < state.posts.length; i++) if (state.posts[i].id === id) return state.posts[i]; return null; }
+  function mins(t) { var p = t.split(':'); return +p[0] * 60 + +p[1]; }
+  function hhmm(m) { return pad(Math.floor(m / 60)) + ':' + pad(m % 60); }
+  function dayIdx(d) { for (var i = 0; i < DAYS.length; i++) if (DAYS[i].d === d) return i; return 0; }
+  function dayOf(d) { return DAYS[dayIdx(d)]; }
+  function wk(date, time) { return dayIdx(date) * 1440 + mins(time); }
+  function nowMin() { return wk(state.now.date, state.now.time); }
+  function postMin(p) { return wk(p.date, p.time); }
+  function when(p) { var d = dayOf(p.date); return d.w + ' ' + d.n + ' · ' + p.time; }
+  function fmtDur(m) { m = Math.abs(m); return m >= 60 ? Math.floor(m / 60) + ' giờ ' + (m % 60 ? m % 60 + ' phút' : '') : m + ' phút'; }
+  function charLen(s) { return Array.from(s || '').length; }
+  function hashtags(s) { return (s || '').match(/#[\p{L}\p{N}_]+/gu) || []; }
+  function media(p) { return p.files.filter(function (f) { return f.kind !== 'cover'; }); }
+  function postType(p) {
+    var fs = media(p), v = fs.filter(function (f) { return f.kind === 'video'; }).length, n = fs.length;
+    if (v && v < n) return 'Trộn ảnh + video';
+    if (v && n === 1) return 'Reels';
+    if (n === 1) return 'Ảnh đơn';
+    return v ? 'Carousel video' : 'Carousel';
+  }
+  function hasIG(p) { return p.platforms === 'FBIG'; }
+  function firstIsVideo(p) { var fs = media(p); return fs.length > 0 && fs[0].kind === 'video'; }
+  function hasCoverFile(p) { return p.files.some(function (f) { return f.kind === 'cover'; }); }
+  function effMode(p) { return p.modeOverride || state.mode; }
+  function igManualReason(p) {
+    if (!hasIG(p)) return '';
+    if (p.igApp) return 'carousel vượt giới hạn';
+    if (p.musicIG && p.musicIG.src === 'app') return 'thêm nhạc trong app';
+    if (p.perSlide) return 'caption riêng từng ảnh';
+    return '';
+  }
+  function toast(msg) { var t = h('div', { class: 'toast', role: 'status', text: msg }); document.body.appendChild(t); setTimeout(function () { t.remove(); }, 2400); }
+  function copy(text) {
+    var fail = function () { toast('Không sao chép được, hãy chọn và sao chép tay'); };
+    try { navigator.clipboard.writeText(text).then(function () { toast('Đã sao chép'); }, fail); } catch (e) { fail(); }
+  }
+  function inWindow(m) {
+    var s = state.settings;
+    return (m >= mins(s.win1a) && m <= mins(s.win1b)) || (m >= mins(s.win2a) && m <= mins(s.win2b));
+  }
+  function occupants(p) {
+    var list = state.posts.filter(function (q) { return q.id !== p.id && q.date === p.date; }).map(function (q) { return { time: q.time, title: q.title, ext: false }; });
+    state.externals.filter(function (e) { return e.date === p.date; }).forEach(function (e) { list.push({ time: e.time, title: e.title, ext: true }); });
+    return list;
+  }
+  function freeSlots(p) {
+    var out = [], occ = occupants(p), gap = state.settings.gap, nowM = nowMin(), di = dayIdx(p.date);
+    for (var m = 480; m <= 1380 && out.length < 3; m += 30) {
+      if (!inWindow(m)) continue;
+      if (di * 1440 + m < nowM + state.settings.lead) continue;
+      var ok = occ.every(function (o) { return Math.abs(mins(o.time) - m) >= gap; });
+      if (ok) out.push(hhmm(m));
+    }
+    return out;
+  }
+  function slotFixes(p) { return freeSlots(p).map(function (t) { return { label: 'Dời sang ' + t, act: function () { p.time = t; audit(me(), 'web', 'Dời ' + p.code + ' sang ' + t + ' theo gợi ý'); } }; }); }
+
+  // ---------- bộ quy tắc ----------
+  // Không quy tắc nào chặn bài. Mức 'block' nghĩa là CẦN XÁC NHẬN: người gửi ghi lý do,
+  // người duyệt xác nhận lại; xác nhận lưu ở p.confirmed theo key của vấn đề.
+  function rules(p) {
+    state.evalCount++;
+    var r = [], s = state.settings, ig = hasIG(p), m = mins(p.time), browser = effMode(p) === 'browser', type = postType(p);
+    var add = function (code, level, text, fixes, extra) {
+      var o = { code: code, level: level, text: text, fixes: fixes || [] };
+      if (extra) for (var k in extra) o[k] = extra[k];
+      o.key = o.key || code;
+      o.confirmed = level === 'block' ? ((p.confirmed || {})[o.key] || null) : null;
+      r.push(o);
+    };
+    var live = ['draft', 'review', 'approved', 'hold'].indexOf(p.status) >= 0;
+    if (inWindow(m)) add('R01', 'ok', 'Giờ đăng nằm trong khung ' + s.win1a + '–' + s.win1b + ' / ' + s.win2a + '–' + s.win2b + '.');
+    else add('R01', 'warn', 'Giờ ' + p.time + ' nằm ngoài khung đăng ' + s.win1a + '–' + s.win1b + ' và ' + s.win2a + '–' + s.win2b + '.', slotFixes(p));
+    var occ = occupants(p), clashIn = null, clashExt = null;
+    occ.forEach(function (o) { var d = Math.abs(mins(o.time) - m); if (d < s.gap) { if (o.ext) { if (!clashExt) clashExt = o; } else if (!clashIn) clashIn = o; } });
+    if (clashIn) add('R02', 'block', 'Chỉ cách "' + clashIn.title + '" (' + clashIn.time + ') ' + fmtDur(mins(clashIn.time) - m) + '. Quy định tối thiểu ' + fmtDur(s.gap) + '.', slotFixes(p), { ifConfirm: 'Giữ giờ ' + p.time + '; lịch ghi chú hai bài cách nhau dưới ' + fmtDur(s.gap) + '.' });
+    else add('R02', 'ok', 'Cách các bài khác trong hệ thống tối thiểu ' + fmtDur(s.gap) + '.');
+    if (clashExt) add('R04', 'block', 'Lịch Page có bài đăng tay ngoài hệ thống "' + clashExt.title + '" lúc ' + clashExt.time + ', chỉ cách ' + fmtDur(mins(clashExt.time) - m) + '.', slotFixes(p), { ifConfirm: 'Đăng sát bài ngoài hệ thống, giữ giờ ' + p.time + '.' });
+    else add('R04', 'ok', 'Không trùng với bài đăng tay ngoài hệ thống (đồng bộ từ Page).');
+    if (live) {
+      var diff = postMin(p) - nowMin();
+      if (diff < 0) add('R03', 'block', 'Giờ đăng đã qua ' + fmtDur(diff) + ' so với giờ hiện tại.', slotFixes(p), { ifConfirm: 'Chọn đăng ngay ở đợt kế tiếp hoặc dời sang giờ trống.', choices: [['now', 'Đăng ngay ở đợt kế tiếp'], ['reslot', 'Dời sang giờ trống gần nhất']] });
+      else if (browser && diff < s.lead) add('R03', 'warn', 'Còn ' + fmtDur(diff) + ', dưới ' + s.lead + ' phút nên không lên lịch được trên Business Suite. Theo flow: chờ đến giờ và bấm Đăng ngay (Claude hoặc người trực phải có mặt).', slotFixes(p));
+      else if (browser) add('R03', 'ok', 'Còn ' + fmtDur(diff) + ': lên lịch được trên Business Suite.');
+      else add('R03', 'ok', 'Còn ' + fmtDur(diff) + ': worker sẽ đăng đúng giờ.');
+    }
+    var ns = media(p).map(function (f) { return f.n; }).sort(function (a, b) { return a - b; });
+    var missing = [], dup = [];
+    for (var i = 0; i < ns.length; i++) if (i && ns[i] === ns[i - 1]) dup.push(ns[i]);
+    var max = ns.length ? ns[ns.length - 1] : 0;
+    for (var k = 1; k <= max; k++) if (ns.indexOf(k) < 0) missing.push(k);
+    if (missing.length || dup.length) add('R05', 'block', (missing.length ? 'Thiếu file số ' + missing.map(pad).join(', ') + '. ' : '') + (dup.length ? 'Trùng số ' + dup.map(pad).join(', ') + '. ' : '') + 'Nên nhờ designer đánh số lại liên tục từ 01.', [{ label: 'Mô phỏng: designer bổ sung file', act: function () { p.files = renumber(p.files); } }], { ifConfirm: 'Đăng theo các số hiện có, bỏ qua số thiếu; số trùng xếp theo tên file.' });
+    else add('R05', 'ok', 'File đánh số liên tục 01–' + pad(max) + ', không trùng.' + (hasCoverFile(p) ? ' Có file cover riêng (00).' : ''));
+    if (ig && media(p).length > 1) {
+      var lim = browser ? s.carB : s.carA, cnt = media(p).length;
+      if (p.igApp) add('R06', 'ok', 'IG đăng bằng app (tối đa ' + s.carA + ' tấm) theo lựa chọn đã xác nhận.');
+      else if (p.trimTo && cnt > lim) add('R06', 'ok', 'Chỉ đăng ' + Math.min(p.trimTo, lim) + ' tấm đầu lên IG theo lựa chọn đã xác nhận.');
+      else if (cnt > lim) add('R06', 'block', 'Carousel IG có ' + cnt + ' file, vượt giới hạn ' + lim + ' của chế độ ' + (browser ? 'Trình duyệt (Business Suite)' : 'API') + '.', [], {
+        ifConfirm: 'Meta không nhận quá ' + lim + ' tấm ở chế độ này, nên cần chọn một cách xử lý.',
+        choices: (browser && cnt <= s.carA ? [['api', 'Chuyển bài này sang chế độ API (tối đa ' + s.carA + ')'], ['app', 'Đăng IG bằng app (việc làm tay, tối đa ' + s.carA + ')']] : []).concat([['trim', 'Chỉ đăng ' + lim + ' tấm đầu lên IG']]) });
+      else add('R06', 'ok', 'Carousel IG ' + cnt + '/' + lim + ' file.');
+    }
+    if (ig) {
+      if (p.perSlide) {
+        var bad = [];
+        media(p).forEach(function (f, i) { var c = p.slideCaptions[i] || ''; if (charLen(c) > s.capMax || hashtags(c).length > s.tagMax) bad.push(pad(f.n)); });
+        if (bad.length) add('R07', 'block', 'Caption riêng của ảnh ' + bad.join(', ') + ' vượt ' + s.capMax + ' ký tự hoặc ' + s.tagMax + ' hashtag.', [], { ifConfirm: 'Đăng nguyên trạng; IG có thể bỏ caption của các ảnh này.' });
+        else add('R07', 'ok', 'Mỗi caption riêng đều trong giới hạn ' + s.capMax + ' ký tự, ' + s.tagMax + ' hashtag.');
+      } else {
+        var c = charLen(p.caption), ht = hashtags(p.caption).length;
+        var shortFix = [{ label: 'Claude rút gọn (mô phỏng)', act: function () { shorten(p); audit('Claude', 'MCP (thay mặt ' + me() + ')', 'Rút gọn caption ' + p.code); } }];
+        if (c > s.capMax) add('R07', 'block', 'Caption IG ' + c.toLocaleString('vi-VN') + '/' + s.capMax.toLocaleString('vi-VN') + ' ký tự, ' + ht + '/' + s.tagMax + ' hashtag. Vượt ' + s.capMax.toLocaleString('vi-VN') + ' ký tự thì IG tự bỏ caption.', shortFix, { ifConfirm: 'Meta không giữ caption quá ' + s.capMax.toLocaleString('vi-VN') + ' ký tự, nên cần chọn một cách xử lý.', choices: [['short', 'Dùng bản Claude rút gọn'], ['nocap', 'Vẫn đăng; chấp nhận IG bỏ caption']] });
+        else if (ht > s.tagMax) add('R07', 'block', 'Caption IG có ' + ht + '/' + s.tagMax + ' hashtag.', shortFix, { ifConfirm: 'Đăng nguyên trạng; giới hạn ' + s.tagMax + ' hashtag là quy tắc của TDC.' });
+        else add('R07', 'ok', 'Caption IG ' + c.toLocaleString('vi-VN') + '/' + s.capMax.toLocaleString('vi-VN') + ' ký tự, ' + ht + '/' + s.tagMax + ' hashtag.');
+      }
+      if (p.cmtIG && /(https?:\/\/|www\.|\b[\w-]+\.(vn|com|net|org|io|me)\b)/i.test(p.cmtIG)) add('R07', 'warn', 'Comment IG có link: link trong comment IG không bấm được (mục 4.3). Nên để link ở Story hoặc bio.', [], { key: 'R07c' });
+    }
+    if (type === 'Reels' && !p.reelTitle) add('R07', 'block', 'Reels trên FB chưa có tiêu đề (mô tả không bắt buộc).', [], { key: 'R07t', ifConfirm: 'Business Suite cần tiêu đề để tạo Reel.', choices: [['firstline', 'Dùng dòng đầu của caption làm tiêu đề']] });
+    if (type === 'Reels' || firstIsVideo(p)) {
+      if (p.cover && p.cover.mode === 'first') add('R08', 'ok', 'Cover: frame đầu của clip (designer đã đặt ảnh cover ở frame đầu).');
+      else if (p.cover && p.cover.mode === 'frame') add('R08', 'ok', 'Cover: frame tại giây ' + p.cover.sec + ' (chọn frame làm cover trên Business Suite / app IG).');
+      else if (p.cover && p.cover.mode === 'file') add('R08', 'ok', 'Cover: ảnh riêng ' + (p.files.filter(function (f) { return f.kind === 'cover'; })[0] || {}).name + '.');
+      else add('R08', 'warn', (type === 'Reels' ? 'Reels' : 'Slide đầu là motion') + ': chưa chọn cover. Mặc định IG lấy frame đầu; người duyệt cần xem frame đầu.', [{ label: 'Dùng frame đầu làm cover', act: function () { p.cover = { mode: 'first' }; } }]);
+    }
+    if (type === 'Trộn ảnh + video') add('R09', 'warn', browser ? 'Bài trộn ảnh + video: Business Suite không đăng được. FB sẽ thành việc làm tay qua ô tạo bài trên Page (mục 3.3).' : 'Bài trộn ảnh + video: chưa chắc API đăng được. FB sẽ thành việc làm tay (mục 3.3).');
+    var reason = igManualReason(p);
+    if (reason) add('R09', 'warn', 'IG ' + reason + ': sẽ thành việc làm tay đăng bằng app Instagram (mục 4.1).', [], { key: 'R09ig' });
+    var mI = ig ? p.musicIG : null, mF = p.musicFB;
+    if (mI && mI.src === 'lib') {
+      if (!mI.track) add('R16', 'warn', 'Nhạc IG: chưa chọn bài trong thư viện.', [], { key: 'R16i' });
+      else if (browser) add('R16', 'warn', 'Nhạc IG "' + mI.track.title + '": Claude chọn bài này ở bước Âm thanh của Business Suite. Không tìm thấy bài thì IG thành việc làm tay.', [], { key: 'R16i' });
+      else add('R16', 'ok', 'Nhạc IG "' + mI.track.title + '" gắn qua Audio API (nhạc ' + mI.vol + ', âm gốc ' + mI.vvol + ').', [], { key: 'R16i' });
+    }
+    [['FB', mF], ['IG', mI]].forEach(function (x) {
+      if (x[1] && x[1].src === 'mix') add('R16', x[1].track ? 'ok' : 'warn', x[1].track ? 'Nhạc ' + x[0] + ' ghép sẵn vào video: "' + x[1].track.title + '". File gốc trên Drive giữ nguyên; Meta vẫn kiểm tra bản quyền sau đăng.' : 'Nhạc ' + x[0] + ': chưa chọn bài để ghép vào video.', [], { key: 'R16m' + x[0] });
+    });
+    if (mF && mF.src === 'app' && type !== 'Trộn ảnh + video') add('R09', 'warn', 'FB thêm nhạc trong app: bài FB sẽ thành việc làm tay đăng bằng app Facebook.', [], { key: 'R09fb' });
+    if (p.dupOf) add('R10', 'warn', 'File 01.jpg trùng (sha256) với bài "' + p.dupOf + '". Kiểm tra có phải đăng lại cố ý không.');
+    if (p.id === 'p5') add('R11', 'warn', 'Caption gần giống "Recap Coaching 1-1 tháng 9" (đăng 07.10, trong ' + s.simDays + ' ngày). Kiểm tra để tránh lặp ý.');
+    if (ig) add('R12', 'ok', 'FB và IG đăng thành 2 mục riêng; IG tắt "Chia sẻ lên Facebook"; FB để Công khai.');
+    if (p.status === 'draft' || p.status === 'review') add('R14', 'info', 'Bài vào hàng đợi đăng khi người duyệt bấm Duyệt và đã xác nhận lại các vấn đề.');
+    return r;
+  }
+  function renumber(files) {
+    var k = 0;
+    return files.map(function (f) { if (f.kind === 'cover') return f; k++; return { n: k, name: f.kind === 'video' ? pad(k) + f.name.replace(/^\d+/, '') : pad(k) + '.jpg', kind: f.kind }; });
+  }
+  function shorten(p) {
+    var tags = hashtags(p.caption).slice(0, state.settings.tagMax);
+    var body = p.caption.replace(/#[\p{L}\p{N}_]+/gu, '').trim();
+    var chars = Array.from(body), lim = state.settings.capMax - 200;
+    if (chars.length > lim) body = chars.slice(0, lim).join('').trim() + '…';
+    p.caption = body + '\n\n' + tags.join(' ');
+  }
+  // blocks = vấn đề cần xác nhận mà CHƯA ai xác nhận; confirmedIssues = đã có người xác nhận
+  function blocks(p) { return rules(p).filter(function (x) { return x.level === 'block' && !x.confirmed; }); }
+  function confirmedIssues(p) { return rules(p).filter(function (x) { return x.level === 'block' && x.confirmed; }); }
+  function warns(p) { return rules(p).filter(function (x) { return x.level === 'warn'; }); }
+  function applyChoice(p, choice) {
+    if (choice === 'api') p.modeOverride = 'api';
+    else if (choice === 'app') p.igApp = true;
+    else if (choice === 'trim') p.trimTo = effMode(p) === 'browser' ? state.settings.carB : state.settings.carA;
+    else if (choice === 'short') shorten(p);
+    else if (choice === 'reslot') { var f = freeSlots(p); if (f.length) p.time = f[0]; }
+    else if (choice === 'firstline') p.reelTitle = (p.caption.split('\n')[0] || '').slice(0, 80);
+  }
+  // Hộp xác nhận: dùng cho người gửi (khi Gửi duyệt) và người duyệt (vấn đề mới phát sinh)
+  function confirmPanel(p, issues, opts) {
+    var draft = {};
+    var btn = h('button', { class: 'btn primary', type: 'button', disabled: true }, opts.button);
+    function check() {
+      btn.disabled = !issues.every(function (x) { var d = draft[x.key]; return d.reason.trim().length >= 5 && (!x.choices || !x.choices.length || d.choice); });
+    }
+    var wrap = h('div', { class: 'confirm', role: 'group', 'aria-label': opts.title },
+      h('h4', { text: opts.title }),
+      h('p', { class: 'muted', text: 'Bài không bị chặn. Chọn cách xử lý nếu có, ghi lý do; người duyệt sẽ xác nhận lại.' }));
+    issues.forEach(function (x, idx) {
+      var d = draft[x.key] = { reason: '', choice: '' };
+      var item = h('div', { class: 'confirm-item' }, h('div', { class: 'rule block' }, h('span', { class: 'code', text: x.code }), h('p', { text: x.text })));
+      if (x.ifConfirm) item.appendChild(h('p', { class: 'muted', text: 'Nếu xác nhận: ' + x.ifConfirm }));
+      if (x.choices && x.choices.length) {
+        var g = h('div', { class: 'choices', role: 'radiogroup', 'aria-label': 'Cách xử lý ' + x.code });
+        x.choices.forEach(function (c, ci) {
+          var id = 'ch-' + p.id + '-' + idx + '-' + ci;
+          var radio = h('input', { type: 'radio', name: 'ch-' + p.id + '-' + idx, id: id, value: c[0] });
+          radio.addEventListener('change', function () { d.choice = c[0]; check(); });
+          g.appendChild(h('label', { class: 'toggle', for: id }, radio, c[1]));
+        });
+        item.appendChild(g);
+      }
+      var rid = 'rs-' + p.id + '-' + idx;
+      var inp = h('input', { class: 'input', id: rid, placeholder: 'Ví dụ: bài gấp theo lịch sự kiện, đã báo người duyệt' });
+      inp.addEventListener('input', function () { d.reason = inp.value; check(); });
+      item.appendChild(h('label', { class: 'flabel', for: rid, text: 'Lý do xác nhận (bắt buộc)' }));
+      item.appendChild(inp);
+      wrap.appendChild(item);
+    });
+    btn.addEventListener('click', function () {
+      p.confirmed = p.confirmed || {};
+      issues.forEach(function (x) {
+        var d = draft[x.key];
+        var label = d.choice ? x.choices.filter(function (c) { return c[0] === d.choice; })[0][1] : '';
+        if (d.choice) applyChoice(p, d.choice);
+        p.confirmed[x.key] = { code: x.code, reason: d.reason.trim(), choice: label, by: opts.by, reviewed: !!opts.reviewer, at: state.now.time };
+        audit(opts.by, 'web', 'Xác nhận ' + x.code + ' cho ' + p.code + (label ? ' · chọn: ' + label : '') + ' · lý do: ' + d.reason.trim());
+      });
+      opts.onDone();
+    });
+    wrap.appendChild(h('div', { class: 'row' }, btn, h('button', { class: 'btn ghost', type: 'button', onclick: opts.onCancel }, 'Huỷ')));
+    return wrap;
+  }
+  function confirmedNote(x) {
+    var c = x.confirmed;
+    return 'Đã xác nhận bởi ' + c.by + ' lúc ' + c.at + (c.choice ? ' · chọn: ' + c.choice : '') + ' · lý do: ' + c.reason + (c.reviewed ? ' · người duyệt đã xác nhận lại' : ' · chờ người duyệt xác nhận lại');
+  }
+
+  // ---------- việc đăng ----------
+  function jobsOf(p) {
+    if (['approved', 'scheduled', 'published', 'verified', 'needs', 'hold'].indexOf(p.status) < 0) return [];
+    var list = [], mixed = postType(p) === 'Trộn ảnh + video', reel = postType(p) === 'Reels', igReason = igManualReason(p);
+    var st = function (key, def) { return state.jobs[p.id + key] || def; };
+    var base = p.status === 'approved' ? 'waiting' : p.status === 'hold' ? 'hold' : 'scheduled';
+    var fbApp = !mixed && p.musicFB && p.musicFB.src === 'app';
+    list.push({ key: ':fb', plat: 'FB', action: mixed ? 'Đăng tay trên Page (bài trộn)' : fbApp ? 'Đăng bằng app Facebook (thêm nhạc)' : reel ? 'Tạo Reel' : 'Tạo bài viết', manual: mixed || fbApp, kind: fbApp ? 'fb-app' : 'mixed', status: (mixed || fbApp) ? st(':fb', 'manual') : st(':fb', base) });
+    if (reel && !mixed) list.push({ key: ':copyright', plat: 'FB', action: 'Meta kiểm tra bản quyền hình ảnh, âm thanh', status: st(':copyright', 'later') });
+    if (hasIG(p)) list.push({ key: ':ig', plat: 'IG', action: igReason ? 'Đăng bằng app IG (' + igReason + ')' : reel ? 'Tạo Reel' : 'Tạo bài viết', manual: !!igReason, kind: 'ig-app', status: igReason ? st(':ig', 'manual') : st(':ig', base) });
+    if (p.cmtFB) list.push({ key: ':cmtfb', plat: 'FB', action: 'Comment dưới bài (tài khoản TDC)', status: st(':cmtfb', 'later') });
+    if (hasIG(p) && p.cmtIG) list.push({ key: ':cmtig', plat: 'IG', action: 'Comment dưới bài (tài khoản TDC)', status: st(':cmtig', 'later') });
+    if (hasIG(p) && p.storyLink) list.push({ key: ':story', plat: 'IG', action: 'Story dẫn link', manual: true, kind: 'story', status: st(':story', 'manual') });
+    list.push({ key: ':verify', plat: hasIG(p) ? 'FB + IG' : 'FB', action: 'Kiểm tra sau giờ đăng (mục 5)', status: st(':verify', 'later') });
+    return list;
+  }
+  function manualTasks() {
+    var out = [];
+    state.posts.forEach(function (p) {
+      jobsOf(p).forEach(function (j) { if (j.manual) out.push({ id: p.id + j.key, post: p, kind: j.kind, title: j.action }); });
+    });
+    state.extraTasks.forEach(function (t) { out.push(t); });
+    return out;
+  }
+  function dueForVerify() { return state.posts.filter(function (p) { return p.status === 'scheduled' && postMin(p) <= nowMin(); }); }
+
+  // ---------- đăng nhập và quyền ----------
+  var ROLES = { admin: 'Admin', reviewer: 'Người duyệt', content: 'Content', designer: 'Designer' };
+  var ALL = ['admin', 'reviewer', 'content', 'designer'];
+  var PERMS = {
+    'view.calendar': ALL, 'view.media': ALL, 'view.manual': ALL,
+    'view.compose': ['admin', 'reviewer', 'content'], 'view.review': ['admin', 'reviewer', 'content'],
+    'view.queue': ['admin', 'reviewer', 'content'], 'view.verify': ['admin', 'reviewer', 'content'],
+    'view.audit': ['admin', 'reviewer'], 'view.settings': ['admin'], 'view.users': ['admin'],
+    'act.upload': ['admin', 'content', 'designer'], 'act.createPost': ['admin', 'reviewer', 'content'],
+    'act.submit': ['admin', 'reviewer', 'content'], 'act.approve': ['admin', 'reviewer'],
+    'act.runBatch': ['admin', 'reviewer'], 'act.manualDone': ALL,
+    'act.mode': ['admin'], 'act.settings': ['admin'], 'act.users': ['admin']
+  };
+  var MATRIX = [
+    ['Xem lịch, nhận file, việc làm tay', 'view.calendar'], ['Thả folder vào _inbox (Google Drive)', 'act.upload'],
+    ['Tạo bài từ folder, soạn bài', 'act.createPost'], ['Gửi duyệt, xác nhận vấn đề khi gửi', 'act.submit'],
+    ['Duyệt, xác nhận lại, trả lại bài', 'act.approve'], ['Ra lệnh đợt đăng và đợt kiểm tra', 'act.runBatch'],
+    ['Đánh dấu xong việc làm tay', 'act.manualDone'], ['Xem nhật ký', 'view.audit'],
+    ['Đổi chế độ đăng (Trình duyệt / API)', 'act.mode'], ['Sửa tham số quy tắc, hồ sơ định dạng', 'act.settings'],
+    ['Mời người, đổi vai trò, khoá tài khoản, thu hồi Claude', 'act.users']
+  ];
+  function me() { return state.user ? state.user.name : 'Phuong'; }
+  function can(perm) { return !!state.user && (PERMS[perm] || []).indexOf(state.user.role) >= 0; }
+  function allowedViews() { return Object.keys(TITLES).filter(function (v) { return can('view.' + v); }); }
+  function signIn(u) {
+    if (u.status === 'locked') { state.loginError = 'Tài khoản này đã bị khoá. Liên hệ admin nếu cần mở lại.'; render(); return; }
+    if (u.status === 'invited') u.status = 'active';
+    u.last = state.now.date.slice(8) + '.' + state.now.date.slice(5, 7) + ' ' + state.now.time;
+    state.user = u; state.loginStep = 'start'; state.loginError = '';
+    audit(u.name, 'web', 'Đăng nhập bằng Google Workspace (' + ROLES[u.role] + ')');
+    var allowed = allowedViews(); if (allowed.indexOf(state.view) < 0) state.view = allowed[0];
+    render();
+  }
+  function signOut() { if (state.user) audit(state.user.name, 'web', 'Đăng xuất'); state.user = null; state.confirmFor = null; render(); }
+  function viewLogin(v) {
+    var card = h('div', { class: 'panel login' },
+      h('div', { class: 'brandline' }, h('b', { text: 'TDC Post' }), h('span', { class: 'label', text: 'Hệ thống đăng bài FB & IG' })),
+      h('h4', { text: 'Đăng nhập để tiếp tục' }),
+      h('p', { class: 'muted', text: 'Dùng tài khoản Google Workspace của TDC đã được mời.' }));
+    if (state.loginError) card.appendChild(h('div', { class: 'err', role: 'alert', text: state.loginError }));
+    if (state.loginStep === 'start') {
+      card.appendChild(h('button', { class: 'google', type: 'button', onclick: function () { state.loginStep = 'choose'; state.loginError = ''; render(); } }, h('i', { 'aria-hidden': 'true' }), 'Tiếp tục bằng Google'));
+    } else {
+      var list = h('div', { class: 'accts', role: 'list', 'aria-label': 'Chọn tài khoản Google (mô phỏng)' });
+      state.users.forEach(function (u) {
+        list.appendChild(h('button', { class: 'acct', type: 'button', role: 'listitem', onclick: function () { signIn(u); } },
+          h('span', { class: 'av', text: u.name.charAt(0) }),
+          h('span', null, h('b', { text: u.name }), h('br'), h('span', { class: 'muted', text: 'Tài khoản Google Workspace TDC' })),
+          h('span', { class: 'chip ' + (u.status === 'active' ? '' : u.status === 'invited' ? 'info' : 'block'), text: u.status === 'active' ? ROLES[u.role] : u.status === 'invited' ? 'Được mời · ' + ROLES[u.role] : 'Đã khoá' })));
+      });
+      list.appendChild(h('button', { class: 'acct', type: 'button', role: 'listitem', onclick: function () { state.loginError = 'Tài khoản Google này chưa được cấp quyền vào TDC Post. Nhờ admin mời bạn trong màn Người dùng & quyền.'; render(); } },
+        h('span', { class: 'av', text: '?' }), h('span', null, h('b', { text: 'Tài khoản Google khác' }), h('br'), h('span', { class: 'muted', text: 'Chưa được mời' })), h('span')));
+      card.appendChild(list);
+      card.appendChild(h('button', { class: 'btn ghost small', type: 'button', onclick: function () { state.loginStep = 'start'; state.loginError = ''; render(); } }, 'Quay lại'));
+    }
+    card.appendChild(h('p', { class: 'muted ann', text: 'Claude kết nối vào app bằng chính tài khoản này (OAuth) và chỉ có đúng quyền của bạn.' }));
+    v.appendChild(card);
+  }
+  function permNote(text) { return h('p', { class: 'perm-note', text: text }); }
+  function renderSideFoot() {
+    var f = document.getElementById('side-foot'); f.textContent = '';
+    if (!state.user) return;
+    f.appendChild(h('div', { class: 'me-card' }, h('span', { class: 'av', text: state.user.name.charAt(0) }), h('span', null, h('b', { text: state.user.name }), h('small', { text: ROLES[state.user.role] }))));
+    f.appendChild(h('span', { class: 'conn' }, h('i', { class: state.user.claude ? '' : 'off' }), state.user.claude ? 'Claude đã kết nối' : 'Claude chưa kết nối'));
+    f.appendChild(h('span', { class: 'conn' }, h('i'), 'Google Drive đã liên kết'));
+    f.appendChild(h('button', { class: 'btn small ghost', type: 'button', onclick: signOut }, 'Đăng xuất'));
+  }
+
+  // ---------- điều hướng ----------
+  function setMode(m) {
+    if (!can('act.mode')) { toast('Chỉ admin được đổi chế độ đăng'); return; }
+    state.mode = m;
+    document.querySelectorAll('[data-mode]').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-mode') === m ? 'true' : 'false'); });
+    audit(me(), 'web', 'Đổi chế độ đăng: ' + (m === 'browser' ? 'Trình duyệt' : 'API'));
+    render();
+  }
+  function go(v, postId) {
+    state.view = v; if (postId) state.current = postId; render();
+    var vw = document.getElementById('view'); if (vw) vw.scrollTop = 0;
+    var top = document.getElementById('app'); if (top && top.getBoundingClientRect().top < 0) top.scrollIntoView({ block: 'start' });
+  }
+  document.querySelectorAll('.nav-btn').forEach(function (b) { b.addEventListener('click', function () { go(b.getAttribute('data-view')); }); });
+  var annT = document.getElementById('ann-toggle'); annT.addEventListener('change', function () { document.body.classList.toggle('show-ann', annT.checked); });
+  document.querySelectorAll('[data-mode]').forEach(function (b) { b.addEventListener('click', function () { setMode(b.getAttribute('data-mode')); }); });
+  var clock = document.getElementById('clock');
+  NOW_OPTIONS.forEach(function (o, i) { clock.appendChild(h('option', { value: String(i), text: o.label })); });
+  clock.value = '1';
+  clock.addEventListener('change', function () { var o = NOW_OPTIONS[+clock.value]; state.now = { date: o.date, time: o.time }; render(); });
+
+  var TITLES = { calendar: 'Lịch tuần 02–08.11', media: 'Nhận file từ Google Drive', compose: 'Soạn bài', review: 'Chờ duyệt', queue: 'Hàng đợi đăng', verify: 'Kiểm tra sau đăng', manual: 'Việc cần làm tay', settings: 'Cài đặt quy tắc', audit: 'Nhật ký', users: 'Người dùng & quyền' };
+  function render() {
+    var app = document.getElementById('app');
+    if (!state.iconsDone) { state.iconsDone = true; document.querySelectorAll('[data-ic]').forEach(function (sp) { sp.appendChild(ico(sp.getAttribute('data-ic'), 18)); }); }
+    renderSideFoot();
+    if (!state.user) {
+      app.classList.add('signed-out');
+      document.getElementById('view-title').textContent = 'Đăng nhập';
+      var lv = document.getElementById('view'); lv.textContent = ''; viewLogin(lv); return;
+    }
+    app.classList.remove('signed-out');
+    var allowed = allowedViews();
+    if (allowed.indexOf(state.view) < 0) state.view = allowed[0];
+    document.querySelectorAll('.nav-btn').forEach(function (b) {
+      var vw = b.getAttribute('data-view');
+      b.hidden = allowed.indexOf(vw) < 0;
+      b.setAttribute('aria-current', vw === state.view ? 'true' : 'false');
+    });
+    document.querySelectorAll('.side .label').forEach(function (l) { l.hidden = !can('view.settings') && !can('view.audit'); });
+    document.querySelectorAll('[data-mode]').forEach(function (b) { b.disabled = !can('act.mode'); b.title = can('act.mode') ? '' : 'Chỉ admin được đổi chế độ đăng'; });
+    document.getElementById('view-title').textContent = TITLES[state.view];
+    var counts = {
+      media: state.folders.filter(function (f) { return !f.post; }).length,
+      review: state.posts.filter(function (p) { return p.status === 'review' || p.status === 'hold'; }).length,
+      queue: state.posts.filter(function (p) { return ['approved', 'scheduled'].indexOf(p.status) >= 0; }).length,
+      verify: dueForVerify().length,
+      manual: manualTasks().filter(function (t) { return !state.manualDone[t.id]; }).length,
+      audit: state.audit.length
+    };
+    document.querySelectorAll('[data-count]').forEach(function (c) { var n = counts[c.getAttribute('data-count')]; c.textContent = n || ''; c.hidden = !n; });
+    var v = document.getElementById('view');
+    v.textContent = '';
+    ({ calendar: viewCalendar, media: viewMedia, compose: viewCompose, review: viewReview, queue: viewQueue, verify: viewVerify, manual: viewManual, settings: viewSettings, audit: viewAudit, users: viewUsers })[state.view](v);
+  }
+  function statusChip(p) { var s = STATUS[p.status]; return h('span', { class: 'chip ' + s[1], text: s[0] }); }
+  function platBadges(p) { return [h('span', { class: 'badge fb', text: 'FB' }), hasIG(p) ? h('span', { class: 'badge ig', text: 'IG' }) : null]; }
+  function modeBadge() { return state.mode === 'browser' ? h('span', { class: 'badge mode-b', text: 'Trình duyệt' }) : h('span', { class: 'badge mode-a', text: 'API' }); }
+  function tileColor(i) { return COLORS[i % COLORS.length]; }
+
+  // ---------- Lịch ----------
+  function viewCalendar(v) {
+    var s = state.settings;
+    var grid = h('div', { class: 'cal-grid' });
+    grid.appendChild(h('div', { class: 'cal-head' }));
+    DAYS.forEach(function (d) { grid.appendChild(h('div', { class: 'cal-head' }, h('span', { text: d.w }), h('b', { text: d.n.slice(0, 2) }))); });
+    var hours = h('div', { class: 'cal-hours' });
+    for (var hr = 8; hr <= 23; hr++) hours.appendChild(h('span', { style: 'top:' + ((hr - 8) * 40) + 'px', text: pad(hr) + ':00' }));
+    grid.appendChild(hours);
+    var y = function (t) { return (mins(t) - 480) / 60 * 40; };
+    DAYS.forEach(function (d) {
+      var col = h('div', { class: 'cal-day', 'aria-label': d.w + ' ' + d.n });
+      col.appendChild(h('div', { class: 'win', style: 'top:' + y(s.win1a) + 'px;height:' + (y(s.win1b) - y(s.win1a)) + 'px' }));
+      col.appendChild(h('div', { class: 'win', style: 'top:' + y(s.win2a) + 'px;height:' + (y(s.win2b) - y(s.win2a)) + 'px' }));
+      if (d.d === state.now.date) col.appendChild(h('div', { class: 'nowline', style: 'top:' + y(state.now.time) + 'px' }));
+      state.externals.filter(function (e) { return e.date === d.d; }).forEach(function (e) {
+        col.appendChild(h('div', { class: 'ev ext', style: 'top:' + y(e.time) + 'px;height:39px', title: e.title },
+          h('span', { class: 't' }, e.time, ' ', h('span', { class: 'badge ext', text: 'ngoài hệ thống' })), h('span', { class: 'n', text: e.title })));
+      });
+      state.posts.filter(function (p) { return p.date === d.d; }).forEach(function (p) {
+        var bad = blocks(p).length > 0;
+        col.appendChild(h('button', { class: 'ev' + (bad ? ' s-block' : ''), style: 'top:' + y(p.time) + 'px;height:39px', onclick: function () { go('compose', p.id); }, title: p.title + ' · ' + STATUS[p.status][0] + (bad ? ' · có vấn đề chưa xác nhận' : '') },
+          h('span', { class: 't' }, p.time, ' ', platBadges(p), h('span', { class: 'chip ' + STATUS[p.status][1], style: 'padding:2px 5px;font-size:10px', text: STATUS[p.status][0] })),
+          h('span', { class: 'n', text: p.title })));
+      });
+      grid.appendChild(col);
+    });
+    v.appendChild(h('div', { class: 'legend' },
+      h('span', null, h('i'), 'Khung giờ đăng ' + s.win1a + '–' + s.win1b + ' · ' + s.win2a + '–' + s.win2b),
+      h('span', null, h('i', { class: 'ext' }), 'Bài đăng tay ngoài hệ thống, đồng bộ từ Page (R04)'),
+      h('span', null, h('i', { class: 'red' }), 'Bài có vấn đề chưa xác nhận'),
+      h('span', { text: 'Vạch đỏ: giờ hiện tại · Bấm vào bài để mở màn Soạn bài' })));
+    v.appendChild(h('div', { class: 'cal' }, grid));
+  }
+
+  // ---------- Nhận file ----------
+  function folderCheck(f) {
+    var ns = f.files.filter(function (x) { return x.kind !== 'cover'; }).map(function (x) { return x.n; }).sort(function (a, b) { return a - b; });
+    var missing = [], max = ns.length ? ns[ns.length - 1] : 0;
+    for (var k = 1; k <= max; k++) if (ns.indexOf(k) < 0) missing.push(k);
+    var checks = [];
+    checks.push({ ok: !missing.length, text: missing.length ? 'Thiếu file số ' + missing.map(pad).join(', ') + ' (R05) · để nguyên trong _inbox, đã báo designer' : 'Đánh số liên tục 01–' + pad(max) });
+    checks.push({ ok: true, text: 'Định dạng: ' + f.files.map(function (x) { return x.name.split('.').pop(); }).filter(function (x, i, a) { return a.indexOf(x) === i; }).join(', ') + ' · tỉ lệ 4:5, 1080 px (đạt)' });
+    var vids = f.files.filter(function (x) { return x.kind === 'video'; }).length;
+    if (vids) checks.push({ ok: true, text: 'Video: H.264, 1080×1920, ' + (f.files.some(function (x) { return x.kind === 'cover'; }) ? 'có ảnh cover riêng (00)' : 'cover = frame đầu') });
+    if (f.inbox) checks.push({ ok: false, warn: true, text: missing.length ? 'Chờ sửa xong mới chuyển vào ' + DRIVE : 'Đạt: tạo bài sẽ gắn mã, đổi tên folder và chuyển vào ' + DRIVE });
+    else checks.push({ ok: true, text: 'Bản gốc giữ trên Drive (sha256, file ID đã ghi) · bản nén ig_feed, fb_feed, thumb đã lên R2' });
+    if (f.dup) checks.push({ ok: false, warn: true, text: 'File trùng sha256 với bài "' + f.dup + '" (R10)' });
+    return { checks: checks, missing: missing };
+  }
+  function viewMedia(v) {
+    v.appendChild(h('p', { class: 'muted ann', text: 'Designer thả mỗi bài một folder (file đã đánh số) vào TDC Post/_inbox trên Google Drive. Engine kiểm tra trong vài phút: số thứ tự, định dạng, cover, file trùng. Đạt thì gắn mã bài, đổi tên folder theo chuẩn, chuyển vào đúng năm/tháng, giữ nguyên bản gốc trên Drive và tạo bản nén lên R2. Content tạo bài từ folder rồi điền caption, nền tảng, giờ, CTA.' }));
+    var cards = h('div', { class: 'cards' });
+    state.folders.forEach(function (f) {
+      var ck = folderCheck(f), post = f.post ? byId(f.post) : null;
+      cards.appendChild(h('div', { class: 'panel' },
+        h('div', { class: 'folder' },
+          h('div', { style: 'display:grid;gap:8px;min-width:0' },
+            h('div', { class: 'row' }, h('code', { text: (f.inbox ? 'TDC Post/_inbox/' : DRIVE) + f.name + '/' }), post ? statusChip(post) : h('span', { class: 'chip warn', text: 'Trong _inbox, chưa tạo bài' })),
+            h('div', { class: 'filelist' }, f.files.map(function (x) { return h('span', { text: x.name }); }), ck.missing.map(function (n) { return h('span', { class: 'bad', text: '[thiếu ' + pad(n) + ']' }); })),
+            h('div', { class: 'checks' }, ck.checks.map(function (c) { return h('div', { class: 'check ' + (c.ok ? 'ok' : c.warn ? 'wait' : 'bad') }, h('i', { text: c.ok ? '✓' : c.warn ? '…' : '!' }), h('span', { text: c.text })); }))),
+          h('div', { class: 'row', style: 'flex-direction:column;align-items:stretch' },
+            post ? h('button', { class: 'btn small', type: 'button', onclick: function () { go('compose', post.id); } }, 'Mở bài ' + post.code)
+              : h('button', { class: 'btn primary small', type: 'button', disabled: ck.missing.length > 0 || !can('act.createPost'), title: can('act.createPost') ? null : 'Vai trò của bạn không tạo được bài', onclick: function () { createFromFolder(f); } }, 'Tạo bài từ folder'),
+            ck.missing.length ? h('button', { class: 'btn small', type: 'button', onclick: function () { f.files = renumber(f.files.concat([{ n: 99, name: '99.jpg', kind: 'img' }]).sort(function (a, b) { return a.n - b.n; })); audit('Designer', 'Google Drive', 'Bổ sung file cho _inbox/' + f.name); render(); toast('Mô phỏng: designer đã gửi file còn thiếu'); } }, 'Mô phỏng: designer gửi file thiếu') : null))));
+    });
+    v.appendChild(cards);
+  }
+  function createFromFolder(f) {
+    var n = state.posts.length + 1, id = 'p' + n, code = 'TDC-2611-' + (n < 10 ? '00' : n < 100 ? '0' : '') + n;
+    var isReel = f.files.filter(function (x) { return x.kind === 'video'; }).length === 1 && f.files.filter(function (x) { return x.kind !== 'cover'; }).length === 1;
+    var title = f.name.replace(/-/g, ' '); title = title.charAt(0).toUpperCase() + title.slice(1);
+    var newName = '20261108_' + code + '_' + f.name;
+    var p = { id: id, code: code, title: title, platforms: 'FBIG', date: '2026-11-08', time: '19:00', status: 'draft', folder: newName,
+      files: f.files.slice(), cover: f.files.some(function (x) { return x.kind === 'cover'; }) ? { mode: 'file' } : null, reelTitle: isReel ? '' : undefined, reelDesc: '', musicIG: noMusic(), musicFB: noMusic(), perSlide: false, slideCaptions: [],
+      caption: '', cmtFB: '', cmtIG: '', storyLink: '', storyText: '' };
+    state.posts.push(p); f.post = id; f.inbox = false; f.name = newName;
+    audit('engine', 'Drive API', 'Đổi tên và chuyển folder vào ' + DRIVE + newName + ' · tạo bản nén lên R2');
+    audit(me(), 'web', 'Tạo bài ' + code + ' từ folder');
+    go('compose', id); toast('Đã tạo bài nháp; folder đã được chuyển vào ' + DRIVE);
+  }
+
+  // ---------- Soạn bài ----------
+  // ---------- Nhạc ----------
+  // Dữ liệu mẫu. Thật: IG lấy từ GET /ig_audio (Instagram Audio API), thư viện ghép lấy từ kho nhạc đã có quyền của TDC.
+  var IG_AUDIO = [
+    { id: 'ig-1', title: 'Morning Light', artist: 'Lo-Fi Studio', dur: '2:41', trend: true },
+    { id: 'ig-2', title: 'Gridlines', artist: 'Neon Type', dur: '1:58', trend: true },
+    { id: 'ig-3', title: 'Paper Planes (Instrumental)', artist: 'Studio Kei', dur: '3:05' },
+    { id: 'ig-4', title: 'Soft Focus', artist: 'Ambient Works', dur: '2:12' }
+  ];
+  var MIX_LIB = [
+    { id: 'mx-1', title: 'Calm Piano 01', artist: 'Meta Sound Collection', dur: '2:30' },
+    { id: 'mx-2', title: 'Studio Pulse', artist: 'Meta Sound Collection', dur: '1:45' },
+    { id: 'mx-3', title: 'TDC Ident 2026', artist: 'Nhạc TDC đã mua quyền', dur: '0:12' }
+  ];
+  function noMusic() { return { src: 'none', track: null, note: '', vol: 80, vvol: 100 }; }
+  function isVideoPost(p) { return media(p).some(function (f) { return f.kind === 'video'; }); }
+  function musicOptions(p, pl) {
+    var reel = postType(p) === 'Reels', o = [];
+    if (pl === 'ig' && reel) o.push(['lib', 'Thư viện nhạc IG']);
+    if (reel || (pl === 'fb' && isVideoPost(p) && postType(p) !== 'Trộn ảnh + video')) o.push(['mix', 'Ghép sẵn vào video']);
+    o.push(['app', pl === 'ig' ? 'Thêm bằng app IG' : 'Thêm bằng app Facebook']);
+    o.push(['none', 'Không nhạc']);
+    return o;
+  }
+  function musicLabel(m) {
+    if (!m || m.src === 'none') return '';
+    if (m.src === 'app') return m.note || 'nhạc chọn trong app';
+    return m.track ? m.track.title + ' · ' + m.track.artist : '';
+  }
+  function dimsOf(f) {
+    if (!f.w) { if (f.kind === 'video' || f.kind === 'cover') { f.w = 1080; f.h = 1920; } else { f.w = 1080; f.h = 1350; } }
+    return f;
+  }
+  function viDate(p) { var n = dayOf(p.date).n; return (+n.slice(0, 2)) + ' tháng ' + (+n.slice(3)); }
+
+  // ---------- Biểu tượng ----------
+  var ICONS = {
+    heart: '<path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z"/>',
+    comment: '<path d="M20.5 12a8.5 8.5 0 1 1-2.6-6.1A8.4 8.4 0 0 1 20.5 12z"/><path d="M20.5 20.5l-2.3-3.1"/>',
+    send: '<path d="M21.5 3L2.5 10.2l7.4 2.9 2.9 7.4L21.5 3z"/><path d="M9.9 13.1L21.5 3"/>',
+    save: '<path d="M6 3.5h12v17l-6-5-6 5z"/>',
+    more: '<circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/>',
+    home: '<path d="M3.5 10.5L12 3.5l8.5 7V20.5h-6v-6h-5v6h-6z"/>',
+    search: '<circle cx="11" cy="11" r="7"/><path d="M20.5 20.5l-4.5-4.5"/>',
+    plus: '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><path d="M12 8v8M8 12h8"/>',
+    reels: '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><path d="M3.5 8.5h17M9 3.5l2.5 5M14.5 3.5l2.5 5"/><path d="M10.2 11.5v5.5l4.6-2.75z"/>',
+    camera: '<rect x="3" y="7" width="18" height="13" rx="3"/><circle cx="12" cy="13.5" r="3.5"/><path d="M9 7l1.5-3h3L15 7"/>',
+    music: '<path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/>',
+    globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.7 5.6 3.7 9s-1.2 6.4-3.7 9c-2.5-2.6-3.7-5.6-3.7-9S9.5 5.6 12 3z"/>',
+    like: '<path d="M7.5 10.5v10h-4v-10zM7.5 10.5L11.3 3a2.2 2.2 0 0 1 2.2 2.2V9h5.7a2 2 0 0 1 2 2.3l-1.4 7.4a2.2 2.2 0 0 1-2.2 1.8H7.5"/>',
+    share: '<path d="M14 4.5l7 7-7 7v-4c-6 0-9 1.8-11 5 .8-6 4-10 11-11z"/>',
+    close: '<path d="M6 6l12 12M18 6L6 18"/>',
+    grid: '<rect x="3.5" y="3.5" width="17" height="17"/><path d="M9.2 3.5v17M14.8 3.5v17M3.5 9.2h17M3.5 14.8h17"/>',
+    tag: '<rect x="3.5" y="3.5" width="17" height="17" rx="3"/><circle cx="12" cy="10" r="3"/><path d="M7 20a5 5 0 0 1 10 0"/>',
+    carousel: '<rect x="7" y="7" width="13" height="13" rx="2"/><path d="M4 16V5a1 1 0 0 1 1-1h11"/>',
+    menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
+    link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+    video: '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9v6l5-3z"/>',
+    friends: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.2a5 5 0 0 1 5.5 4.8"/>',
+    shop: '<path d="M4 9.5V20h16V9.5"/><path d="M3 4h18l-1.5 5.5H4.5z"/>',
+    bell: '<path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.8 2H4.2z"/><path d="M10 21h4"/>',
+    calendar: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+    inbox: '<path d="M3.5 13.5l2.6-8.5h11.8l2.6 8.5V19a1.5 1.5 0 0 1-1.5 1.5h-14A1.5 1.5 0 0 1 3.5 19z"/><path d="M3.5 13.5h5l1 2.5h5l1-2.5h5"/>',
+    edit: '<path d="M4 20h4L19.5 8.5a2.8 2.8 0 0 0-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
+    review: '<circle cx="12" cy="12" r="8.5"/><path d="M8.2 12.3l2.6 2.6 5-5.2"/>',
+    queue: '<path d="M8 6.5h12.5M8 12h12.5M8 17.5h12.5"/><circle cx="4.2" cy="6.5" r="0.9"/><circle cx="4.2" cy="12" r="0.9"/><circle cx="4.2" cy="17.5" r="0.9"/>',
+    verify: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="M20.5 20.5l-5.3-5.3"/><path d="M7.8 10.6l1.9 1.9 3.3-3.4"/>',
+    hand: '<path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V11M11 10V4a1.5 1.5 0 0 1 3 0v6M14 10V5.5a1.5 1.5 0 0 1 3 0V14a7 7 0 0 1-7 7h-.5a6 6 0 0 1-4.9-2.5L3.3 15.3a1.5 1.5 0 0 1 2.4-1.8L8 15.5"/>',
+    sliders: '<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>',
+    users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4M18 14.2a6.5 6.5 0 0 1 3.5 5.8"/>',
+    log: '<path d="M6 3.5h9l4 4v13H6z"/><path d="M15 3.5v4h4M9 12h7M9 16h7"/>'
+  };
+  function ico(n, s, fill) {
+    var sp = h('span', { class: 'ic', 'aria-hidden': 'true' });
+    sp.innerHTML = '<svg viewBox="0 0 24 24" width="' + (s || 24) + '" height="' + (s || 24) + '" fill="' + (fill || 'none') + '" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + ICONS[n] + '</svg>';
+    return sp;
+  }
+
+  // ---------- Xem trước: khung thiết bị dựng theo lớp và tỉ lệ thật ----------
+  // Khung chuẩn iPhone 14/15: 390 × 844 pt. Mọi số đo dưới đây tính bằng pt của khung này.
+  var DEV = { w: 390, h: 844, status: 54, home: 34, igTab: 49, fbTab: 49 };
+  var SPEC = {
+    igFeedMin: 0.75, igFeedMax: 1.91,   // 3:4 đến 1.91:1 (3:4 hiển thị đủ từ 2025)
+    igReelInFeed: 0.8,                  // Reels trong bảng tin: cắt giữa về 4:5
+    igGrid: 0.75,                       // ô lưới profile 3:4 từ 01.2025
+    fbSingleMin: 0.8, fbSingleMax: 1.91,
+    igCapLines: 2, fbLinesMedia: 3, fbLinesText: 5,
+    reelSafe: [0.14, 0.35, 0.06], storySafe: [0.14, 0.14, 0.06]
+  };
+  var PV_SURF = [['ig-feed', 'IG · Bảng tin'], ['ig-grid', 'IG · Lưới'], ['ig-reel', 'IG · Reels'], ['ig-story', 'IG · Story'], ['fb-feed', 'FB · Bảng tin'], ['fb-reel', 'FB · Reels']];
+  state.pv = { surf: 'ig-feed', layers: false, safe: true, slide: 0, ref: null, refOp: 50, post: null };
+  state.real = {};
+  function pvSurfaces(p) {
+    var reel = postType(p) === 'Reels', ig = hasIG(p);
+    return PV_SURF.filter(function (s) {
+      var k = s[0];
+      if (k.indexOf('ig') === 0 && !ig) return false;
+      if (k === 'ig-story' && !p.storyLink) return false;
+      if ((k === 'ig-reel' || k === 'fb-reel') && !reel) return false;
+      if (k === 'fb-feed' && reel) return false;
+      return true;
+    });
+  }
+  function pvItems(p) {
+    var real = state.real[p.id] || [];
+    return media(p).map(function (f, i) {
+      dimsOf(f); var r = real[i];
+      return { n: f.n, name: r ? r.name : f.name, video: r ? r.video : f.kind === 'video', w: r ? r.w : f.w, h: r ? r.h : f.h, url: r ? r.url : null, color: tileColor(i) };
+    });
+  }
+  function ratioName(r) {
+    var known = [[1, '1:1'], [0.8, '4:5'], [0.75, '3:4'], [0.5625, '9:16'], [1.91, '1.91:1'], [1.7778, '16:9'], [0.6667, '2:3'], [1.5, '3:2']];
+    for (var i = 0; i < known.length; i++) if (Math.abs(known[i][0] - r) < 0.012) return known[i][1];
+    return (r >= 1 ? r.toFixed(2) + ':1' : '1:' + (1 / r).toFixed(2));
+  }
+  function clampR(r, lo, hi) { return Math.max(lo, Math.min(hi, r)); }
+  function L(name, hgt, cls) {
+    var el = h('div', { class: 'ly ' + cls, 'data-layer': name + (hgt ? ' · ' + hgt + 'pt' : '') });
+    for (var i = 3; i < arguments.length; i++) {
+      var c = arguments[i]; if (c == null || c === false) continue;
+      if (Array.isArray(c)) c.forEach(function (x) { if (x) el.appendChild(typeof x === 'string' ? document.createTextNode(x) : x); });
+      else el.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+    }
+    return el;
+  }
+  function mbox(it, w, hgt, noTag) {
+    var el = h('div', { class: 'pm', style: 'width:' + w + 'px;height:' + hgt + 'px;background:' + it.color });
+    if (it.url) {
+      if (it.video) { var vd = h('video', { src: it.url, playsinline: true, loop: true }); vd.muted = true; vd.autoplay = true; el.appendChild(vd); }
+      else el.appendChild(h('img', { src: it.url, alt: '' }));
+    } else {
+      el.appendChild(h('span', { class: 'pm-n', text: (it.video ? '▶ ' : '') + pad(it.n) }));
+      el.appendChild(h('span', { class: 'pm-d', text: it.w + ' × ' + it.h + ' · ' + ratioName(it.w / it.h) }));
+    }
+    var fr = it.w / it.h, br = w / hgt;
+    if (!noTag && Math.abs(fr - br) / br > 0.02) el.appendChild(h('span', { class: 'pm-crop', text: 'Bị cắt: ' + ratioName(fr) + ' → ' + ratioName(br) }));
+    return el;
+  }
+  function clampText(el, lead, text, lines, more) {
+    function fill(t, cut) {
+      el.textContent = '';
+      if (lead) el.appendChild(h('b', { text: lead + ' ' }));
+      el.appendChild(document.createTextNode(t));
+      if (cut) { el.appendChild(document.createTextNode('… ')); el.appendChild(h('span', { class: 'more', text: more })); }
+    }
+    var lh = parseFloat(getComputedStyle(el).lineHeight) || 18, max = lh * lines + 2;
+    var chars = Array.from(text || '');
+    fill(text || '', false);
+    if (el.scrollHeight <= max) return { cut: false, chars: chars.length, lines: Math.round(el.scrollHeight / lh) };
+    var lo = 0, hi = chars.length;
+    while (lo < hi) { var mid = (lo + hi + 1) >> 1; fill(chars.slice(0, mid).join(''), true); if (el.scrollHeight <= max) lo = mid; else hi = mid - 1; }
+    var shown = chars.slice(0, lo).join('').replace(/\s+$/, '');
+    fill(shown, true);
+    return { cut: true, chars: Array.from(shown).length, total: chars.length, lines: lines };
+  }
+  function statusBar(p, dark, abs) {
+    return L('Thanh trạng thái', DEV.status, 'sb' + (dark ? ' dark' : '') + (abs ? ' abs' : ''), h('b', { text: p.time }), h('span', { class: 'sb-r' }, h('i', { class: 'sig' }), h('i', { class: 'bat' })));
+  }
+  function igTabBar(dark) {
+    return L('Thanh tab dưới + vạch home', DEV.igTab + DEV.home, 'tabs' + (dark ? ' dark' : ''), ico('home', 26), ico('search', 26), ico('plus', 26), ico('reels', 26), h('span', { class: 'av24' }, 'TDC'));
+  }
+  function fbTabBar(dark) {
+    return L('Thanh tab dưới + vạch home', DEV.fbTab + DEV.home, 'tabs fb' + (dark ? ' dark' : ''), h('span', { class: 'on' }, ico('home', 26)), ico('video', 26), ico('friends', 26), ico('shop', 26), ico('bell', 26), ico('menu', 26));
+  }
+  function capOf(p, i) { return p.perSlide ? (p.slideCaptions[i] || '') : p.caption; }
+
+  function scrIgFeed(p, items, out) {
+    var first = items[0], reel = postType(p) === 'Reels';
+    var r = reel ? SPEC.igReelInFeed : clampR(first.w / first.h, SPEC.igFeedMin, SPEC.igFeedMax);
+    var mh = Math.round(DEV.w / r);
+    var i = Math.max(0, Math.min(state.pv.slide, items.length - 1)), cur = items[i];
+    var m = musicLabel(p.musicIG), sub = m || (reel ? 'thedesigncouncil · Âm thanh gốc' : '');
+    var mediaEl = h('div', { class: 'ig-media' }, mbox(cur, DEV.w, mh));
+    if (items.length > 1) {
+      mediaEl.appendChild(h('span', { class: 'ig-count', text: (i + 1) + '/' + items.length }));
+      if (i > 0) mediaEl.appendChild(h('button', { class: 'ig-nav prev', type: 'button', 'aria-label': 'Ảnh trước', onclick: function () { state.pv.slide = i - 1; out.redraw(); } }, '‹'));
+      if (i < items.length - 1) mediaEl.appendChild(h('button', { class: 'ig-nav next', type: 'button', 'aria-label': 'Ảnh sau', onclick: function () { state.pv.slide = i + 1; out.redraw(); } }, '›'));
+    }
+    if (reel) mediaEl.appendChild(h('span', { class: 'ig-reelmark' }, ico('reels', 22)));
+    var cap = h('div', { class: 'ig-cap' });
+    out.after.push(function () { out.info.cap = clampText(cap, 'thedesigncouncil', capOf(p, i), SPEC.igCapLines, 'thêm'); });
+    out.info.media = { w: DEV.w, h: mh, r: r, file: cur };
+    var dots = items.length > 1 ? h('span', { class: 'ig-dots' }, items.slice(0, Math.min(items.length, 5)).map(function (_, k) { return h('i', { class: k === Math.min(i, 4) ? 'on' : '' }); })) : h('span');
+    return [
+      statusBar(p),
+      L('Thanh trên Instagram', 44, 'ig-top', h('b', { class: 'ig-logo', text: 'Instagram' }), h('span', { class: 'row-ic' }, ico('heart', 24), ico('send', 24))),
+      h('div', { class: 'scr-scroll' },
+        L('Đầu bài: avatar 32, tên, dòng phụ', 54, 'ig-ph', h('span', { class: 'av32 ring', text: 'TDC' }), h('span', { class: 'who' }, h('b', { text: 'thedesigncouncil' }), sub ? h('small', null, m ? ico('music', 11) : null, sub) : null), ico('more', 20)),
+        L('Media ' + DEV.w + ' × ' + mh + ' (' + ratioName(r) + ')', mh, 'ig-mediawrap', mediaEl),
+        L('Thanh thao tác', 46, 'ig-act', h('span', { class: 'row-ic' }, ico('heart', 25), ico('comment', 25), ico('send', 25)), dots, ico('save', 25)),
+        L('Lượt thích', 18, 'ig-likes', h('b', { text: '1.024 lượt thích' })),
+        L('Caption: ' + SPEC.igCapLines + ' dòng rồi "… thêm"', 0, 'ig-capwrap', cap),
+        p.cmtIG ? L('Bình luận', 0, 'ig-cm', h('span', { class: 'gray', text: 'Xem tất cả 12 bình luận' }), h('div', null, h('b', { text: 'thedesigncouncil ' }), p.cmtIG)) : null,
+        L('Ngày đăng', 18, 'ig-date', h('span', { class: 'gray', text: viDate(p) }))),
+      igTabBar()
+    ];
+  }
+  function scrIgGrid(p, items, out) {
+    var reel = postType(p) === 'Reels', cv = p.files.filter(function (f) { return f.kind === 'cover'; })[0];
+    var gap = 2, tw = Math.floor((DEV.w - gap * 2) / 3), th = Math.round(tw / SPEC.igGrid);
+    var mine = (cv && p.cover && p.cover.mode === 'file') ? { n: 0, name: cv.name, w: dimsOf(cv).w, h: cv.h, color: COLORS[4], url: null, video: false } : items[0];
+    var tiles = [h('div', { class: 'gt me' }, mbox(mine, tw, th), reel ? h('span', { class: 'gt-ic' }, ico('reels', 16)) : items.length > 1 ? h('span', { class: 'gt-ic' }, ico('carousel', 16)) : null)];
+    for (var k = 0; k < 8; k++) tiles.push(h('div', { class: 'gt old', style: 'width:' + tw + 'px;height:' + th + 'px' }));
+    out.info.media = { w: tw, h: th, r: SPEC.igGrid, file: mine };
+    return [
+      statusBar(p),
+      L('Thanh trên profile', 44, 'ig-top', h('b', { class: 'pf-user', text: 'thedesigncouncil' }), h('span', { class: 'row-ic' }, ico('plus', 24), ico('menu', 24))),
+      h('div', { class: 'scr-scroll' },
+        L('Đầu profile: avatar 86, số liệu', 0, 'pf-head', h('span', { class: 'av86', text: 'TDC' }), h('div', { class: 'pf-stats' }, [['248', 'bài viết'], ['12,4K', 'người theo dõi'], ['180', 'đang theo dõi']].map(function (x) { return h('span', null, h('b', { text: x[0] }), x[1]); }))),
+        L('Tên, bio, link', 0, 'pf-bio', h('b', { text: 'The Design Council' }), h('span', { text: 'Trường thiết kế · Portfolio Program, LAB, Coaching 1-1' }), h('span', { class: 'lnk', text: 'pp.thedesigncouncil.vn' })),
+        L('Nút', 32, 'pf-btns', h('span', { text: 'Chỉnh sửa' }), h('span', { text: 'Chia sẻ trang cá nhân' })),
+        L('Tab lưới', 44, 'pf-tabs', h('span', { class: 'on' }, ico('grid', 22)), ico('reels', 22), ico('tag', 22)),
+        L('Lưới 3 cột · ô ' + tw + ' × ' + th + ' (3:4) · khe 2pt', 0, 'pf-grid', tiles)),
+      igTabBar()
+    ];
+  }
+  function safeZone(z) {
+    var t = z[0] * 100 + '%', b = z[1] * 100 + '%', s = z[2] * 100 + '%';
+    return h('div', { class: 'sz', 'aria-hidden': 'true' },
+      h('i', { style: 'top:0;left:0;right:0;height:' + t }), h('i', { style: 'bottom:0;left:0;right:0;height:' + b }),
+      h('i', { style: 'left:0;width:' + s + ';top:' + t + ';bottom:' + b }), h('i', { style: 'right:0;width:' + s + ';top:' + t + ';bottom:' + b }),
+      h('span', { style: 'top:calc(' + t + ' + 4px);left:calc(' + s + ' + 4px)', text: 'Vùng an toàn cho chữ, logo' }));
+  }
+  function scrReel(p, items, out, fb) {
+    var it = items[0], areaH = DEV.h - (fb ? DEV.fbTab : DEV.igTab) - DEV.home;
+    var text = fb ? (p.reelTitle ? p.reelTitle + (p.reelDesc ? ' · ' + p.reelDesc : '') : p.caption) : p.caption;
+    var cap = h('div', { class: 'rl-cap' });
+    out.after.push(function () { out.info.cap = clampText(cap, '', text, 1, fb ? 'Xem thêm' : 'thêm'); });
+    var m = musicLabel(fb ? p.musicFB : p.musicIG) || (fb ? 'The Design Council · Âm thanh gốc' : 'thedesigncouncil · Âm thanh gốc');
+    out.info.media = { w: DEV.w, h: areaH, r: DEV.w / areaH, file: it };
+    var vid = h('div', { class: 'rl-media' }, mbox(it, DEV.w, areaH));
+    if (state.pv.safe) vid.appendChild(safeZone(SPEC.reelSafe));
+    var rail = (fb ? [['like', '1,2K'], ['comment', '36'], ['share', '12'], ['more', '']] : [['heart', '1.024'], ['comment', '36'], ['send', '12'], ['more', '']]).map(function (x) {
+      return h('span', { class: 'rl-btn' }, ico(x[0], 28), x[1] ? h('small', { text: x[1] }) : null);
+    });
+    if (!fb) rail.push(h('span', { class: 'rl-disc', style: 'background:' + it.color }));
+    return [
+      L('Video ' + DEV.w + ' × ' + areaH + ' (lấp đầy từ 9:16)', areaH, 'rl-wrap', vid,
+        statusBar(p, true, true),
+        L('Đầu Reels', 44, 'rl-top', h('b', { text: 'Reels' }), ico('camera', 26)),
+        L('Cột thao tác bên phải', 0, 'rl-rail', rail),
+        L('Tên, caption 1 dòng, nhạc', 0, 'rl-bottom',
+          h('div', { class: 'rl-who' }, h('span', { class: 'av32', text: 'TDC' }), h('b', { text: fb ? 'The Design Council' : 'thedesigncouncil' }), h('span', { class: 'rl-follow', text: 'Theo dõi' })),
+          cap, h('div', { class: 'rl-audio' }, ico('music', 12), h('span', { text: m })))),
+      fb ? fbTabBar(true) : igTabBar(true)
+    ];
+  }
+  function scrStory(p, items, out) {
+    var it = items[0], areaH = Math.round(DEV.w * 16 / 9);
+    var r = clampR(it.w / it.h, SPEC.igFeedMin, SPEC.igFeedMax), cw = Math.round(DEV.w * 0.64), ch = Math.round(cw / r);
+    var area = h('div', { class: 'st-area', style: 'height:' + areaH + 'px;background:linear-gradient(160deg,' + it.color + ',#3a2f45)' });
+    if (state.pv.safe) area.appendChild(safeZone(SPEC.storySafe));
+    area.appendChild(L('Thanh tiến trình', 4, 'st-prog', h('i', { class: 'on' }), h('i')));
+    area.appendChild(L('Đầu Story', 44, 'st-head', h('span', { class: 'av32', text: 'TDC' }), h('b', { text: 'thedesigncouncil' }), h('span', { class: 'gray', text: '2 giờ' }), h('span', { class: 'sp' }), ico('more', 22), ico('close', 24)));
+    area.appendChild(L('Bài chia sẻ lại · rộng ' + cw + 'pt', 0, 'st-card', h('div', { class: 'st-card-h' }, h('span', { class: 'av20', text: 'TDC' }), h('b', { text: 'thedesigncouncil' })), mbox(it, cw, ch, true)));
+    area.appendChild(L('Sticker liên kết', 36, 'st-link', ico('link', 16), h('span', { text: (p.storyText || p.storyLink || 'Liên kết').toUpperCase() })));
+    out.info.media = { w: cw, h: ch, r: r, file: it };
+    out.info.cap = null;
+    return [
+      statusBar(p, true),
+      L('Khung Story ' + DEV.w + ' × ' + areaH + ' (9:16)', areaH, 'st-wrap', area),
+      L('Ô trả lời', 50, 'st-reply', h('span', { class: 'pill', text: 'Gửi tin nhắn' }), ico('heart', 26), ico('send', 26))
+    ];
+  }
+  function fbGrid(items) {
+    var W = DEV.w, g = 2, n = items.length, first = items[0], land = first.w / first.h > 1.05, cells = [], H, name;
+    if (n === 1) { var r = clampR(first.w / first.h, SPEC.fbSingleMin, SPEC.fbSingleMax); H = Math.round(W / r); cells.push([first, 0, 0, W, H]); name = '1 ảnh, ' + ratioName(r); }
+    else if (n === 2) {
+      if (land) { var hh = Math.round((W - g) / 2); H = hh * 2 + g; cells.push([items[0], 0, 0, W, hh], [items[1], 0, hh + g, W, hh]); name = '2 ảnh xếp dọc'; }
+      else { var cw = (W - g) / 2; H = Math.round(cw * 1.5); cells.push([items[0], 0, 0, cw, H], [items[1], cw + g, 0, cw, H]); name = '2 ảnh cạnh nhau'; }
+    } else if (n <= 4) {
+      var k = n - 1;
+      if (land) { var bigH = Math.round(W * 0.56), sw = (W - g * (k - 1)) / k; H = bigH + g + sw; cells.push([items[0], 0, 0, W, bigH]); for (var i = 1; i < n; i++) cells.push([items[i], (i - 1) * (sw + g), bigH + g, sw, sw]); name = '1 lớn trên + ' + k + ' nhỏ'; }
+      else { var bw = Math.round(W * 2 / 3) - g / 2, rw = W - bw - g; H = W; var rh = (H - g * (k - 1)) / k; cells.push([items[0], 0, 0, bw, H]); for (var j = 1; j < n; j++) cells.push([items[j], bw + g, (j - 1) * (rh + g), rw, rh]); name = '1 lớn trái + ' + k + ' nhỏ'; }
+    } else {
+      var tw = (W - g) / 2, bw2 = (W - 2 * g) / 3; H = Math.round(tw + g + bw2);
+      cells.push([items[0], 0, 0, tw, tw], [items[1], tw + g, 0, tw, tw]);
+      for (var q = 0; q < 3; q++) cells.push([items[2 + q], q * (bw2 + g), tw + g, bw2, bw2, q === 2 && n > 5 ? '+' + (n - 5) : '']);
+      name = '2 trên + 3 dưới' + (n > 5 ? ', ô cuối +' + (n - 5) : '');
+    }
+    var box = h('div', { class: 'fb-grid', style: 'height:' + H + 'px' });
+    cells.forEach(function (c) {
+      var cell = h('div', { class: 'fb-cell', style: 'left:' + c[1] + 'px;top:' + c[2] + 'px' }, mbox(c[0], Math.round(c[3]), Math.round(c[4]), n > 1));
+      if (c[5]) cell.appendChild(h('span', { class: 'fb-more', text: c[5] }));
+      box.appendChild(cell);
+    });
+    return { el: L('Media FB: ' + name, H, 'fb-mediawrap', box), w: W, h: H, name: n > 1 ? name + ' (FB tự xếp theo tỉ lệ ảnh, đây là bố cục gần nhất)' : name };
+  }
+  function scrFbFeed(p, items, out) {
+    var txt = h('div', { class: 'fb-text' }), lines = items.length ? SPEC.fbLinesMedia : SPEC.fbLinesText;
+    out.after.push(function () { out.info.cap = clampText(txt, '', p.caption, lines, 'Xem thêm'); });
+    var g = fbGrid(items);
+    out.info.media = { w: g.w, h: g.h, r: g.w / g.h, file: items[0], layout: g.name };
+    return [
+      statusBar(p),
+      L('Thanh trên Facebook', 44, 'fb-top', h('b', { class: 'fb-logo', text: 'facebook' }), h('span', { class: 'row-ic' }, ico('plus', 24), ico('search', 24), ico('send', 24))),
+      h('div', { class: 'scr-scroll fb-bg' }, h('div', { class: 'fb-post' },
+        L('Đầu bài: avatar 40, tên Page, giờ · đối tượng', 60, 'fb-ph', h('span', { class: 'av40', text: 'TDC' }), h('span', { class: 'who' }, h('b', { text: 'The Design Council' }), h('small', null, viDate(p) + ' lúc ' + p.time + ' · ', ico('globe', 11))), ico('more', 20), ico('close', 20)),
+        L('Nội dung: ' + lines + ' dòng rồi "Xem thêm"', 0, 'fb-textwrap', txt),
+        g.el,
+        L('Lượt cảm xúc', 36, 'fb-react', h('span', null, h('i', { class: 'rx' }, '👍'), ' 86'), h('span', { text: '12 bình luận · 4 lượt chia sẻ' })),
+        L('Nút Thích, Bình luận, Chia sẻ', 44, 'fb-act', [['like', 'Thích'], ['comment', 'Bình luận'], ['share', 'Chia sẻ']].map(function (x) { return h('span', null, ico(x[0], 20), x[1]); })),
+        p.cmtFB ? L('Bình luận của Page', 0, 'fb-cm', h('span', { class: 'av32', text: 'TDC' }), h('div', { class: 'bub' }, h('b', { text: 'The Design Council' }), h('span', { class: 'fb-author', text: 'Tác giả' }), h('div', { text: p.cmtFB }))) : null)),
+      fbTabBar()
+    ];
+  }
+  function loadReal(p, files, done) {
+    var list = Array.from(files).sort(function (a, b) { return a.name.localeCompare(b.name, 'vi', { numeric: true }); });
+    var arr = [], left = list.length;
+    if (!left) return;
+    list.forEach(function (f, i) {
+      var url = URL.createObjectURL(f), video = /^video\//.test(f.type), rec = { url: url, video: video, w: 1080, h: 1350, name: f.name };
+      arr[i] = rec;
+      var fin = function () { if (--left === 0) { state.real[p.id] = arr; done(); } };
+      if (video) { var v = document.createElement('video'); v.preload = 'metadata'; v.onloadedmetadata = function () { rec.w = v.videoWidth || 1080; rec.h = v.videoHeight || 1920; fin(); }; v.onerror = fin; v.src = url; }
+      else { var im = new Image(); im.onload = function () { rec.w = im.naturalWidth; rec.h = im.naturalHeight; fin(); }; im.onerror = fin; im.src = url; }
+    });
+  }
+  function previewCard(p) {
+    if (state.pv.post !== p.id) { state.pv.post = p.id; state.pv.slide = 0; }
+    var surfs = pvSurfaces(p);
+    if (!surfs.some(function (s) { return s[0] === state.pv.surf; })) state.pv.surf = surfs[0][0];
+    var card = h('section', { class: 'sec pv-card', id: 'pv-card' });
+    var seg = h('div', { class: 'seg wrap', role: 'group', 'aria-label': 'Bề mặt xem trước' }, surfs.map(function (s) {
+      return h('button', { type: 'button', 'aria-pressed': state.pv.surf === s[0] ? 'true' : 'false', onclick: function () { state.pv.surf = s[0]; state.pv.slide = 0; draw(); seg.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', b.textContent === s[1] ? 'true' : 'false'); }); } }, s[1]);
+    }));
+    var lay = h('input', { type: 'checkbox', id: 'pv-layers' }); lay.checked = state.pv.layers;
+    lay.addEventListener('change', function () { state.pv.layers = lay.checked; draw(); });
+    var sz = h('input', { type: 'checkbox', id: 'pv-safe' }); sz.checked = state.pv.safe;
+    sz.addEventListener('change', function () { state.pv.safe = sz.checked; draw(); });
+    var realIn = h('input', { type: 'file', id: 'pv-real', accept: 'image/*,video/*', multiple: true, class: 'vh' });
+    realIn.addEventListener('change', function () { loadReal(p, realIn.files, function () { draw(); toast('Đã dùng ' + realIn.files.length + ' file thật cho xem trước'); }); });
+    var refIn = h('input', { type: 'file', id: 'pv-ref', accept: 'image/*', class: 'vh' });
+    refIn.addEventListener('change', function () { if (refIn.files[0]) { state.pv.ref = URL.createObjectURL(refIn.files[0]); draw(); } });
+    var tools = h('div', { class: 'pv-tools' },
+      h('label', { class: 'toggle', for: 'pv-layers' }, lay, 'Hiện lớp'),
+      h('label', { class: 'toggle', for: 'pv-safe' }, sz, 'Vùng an toàn'),
+      h('label', { class: 'btn small', for: 'pv-real' }, 'Dùng file thật'), realIn,
+      h('label', { class: 'btn small', for: 'pv-ref' }, 'Đặt ảnh chụp thật lên trên'), refIn);
+    var refRow = h('div', { class: 'pv-ref-row' });
+    var stage = h('div', { class: 'pv-stage' });
+    var spec = h('dl', { class: 'pv-spec' });
+    card.appendChild(h('header', null, h('h4', { text: 'Xem trước' }), h('span', { class: 'muted', text: 'Khung iPhone 390 × 844 pt' })));
+    card.appendChild(seg); card.appendChild(tools); card.appendChild(refRow); card.appendChild(stage); card.appendChild(spec);
+    function fit() {
+      var dev = stage.querySelector('.ph'), box = stage.querySelector('.ph-fit'); if (!dev || !box) return;
+      var s = Math.min(1, (stage.clientWidth - 4) / (DEV.w + 20));
+      dev.style.transform = 'scale(' + s + ')';
+      box.style.width = Math.round((DEV.w + 20) * s) + 'px'; box.style.height = Math.round((DEV.h + 20) * s) + 'px';
+    }
+    function draw() {
+      var items = pvItems(p);
+      if (!items.length) items = [{ n: 1, name: '—', video: false, w: 1080, h: 1350, url: null, color: 'var(--sunk)' }];
+      var out = { after: [], info: {}, redraw: draw }, surf = state.pv.surf, kids, dark = false;
+      if (surf === 'ig-feed') kids = scrIgFeed(p, items, out);
+      else if (surf === 'ig-grid') kids = scrIgGrid(p, items, out);
+      else if (surf === 'ig-reel') { kids = scrReel(p, items, out, false); dark = true; }
+      else if (surf === 'fb-reel') { kids = scrReel(p, items, out, true); dark = true; }
+      else if (surf === 'ig-story') { kids = scrStory(p, items, out); dark = true; }
+      else kids = scrFbFeed(p, items, out);
+      var scr = h('div', { class: 'ph-scr' + (dark ? ' dark' : '') + (surf.indexOf('fb') === 0 ? ' fbfont' : '') + (state.pv.layers ? ' show-layers' : '') }, kids);
+      if (state.pv.ref) scr.appendChild(h('img', { class: 'ph-ref', src: state.pv.ref, alt: '', style: 'opacity:' + state.pv.refOp / 100 }));
+      var dev = h('div', { class: 'ph' }, scr, h('i', { class: 'ph-island' }), h('i', { class: 'ph-home' + (dark ? ' light' : '') }));
+      stage.textContent = '';
+      stage.appendChild(h('div', { class: 'ph-fit' }, dev));
+      out.after.forEach(function (f) { f(); });
+      fit();
+      refRow.textContent = '';
+      if (state.pv.ref) {
+        var op = h('input', { type: 'range', min: '0', max: '100', id: 'pv-refop' }); op.value = state.pv.refOp;
+        op.addEventListener('input', function () { state.pv.refOp = +op.value; var im = stage.querySelector('.ph-ref'); if (im) im.style.opacity = op.value / 100; });
+        refRow.appendChild(h('label', { for: 'pv-refop', text: 'Độ mờ ảnh chụp' })); refRow.appendChild(op);
+        refRow.appendChild(h('button', { class: 'btn ghost small', type: 'button', onclick: function () { state.pv.ref = null; draw(); } }, 'Bỏ ảnh chụp'));
+      }
+      spec.textContent = '';
+      var mi = out.info.media, rows = [];
+      if (mi) {
+        rows.push(['Media hiển thị', Math.round(mi.w) + ' × ' + Math.round(mi.h) + ' pt · ' + ratioName(mi.r) + (mi.layout ? ' · ' + mi.layout : '')]);
+        if (mi.file) { var fr = mi.file.w / mi.file.h, diff = Math.abs(fr - mi.r) / mi.r; rows.push(['File', mi.file.w + ' × ' + mi.file.h + ' px · ' + ratioName(fr) + (diff > 0.02 && !mi.layout ? ' · bị cắt ' + Math.round(diff * 100) + '%' : ' · khớp khung')]); }
+      }
+      if (out.info.cap) rows.push(['Caption', out.info.cap.cut ? 'Hiện ' + out.info.cap.chars + '/' + out.info.cap.total + ' ký tự, ' + out.info.cap.lines + ' dòng rồi cắt' : 'Hiện đủ (' + out.info.cap.lines + ' dòng)']);
+      if (surf === 'ig-reel' || surf === 'fb-reel') rows.push(['Vùng an toàn', 'Chừa trên 14%, dưới 35%, hai bên 6% (hướng dẫn Meta cho Reels)']);
+      if (surf === 'ig-story') rows.push(['Vùng an toàn', 'Chừa trên và dưới 14% (khoảng 250 px trên file 1080 × 1920)']);
+      var mus = surf.indexOf('fb') === 0 ? musicLabel(p.musicFB) : musicLabel(p.musicIG);
+      if (mus) rows.push(['Nhạc', mus]);
+      rows.forEach(function (r) { spec.appendChild(h('dt', { text: r[0] })); spec.appendChild(h('dd', { text: r[1] })); });
+    }
+    card._draw = draw; card._fit = fit;
+    return card;
+  }
+  window.addEventListener('resize', function () { var c = document.getElementById('pv-card'); if (c && c._fit) c._fit(); });
+
+  // ---------- Soạn bài ----------
+  function sec(title, aside, kids, opts) {
+    opts = opts || {};
+    return h('section', { class: 'sec' + (opts.cls ? ' ' + opts.cls : ''), id: opts.id || null }, h('header', null, h('h4', { text: title }), aside || null), kids);
+  }
+  function rangeField(label, obj, key) {
+    var id = 'rg-' + key + '-' + Math.random().toString(36).slice(2, 7);
+    var o = h('output', { for: id, text: String(obj[key]) });
+    var r = h('input', { type: 'range', min: '1', max: '100', id: id }); r.value = obj[key];
+    r.addEventListener('input', function () { obj[key] = +r.value; o.textContent = r.value; });
+    return h('div', { class: 'field' }, h('label', { for: id }, label + ' ', o), r);
+  }
+  function musicRow(p, pl) {
+    var m = pl === 'ig' ? p.musicIG : p.musicFB, opts = musicOptions(p, pl), browser = effMode(p) === 'browser';
+    var row = h('div', { class: 'mu' });
+    row.appendChild(h('div', { class: 'mu-head' }, h('span', { class: 'badge ' + pl, text: pl.toUpperCase() }),
+      h('div', { class: 'seg wrap', role: 'group', 'aria-label': 'Nguồn nhạc ' + pl.toUpperCase() }, opts.map(function (o) {
+        return h('button', { type: 'button', 'aria-pressed': m.src === o[0] ? 'true' : 'false', onclick: function () {
+          if (m.src !== o[0]) { m.src = o[0]; m.track = null; }
+          render();
+        } }, o[1]);
+      }))));
+    var hint = {
+      lib: browser ? 'Claude chọn đúng bài này ở bước Âm thanh khi lên lịch trên Business Suite. Không tìm thấy bài thì IG chuyển thành việc làm tay.' : 'Gắn qua Instagram Audio API. Chỉ có nhạc Meta cho phép bên thứ ba dùng, nên danh sách ít hơn app IG.',
+      mix: 'Engine ghép nhạc vào bản đăng; file gốc trên Drive giữ nguyên. Chỉ dùng nhạc đã có quyền.',
+      app: 'Thành việc làm tay: người trực đăng bằng app ' + (pl === 'ig' ? 'Instagram' : 'Facebook') + ' và thêm nhạc theo ghi chú. Dùng được nhạc thịnh hành.',
+      none: ''
+    }[m.src];
+    if (hint) row.appendChild(h('p', { class: 'hint', text: hint }));
+    if (m.src === 'lib' || m.src === 'mix') {
+      var lib = m.src === 'lib' ? IG_AUDIO : MIX_LIB;
+      var q = h('input', { class: 'input', type: 'search', placeholder: m.src === 'lib' ? 'Tìm trong thư viện nhạc IG' : 'Tìm trong kho nhạc của TDC', 'aria-label': 'Tìm nhạc ' + pl.toUpperCase() });
+      var list = h('div', { class: 'tracks', role: 'radiogroup', 'aria-label': 'Chọn bài nhạc ' + pl.toUpperCase() });
+      var fillList = function () {
+        list.textContent = '';
+        var qq = q.value.trim().toLowerCase();
+        lib.filter(function (t) { return !qq || (t.title + ' ' + t.artist).toLowerCase().indexOf(qq) >= 0; }).forEach(function (t, ti) {
+          var on = !!(m.track && m.track.id === t.id);
+          list.appendChild(h('button', { type: 'button', class: 'track' + (on ? ' on' : ''), role: 'radio', 'aria-checked': on ? 'true' : 'false', onclick: function () { m.track = { id: t.id, title: t.title, artist: t.artist }; render(); } },
+            h('span', { class: 'art', style: 'background:' + tileColor(ti + 1) }, ico('music', 14)),
+            h('span', { class: 'tt' }, h('b', { text: t.title }), h('small', { text: t.artist + ' · ' + t.dur })),
+            t.trend ? h('span', { class: 'chip info', text: 'Thịnh hành' }) : h('span'),
+            h('span', { class: 'tick', text: on ? '✓' : '' })));
+        });
+        if (!list.children.length) list.appendChild(h('p', { class: 'hint', text: 'Không có bài nào khớp.' }));
+      };
+      q.addEventListener('input', fillList); fillList();
+      row.appendChild(q); row.appendChild(list);
+      if (m.track) row.appendChild(h('div', { class: 'two' }, rangeField('Âm lượng nhạc', m, 'vol'), rangeField('Âm thanh gốc của video', m, 'vvol')));
+    }
+    if (m.src === 'app') {
+      var id = 'mu-note-' + pl, note = h('input', { class: 'input', id: id, placeholder: 'Ví dụ: không lời, nhẹ nhàng; hoặc tên bài thịnh hành' }); note.value = m.note || '';
+      note.addEventListener('change', function () { m.note = note.value.trim(); render(); });
+      row.appendChild(h('div', { class: 'field' }, h('label', { for: id, text: 'Ghi chú nhạc cho người đăng' }), note));
+    }
+    return row;
+  }
+  function rulesCard(p) {
+    var rs = rules(p);
+    var b = rs.filter(function (x) { return x.level === 'block' && !x.confirmed; }), w = rs.filter(function (x) { return x.level === 'warn'; });
+    var cf = rs.filter(function (x) { return x.level === 'block' && x.confirmed; });
+    var ok = rs.filter(function (x) { return x.level === 'ok'; }), info = rs.filter(function (x) { return x.level === 'info'; });
+    var aside = h('div', { class: 'rule-sum' }, b.length ? h('span', { class: 'chip block', text: b.length + ' cần xác nhận' }) : null, w.length ? h('span', { class: 'chip warn', text: w.length + ' cảnh báo' }) : null, !b.length && !w.length ? h('span', { class: 'chip ok', text: 'Đạt' }) : null);
+    var list = h('div', { class: 'rules' });
+    cf.forEach(function (x) { list.appendChild(h('div', { class: 'rule confirmed' }, h('span', { class: 'code', text: x.code }), h('p', { text: x.text }), h('span', { class: 'conf', text: confirmedNote(x) }))); });
+    b.concat(w).forEach(function (x) {
+      list.appendChild(h('div', { class: 'rule ' + x.level },
+        h('span', { class: 'code', text: x.code }), h('p', { text: (x.level === 'block' ? 'Cần xác nhận · ' : '') + x.text }),
+        x.fixes.length ? h('div', { class: 'fixes' }, x.fixes.map(function (fx) { return h('button', { class: 'btn small', type: 'button', onclick: function () { fx.act(); render(); } }, fx.label); })) : null));
+    });
+    var kids = [list];
+    var more = h('details', { class: 'passed' }, h('summary', { text: 'Đạt ' + ok.length + ' quy tắc' + (info.length ? ' · ' + info.length + ' ghi chú' : '') }),
+      h('ul', null, ok.concat(info).map(function (x) { return h('li', null, h('b', { text: x.code + ' ' }), x.text); })));
+    kids.push(more);
+    return sec('Kiểm tra quy tắc', aside, kids, { id: 'rules-card' });
+  }
+  function viewCompose(v) {
+    var p = byId(state.current) || state.posts[0]; state.current = p.id;
+    var ig = hasIG(p), s = state.settings, type = postType(p), fs = media(p);
+    if (!p.musicIG) p.musicIG = noMusic();
+    if (!p.musicFB) p.musicFB = noMusic();
+    [['ig', p.musicIG], ['fb', p.musicFB]].forEach(function (x) { if (!musicOptions(p, x[0]).some(function (o) { return o[0] === x[1].src; })) { x[1].src = 'none'; x[1].track = null; } });
+    var openIssues = blocks(p);
+    function submitForReview() { p.status = 'review'; audit(me(), 'web', 'Gửi duyệt ' + p.code); render(); toast('Đã gửi duyệt'); }
+
+    // Đầu bài: chọn bài, trạng thái, nơi đăng và hành động chính
+    var pick = h('select', { class: 'title-pick', id: 'pick-post', 'aria-label': 'Bài đang soạn', onchange: function (e) { state.current = e.target.value; render(); } },
+      state.posts.map(function (q) { var o = h('option', { value: q.id, text: q.title }); if (q.id === p.id) o.selected = true; return o; }));
+    var submit = h('button', { class: 'btn primary', type: 'button', disabled: p.status !== 'draft' || !can('act.submit'), onclick: function () { if (blocks(p).length) { state.confirmFor = p.id; render(); } else submitForReview(); } }, 'Gửi duyệt');
+    var head = h('div', { class: 'cmp-head' },
+      h('div', { class: 'cmp-id' }, pick,
+        h('div', { class: 'cmp-meta' }, h('code', { text: p.code }), statusChip(p), h('span', { class: 'badge', text: type }), h('span', { class: 'drive', title: DRIVE + p.folder + '/', text: 'Drive · ' + p.folder }))),
+      h('div', { class: 'cmp-actions' },
+        h('div', { class: 'dest', 'aria-label': 'Nơi đăng' }, platBadges(p), h('b', { text: when(p) }), modeBadge()),
+        openIssues.length && p.status === 'draft' ? h('button', { class: 'chip block as-btn', type: 'button', onclick: function () { var rc = document.getElementById('rules-card'); if (rc) rc.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, openIssues.length + ' cần xác nhận') : null,
+        h('button', { class: 'btn', type: 'button', onclick: function () { audit(me(), 'web', 'Lưu nháp ' + p.code); toast('Đã lưu nháp'); render(); } }, 'Lưu nháp'),
+        submit));
+    var wrap = h('div', { class: 'cmp' }, head);
+    if (p.status !== 'draft') wrap.appendChild(h('p', { class: 'cmp-note', text: 'Bài đang ở trạng thái ' + STATUS[p.status][0] + '; chỉ bài Nháp mới gửi duyệt được.' }));
+    if (state.confirmFor === p.id && p.status === 'draft' && openIssues.length) {
+      wrap.appendChild(confirmPanel(p, openIssues, { title: 'Xác nhận ' + openIssues.length + ' vấn đề trước khi gửi duyệt', button: 'Xác nhận và gửi duyệt', by: me(),
+        onDone: function () { state.confirmFor = null; submitForReview(); },
+        onCancel: function () { state.confirmFor = null; render(); } }));
+    }
+
+    // 1. Nội dung
+    var ta = h('textarea', { class: 'input', id: 'caption', 'aria-label': 'Caption' }); ta.value = p.caption;
+    var cnt = h('div', { class: 'counter' });
+    function updCount() {
+      var c = charLen(ta.value), ht = hashtags(ta.value).length;
+      cnt.textContent = '';
+      cnt.appendChild(h('span', { class: c > s.capMax && ig ? 'over' : '', text: c.toLocaleString('vi-VN') + ' / ' + s.capMax.toLocaleString('vi-VN') + ' ký tự' }));
+      cnt.appendChild(h('span', { class: ht > s.tagMax && ig ? 'over' : '', text: ht + ' / ' + s.tagMax + ' hashtag' }));
+    }
+    updCount();
+    var timer;
+    ta.addEventListener('input', function () { p.caption = ta.value; updCount(); clearTimeout(timer); timer = setTimeout(renderSide, 250); });
+    var perToggle = h('input', { type: 'checkbox', id: 'per-slide', disabled: !ig || fs.length < 2 }); perToggle.checked = !!p.perSlide;
+    perToggle.addEventListener('change', function () { p.perSlide = perToggle.checked; if (p.perSlide && !p.slideCaptions.length) p.slideCaptions = fs.map(function (f, i) { return i === 0 ? p.caption : ''; }); render(); });
+    var contentKids = [ta, h('div', { class: 'sec-foot' }, cnt, h('div', { class: 'row' },
+      ig && fs.length > 1 ? h('label', { class: 'toggle', for: 'per-slide' }, perToggle, 'Caption riêng từng ảnh (IG)') : null,
+      h('button', { class: 'btn small', type: 'button', onclick: function () { shorten(p); audit('Claude', 'MCP (thay mặt ' + me() + ')', 'Rút gọn caption ' + p.code); render(); toast('Claude đã rút gọn caption (mô phỏng)'); } }, 'Claude rút gọn')))];
+    if (p.perSlide) {
+      var sc = h('div', { class: 'slide-caps' });
+      fs.forEach(function (f, i) {
+        var t2 = h('textarea', { class: 'input sm', 'aria-label': 'Caption ảnh ' + pad(f.n) }); t2.value = p.slideCaptions[i] || '';
+        t2.addEventListener('change', function () { p.slideCaptions[i] = t2.value; render(); });
+        sc.appendChild(h('div', { class: 'slide-cap' }, h('span', { class: 'num', text: pad(f.n) }), h('div', null, t2, h('span', { class: 'hint', text: charLen(t2.value).toLocaleString('vi-VN') + ' ký tự · ' + hashtags(t2.value).length + ' hashtag' }))));
+      });
+      contentKids.push(sc);
+    }
+    if (type === 'Reels') {
+      var rt = h('input', { class: 'input', id: 'reel-title' }); rt.value = p.reelTitle || '';
+      rt.addEventListener('change', function () { p.reelTitle = rt.value.trim(); render(); });
+      var rd = h('input', { class: 'input', id: 'reel-desc', placeholder: 'Không bắt buộc' }); rd.value = p.reelDesc || '';
+      rd.addEventListener('change', function () { p.reelDesc = rd.value.trim(); renderSide(); });
+      contentKids.push(h('div', { class: 'two' },
+        h('div', { class: 'field' }, h('label', { for: 'reel-title', text: 'Tiêu đề Reels FB' }), rt),
+        h('div', { class: 'field' }, h('label', { for: 'reel-desc', text: 'Mô tả Reels FB' }), rd)));
+    }
+
+    // 2. File
+    var tiles = h('div', { class: 'tiles' });
+    var ns = fs.map(function (f) { return f.n; }), max = Math.max.apply(null, ns.concat([0]));
+    p.files.filter(function (f) { return f.kind === 'cover'; }).forEach(function (f) {
+      tiles.appendChild(h('div', { class: 'tile cover', style: 'background:' + COLORS[4] }, h('span', { class: 'num', text: '00' }), h('span', { class: 'kind', text: 'Cover' }), h('span', { class: 'fname', text: f.name })));
+    });
+    for (var k = 1; k <= max; k++) {
+      var f = null; for (var j = 0; j < fs.length; j++) if (fs[j].n === k) f = fs[j];
+      if (!f) { tiles.appendChild(h('div', { class: 'tile gap-tile' }, 'Thiếu file ' + pad(k))); continue; }
+      dimsOf(f);
+      tiles.appendChild(h('div', { class: 'tile' + (k === 1 && p.cover && p.cover.mode === 'first' ? ' cover' : ''), style: 'background:' + tileColor(k - 1) },
+        h('span', { class: 'num', text: pad(k) }), h('span', { class: 'kind', text: f.kind === 'video' ? '▶' : ratioName(f.w / f.h) }), h('span', { class: 'fname', text: f.name })));
+    }
+    var fileKids = [tiles];
+    if (type === 'Reels' || firstIsVideo(p)) {
+      var cur = p.cover ? p.cover.mode : 'none';
+      var coverSeg = h('div', { class: 'seg wrap', role: 'group', 'aria-label': 'Cover' },
+        h('button', { type: 'button', 'aria-pressed': cur === 'first' ? 'true' : 'false', onclick: function () { p.cover = { mode: 'first' }; render(); } }, 'Frame đầu'),
+        h('button', { type: 'button', 'aria-pressed': cur === 'frame' ? 'true' : 'false', onclick: function () { p.cover = { mode: 'frame', sec: 3 }; render(); } }, 'Chọn frame'),
+        h('button', { type: 'button', 'aria-pressed': cur === 'file' ? 'true' : 'false', disabled: !hasCoverFile(p), onclick: function () { p.cover = { mode: 'file' }; render(); } }, 'Ảnh cover 00'));
+      var coverRow = [h('span', { class: 'flabel', text: 'Cover' }), coverSeg];
+      if (cur === 'frame') {
+        var secIn = h('input', { class: 'input', type: 'number', min: '0', max: '60', id: 'cover-sec', style: 'width:90px' }); secIn.value = p.cover.sec;
+        secIn.addEventListener('change', function () { p.cover.sec = +secIn.value || 0; render(); });
+        coverRow.push(h('label', { for: 'cover-sec', class: 'hint', text: 'giây thứ' }), secIn);
+      }
+      fileKids.push(h('div', { class: 'row' }, coverRow));
+    }
+    var simFiles = h('div', { class: 'sim-row' }, h('span', { class: 'sim-tag', text: 'Mô phỏng' }),
+      h('button', { class: 'btn small ghost', type: 'button', onclick: function () { if (fs.length > 2) { p.files = p.files.filter(function (x) { return x.n !== 2; }); render(); } } }, 'Bỏ file 02'),
+      h('button', { class: 'btn small ghost', type: 'button', onclick: function () { p.files = p.files.concat(imgs(5, max + 1)); render(); } }, 'Thêm 5 ảnh'));
+
+    // 3. Lịch đăng
+    var platSeg = h('div', { class: 'seg', role: 'group', 'aria-label': 'Nền tảng' },
+      h('button', { type: 'button', 'aria-pressed': p.platforms === 'FB' ? 'true' : 'false', onclick: function () { p.platforms = 'FB'; render(); } }, 'Chỉ Facebook'),
+      h('button', { type: 'button', 'aria-pressed': p.platforms === 'FBIG' ? 'true' : 'false', onclick: function () { p.platforms = 'FBIG'; render(); } }, 'Facebook + Instagram'));
+    var daySel = h('select', { class: 'input', id: 'day', onchange: function (e) { p.date = e.target.value; render(); } },
+      DAYS.map(function (d) { var o = h('option', { value: d.d, text: d.w + ' ' + d.n }); if (d.d === p.date) o.selected = true; return o; }));
+    var times = []; for (var mm = 480; mm <= 1380; mm += 15) times.push(hhmm(mm));
+    if (times.indexOf(p.time) < 0) times.push(p.time);
+    var timeSel = h('select', { class: 'input', id: 'time', onchange: function (e) { p.time = e.target.value; render(); } },
+      times.map(function (t) { var o = h('option', { value: t, text: t + (inWindow(mins(t)) ? '' : ' · ngoài khung') }); if (t === p.time) o.selected = true; return o; }));
+    var slots = freeSlots(p);
+    var schedKids = [
+      h('div', { class: 'field' }, h('span', { class: 'flabel', text: 'Nền tảng' }), platSeg),
+      h('div', { class: 'two' }, h('div', { class: 'field' }, h('label', { for: 'day', text: 'Ngày' }), daySel), h('div', { class: 'field' }, h('label', { for: 'time', text: 'Giờ' }), timeSel)),
+      h('div', { class: 'row' }, h('span', { class: 'hint', text: 'Giờ trống phù hợp:' }), slots.length ? slots.map(function (t) { return h('button', { class: 'chip as-btn' + (t === p.time ? ' ok' : ''), type: 'button', onclick: function () { p.time = t; render(); } }, t); }) : h('span', { class: 'hint', text: 'không còn trong ngày' }))
+    ];
+
+    // 5. Comment, 6. Story
+    var cfb = h('textarea', { class: 'input sm', id: 'cmt-fb', placeholder: 'Để trống nếu không cần' }); cfb.value = p.cmtFB || '';
+    cfb.addEventListener('change', function () { p.cmtFB = cfb.value.trim(); if (p.cmtSame) p.cmtIG = p.cmtFB; render(); });
+    var same = h('input', { type: 'checkbox', id: 'cmt-same' }); same.checked = !!p.cmtSame;
+    same.addEventListener('change', function () { p.cmtSame = same.checked; if (same.checked) p.cmtIG = p.cmtFB; render(); });
+    var cig = h('textarea', { class: 'input sm', id: 'cmt-ig', disabled: !!p.cmtSame, placeholder: 'Để trống nếu không cần' }); cig.value = p.cmtIG || '';
+    cig.addEventListener('change', function () { p.cmtIG = cig.value.trim(); render(); });
+    var cmtKids = [h('div', { class: 'field' }, h('label', { for: 'cmt-fb' }, h('span', { class: 'badge fb', text: 'FB' }), ' Comment dưới bài'), cfb)];
+    if (ig) cmtKids.push(h('div', { class: 'field' }, h('div', { class: 'lbl-row' }, h('label', { for: 'cmt-ig' }, h('span', { class: 'badge ig', text: 'IG' }), ' Comment dưới bài'), h('label', { class: 'toggle', for: 'cmt-same' }, same, 'Giống Facebook')), cig));
+    var sl = h('input', { class: 'input', id: 'story-link' }); sl.value = p.storyLink || '';
+    sl.addEventListener('change', function () { p.storyLink = sl.value.trim(); render(); });
+    var st = h('input', { class: 'input', id: 'story-text' }); st.value = p.storyText || '';
+    st.addEventListener('change', function () { p.storyText = st.value.trim(); render(); });
+
+    var form = h('div', { class: 'cmp-form' },
+      sec('Nội dung', null, contentKids),
+      sec('File', h('span', { class: 'hint', text: fs.length + ' file · thứ tự theo số designer đánh' }), fileKids.concat([simFiles])),
+      sec('Lịch đăng', null, schedKids),
+      sec('Nhạc', null, [musicRow(p, 'fb'), ig ? musicRow(p, 'ig') : null]),
+      sec('Comment dưới bài', h('span', { class: 'hint', text: 'Đăng bằng tài khoản TDC ngay sau khi bài lên' }), cmtKids),
+      ig ? sec('Story dẫn link', h('span', { class: 'badge ig', text: 'IG' }), [h('div', { class: 'two' },
+        h('div', { class: 'field' }, h('label', { for: 'story-link', text: 'Link' }), sl),
+        h('div', { class: 'field' }, h('label', { for: 'story-text', text: 'Chữ trên sticker' }), st))]) : null);
+    var side = h('div', { class: 'cmp-side' });
+    wrap.appendChild(h('div', { class: 'cmp-body' }, form, side));
+    v.appendChild(wrap);
+    renderSide();
+
+    function renderSide() {
+      side.textContent = '';
+      side.appendChild(rulesCard(p));
+      var c = previewCard(p);
+      side.appendChild(c);
+      c._draw();
+    }
+  }
+
+  // ---------- Chờ duyệt ----------
+  function viewReview(v) {
+    var list = state.posts.filter(function (p) { return p.status === 'review' || p.status === 'hold'; });
+    if (!list.length) { v.appendChild(h('div', { class: 'empty', text: 'Không còn bài chờ duyệt. Bài content gửi duyệt sẽ hiện ở đây.' })); return; }
+    var mayApprove = can('act.approve');
+    if (!mayApprove) v.appendChild(permNote('Bạn đang xem với vai trò ' + ROLES[state.user.role] + ': xem được trạng thái và lý do, nhưng chỉ Người duyệt hoặc Admin mới xác nhận lại và duyệt bài.'));
+    v.appendChild(h('p', { class: 'muted ann', text: 'Không bài nào bị chặn. Người duyệt đọc lý do người gửi đã ghi và xác nhận lại từng vấn đề; vấn đề mới phát sinh thì tự xác nhận kèm lý do. Xong hết mới bấm Duyệt.' }));
+    var cards = h('div', { class: 'cards' });
+    list.forEach(function (p) {
+      var open = blocks(p), conf = confirmedIssues(p), w = warns(p), hold = p.status === 'hold';
+      var allReviewed = conf.every(function (x) { return x.confirmed.reviewed; });
+      var body = h('div', { style: 'display:grid;gap:8px;min-width:0' },
+        h('div', { class: 'row' }, h('h5', { text: p.title }), statusChip(p)),
+        h('div', { class: 'row muted' }, p.code, ' · ', when(p), ' · ', postType(p), ' ', modeBadge()),
+        h('div', { class: 'strip' }, h('span', { text: 'Nền tảng đang chọn:' }), h('b', { text: hasIG(p) ? 'Facebook + Instagram' : 'Chỉ Facebook' }), platBadges(p)),
+        hold ? h('p', { class: 'muted', text: 'Bài đã duyệt nhưng engine phát hiện vấn đề mới ngay trước khi đăng, nên dừng lại chờ xác nhận.' }) : null);
+      if (conf.length) {
+        body.appendChild(h('span', { class: 'label', text: 'Người gửi đã xác nhận · cần bạn xác nhận lại' }));
+        conf.forEach(function (x) {
+          var id = 'rv-' + p.id + '-' + x.key;
+          var box = h('input', { type: 'checkbox', id: id, disabled: !mayApprove }); box.checked = !!x.confirmed.reviewed;
+          box.addEventListener('change', function () { p.confirmed[x.key].reviewed = box.checked; if (box.checked) audit(me(), 'web', 'Người duyệt xác nhận lại ' + x.code + ' cho ' + p.code); render(); });
+          body.appendChild(h('div', { class: 'rule confirmed' }, h('span', { class: 'code', text: x.code }), h('p', { text: x.text }), h('span', { class: 'conf', text: confirmedNote(x) }),
+            h('label', { class: 'review-check', for: id, style: 'grid-column:2' }, box, 'Tôi đã đọc lý do và đồng ý')));
+        });
+      }
+      if (open.length) {
+        if (state.confirmFor === 'rev-' + p.id) body.appendChild(confirmPanel(p, open, { title: 'Xác nhận ' + open.length + ' vấn đề chưa ai xác nhận', button: 'Xác nhận', by: me() + ' (người duyệt)', reviewer: true,
+          onDone: function () { state.confirmFor = null; render(); }, onCancel: function () { state.confirmFor = null; render(); } }));
+        else body.appendChild(h('div', { class: 'rules' }, open.map(function (x) { return h('div', { class: 'rule block' }, h('span', { class: 'code', text: x.code }), h('p', { text: 'Cần xác nhận · ' + x.text })); })));
+      }
+      if (w.length) body.appendChild(h('div', { class: 'rules' }, w.map(function (x) { return h('div', { class: 'rule warn' }, h('span', { class: 'code', text: x.code }), h('p', { text: x.text })); })));
+      if (!open.length && !conf.length && !w.length) body.appendChild(h('p', { class: 'muted', text: 'Không có vấn đề hay cảnh báo.' }));
+      var ready = !open.length && allReviewed;
+      body.appendChild(h('div', { class: 'row' },
+        open.length && mayApprove && state.confirmFor !== 'rev-' + p.id ? h('button', { class: 'btn', type: 'button', onclick: function () { state.confirmFor = 'rev-' + p.id; render(); } }, 'Xác nhận ' + open.length + ' vấn đề') : null,
+        h('button', { class: 'btn primary', type: 'button', disabled: !ready || !mayApprove, onclick: function () { p.status = 'approved'; audit(me(), 'web', (hold ? 'Xác nhận lại và đưa vào hàng đợi ' : 'Duyệt ') + p.code + ' (' + (hasIG(p) ? 'FB + IG' : 'FB') + ')'); render(); toast(hold ? 'Đã đưa bài trở lại hàng đợi đăng' : 'Đã duyệt: bài vào hàng đợi đăng'); } }, hold ? 'Xác nhận lại và đưa vào hàng đợi' : 'Duyệt'),
+        h('button', { class: 'btn', type: 'button', disabled: !mayApprove, onclick: function () { p.status = 'draft'; audit(me(), 'web', 'Trả lại ' + p.code + ' cho content'); render(); toast('Đã trả lại cho content'); } }, 'Trả lại'),
+        h('button', { class: 'btn ghost', type: 'button', onclick: function () { go('compose', p.id); } }, 'Mở bài'),
+        !ready ? h('span', { class: 'muted', text: open.length ? 'Còn ' + open.length + ' vấn đề chưa xác nhận' : 'Đánh dấu đã đọc từng lý do để duyệt' } ) : null));
+      cards.appendChild(h('div', { class: 'panel' }, h('div', { class: 'pcard' }, h('div', { class: 'thumb', style: 'background:' + tileColor(0), text: media(p).length + ' file' }), body)));
+    });
+    v.appendChild(cards);
+  }
+
+  // ---------- Hàng đợi đăng ----------
+  var running = false;
+  function viewQueue(v) {
+    var browser = state.mode === 'browser', s = state.settings;
+    var batch = state.posts.filter(function (p) { return p.status === 'approved'; });
+    var log = h('div', { class: 'log', id: 'log', 'aria-live': 'polite' });
+    var cmd = 'Lên lịch các bài đã duyệt trong 48 giờ tới';
+    var head = h('div', { class: 'panel' },
+      h('div', { class: 'panel-head' }, h('h4', { text: browser ? 'Đợt đăng của Claude · chế độ Trình duyệt' : 'Chế độ API · worker tự đăng' }), modeBadge()),
+      browser
+        ? h('p', { text: 'Bản nén của bài đã duyệt nằm sẵn trong outbox/ trên máy chạy Chrome (đồng bộ bằng Google Drive for desktop). Người duyệt gõ lệnh dưới đây cho Claude; mỗi lệnh là một lô. Với mỗi bài, Claude xem Planner, tạo bài, kiểm tra nền tảng, rồi Lên lịch; bài còn dưới ' + s.lead + ' phút thì chờ đến giờ và bấm Đăng. Chờ tải xong mới rời trang. Trước khi đăng, engine chạy lại quy tắc: bài có vấn đề mới chưa ai xác nhận sẽ dừng ở trạng thái Chờ xác nhận và báo người duyệt, không bị bỏ qua âm thầm.' })
+        : h('p', { text: 'Không cần đợt: worker gọi Graph API đúng giờ, Meta tải bản nén từ R2 qua signed URL, comment dưới bài FB và IG ngay khi bài lên và kiểm tra lại sau 5 phút.' }),
+      can('act.runBatch') ? null : permNote('Chỉ Người duyệt hoặc Admin được ra lệnh đợt đăng.'),
+      browser ? h('div', { class: 'copybox' }, h('span', { text: '“' + cmd + '”' }), h('button', { class: 'btn small', type: 'button', onclick: function () { copy(cmd); } }, 'Sao chép lệnh')) : null,
+      h('div', { class: 'row' },
+        h('button', { class: 'btn primary', type: 'button', disabled: running || !batch.length || !can('act.runBatch'), onclick: function () { browser ? simulateBatch(batch) : simulateApi(batch); } },
+          browser ? 'Mô phỏng đợt Claude (' + batch.length + ' bài)' : 'Mô phỏng worker nhận ' + batch.length + ' bài'),
+        !batch.length ? h('span', { class: 'muted', text: 'Chưa có bài đã duyệt còn hạn. Vào Chờ duyệt để duyệt bài.' }) : null),
+      log);
+    v.appendChild(head);
+    var rows = [];
+    state.posts.forEach(function (p) { jobsOf(p).forEach(function (j) { rows.push({ p: p, j: j }); }); });
+    var tb = h('tbody');
+    rows.forEach(function (r) {
+      var st = JOBST[r.j.status] || [r.j.status, ''];
+      tb.appendChild(h('tr', null,
+        h('td', null, r.p.title, h('br'), h('span', { class: 'muted', text: r.p.code })),
+        h('td', { class: 'num', text: when(r.p) }),
+        h('td', { text: r.j.plat }),
+        h('td', { text: r.j.action }),
+        h('td', null, r.j.manual ? h('span', { class: 'badge', text: 'Người' }) : r.j.key === ':copyright' ? h('span', { class: 'badge', text: 'Meta' }) : modeBadge()),
+        h('td', null, h('span', { class: 'chip ' + st[1], text: st[0] }))));
+    });
+    v.appendChild(h('div', { class: 'jobs' }, h('table', null,
+      h('thead', null, h('tr', null, ['Bài', 'Giờ', 'Nền tảng', 'Việc', 'Ai làm', 'Trạng thái'].map(function (t) { return h('th', { text: t }); }))),
+      rows.length ? tb : h('tbody', null, h('tr', null, h('td', { colspan: '6', class: 'muted', text: 'Chưa có việc nào. Bài được duyệt sẽ sinh việc ở đây.' }))))));
+  }
+  function logLine(t) { var l = document.getElementById('log'); if (l) { l.textContent += t + '\n'; l.scrollTop = l.scrollHeight; } }
+  function runSteps(steps, after) {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches, i = 0;
+    (function next() {
+      if (i >= steps.length) { after(); return; }
+      var st = steps[i++];
+      if (st[0]) state.jobs[st[0]] = 'running';
+      logLine(st[1]);
+      setTimeout(next, reduce ? 0 : 320);
+    })();
+  }
+  function finishKeepingLog(msg) {
+    running = false;
+    var keep = (document.getElementById('log') || {}).textContent || '';
+    render();
+    var l = document.getElementById('log'); if (l) { l.textContent = keep; l.scrollTop = l.scrollHeight; }
+    toast(msg);
+  }
+  function holdNew(list, who) {
+    var held = [];
+    list.forEach(function (p) {
+      var open = blocks(p);
+      if (open.length) {
+        held.push({ p: p, codes: open.map(function (x) { return x.code; }).join(', ') });
+        p.status = 'hold';
+        audit('engine', who, 'Dừng ' + p.code + ' trước khi đăng: cần xác nhận ' + open.map(function (x) { return x.code; }).join(', ') + ' · đã báo người duyệt qua Telegram');
+      }
+    });
+    return held;
+  }
+  function simulateBatch(all) {
+    running = true; render();
+    var s = state.settings, steps = [];
+    var held = holdNew(all, 'MCP');
+    var batch = all.filter(function (p) { return p.status === 'approved'; });
+    steps.push(['', 'claude › get_publish_batch → ' + all.length + ' bài (giờ hiện tại ' + state.now.time + ')']);
+    held.forEach(function (x) { steps.push(['', '⏸ ' + x.p.code + ' · ' + x.p.title + ': có vấn đề mới chưa xác nhận (' + x.codes + ') → dừng, chờ người duyệt xác nhận']); });
+    batch.forEach(function (p) {
+      var mixed = postType(p) === 'Trộn ảnh + video', reel = postType(p) === 'Reels', diff = postMin(p) - nowMin(), soon = diff < s.lead;
+      steps.push([p.id + ':fb', '▸ ' + p.code + ' · ' + p.title + ' · ' + when(p)]);
+      steps.push(['', '  Mở Lịch (Planner): không có bài khác trong ±' + fmtDur(s.gap) + ' → mở ô tạo bài từ ngày ' + dayOf(p.date).n]);
+      if (mixed) {
+        steps.push(['', '  Bài trộn ảnh + video: Business Suite không đăng được → tạo việc làm tay "Đăng tay trên Page"']);
+      } else if (reel) {
+        steps.push(['', '  Tạo Reel → upload ' + media(p)[0].name + ' từ outbox/ → tiêu đề "' + p.reelTitle + '"' + (p.reelDesc ? ' → mô tả' : ' (không mô tả)')]);
+        steps.push(['', '  Cover: ' + (p.cover && p.cover.mode === 'frame' ? 'chọn frame giây ' + p.cover.sec : p.cover && p.cover.mode === 'file' ? 'ảnh 00' : 'frame đầu') + ' → Tiếp → Meta kiểm tra bản quyền hình ảnh và âm thanh']);
+      } else {
+        steps.push(['', '  Tạo bài viết → kéo thả ' + media(p).length + ' file từ outbox/ → sắp theo 01–' + pad(media(p).length) + ' → dán caption']);
+      }
+      if (!mixed) {
+        steps.push(['', '  Kiểm tra nền tảng đang chọn: Facebook (chỉ FB, IG tạo mục riêng)']);
+        if (diff < 0) steps.push(['', '  Đã quá giờ ' + p.time + ' (đã xác nhận đăng ngay) → bấm Đăng']);
+        else if (soon) steps.push(['', '  Còn ' + fmtDur(diff) + ' < ' + s.lead + ' phút: không lên lịch được → chờ đến ' + p.time + ' rồi bấm Đăng']);
+        else steps.push(['', '  Lên lịch ' + when(p) + ' → bấm ' + (reel ? 'Hoàn tất' : 'Lên lịch')]);
+        steps.push(['', '  Chờ tải xong 100% mới rời trang → chụp màn hình → report_scheduled (FB)']);
+        if (reel) steps.push([p.id + ':copyright', '  Reels lên chậm hơn: chờ Meta kiểm tra bản quyền']);
+      }
+      if (hasIG(p)) {
+        var reason = igManualReason(p);
+        if (reason) steps.push(['', '  IG ' + reason + ': tạo việc làm tay "Đăng bằng app IG"']);
+        else {
+          steps.push([p.id + ':ig', '  Tạo mục riêng cho Instagram → "Chia sẻ lên Facebook": TẮT (FB đã có mục riêng)']);
+          steps.push(['', '  Upload theo thứ tự (' + media(p).length + '/' + s.carB + ') → caption ' + charLen(p.caption) + ' ký tự → ' + (soon ? 'chờ đến giờ, bấm Đăng' : 'Lên lịch ' + p.time) + ' → report_scheduled (IG)']);
+        }
+      }
+    });
+    steps.push(['', 'claude › xong đợt. Comment dưới bài (FB, IG), Story và kiểm tra (mục 5) làm ở đợt sau giờ đăng.']);
+    runSteps(steps, function () {
+      batch.forEach(function (p) {
+        var mixed = postType(p) === 'Trộn ảnh + video', soon = postMin(p) - nowMin() < s.lead, reel = postType(p) === 'Reels';
+        state.jobs[p.id + ':fb'] = mixed ? 'manual' : soon ? 'now' : 'scheduled';
+        if (reel && !mixed) state.jobs[p.id + ':copyright'] = 'copyright';
+        if (hasIG(p)) state.jobs[p.id + ':ig'] = igManualReason(p) ? 'manual' : soon ? 'now' : 'scheduled';
+        p.status = mixed ? 'needs' : 'scheduled';
+        audit('Claude', 'MCP (thay mặt ' + me() + ')', 'report_scheduled ' + p.code + (mixed ? ' (FB: việc làm tay)' : ''));
+      });
+      finishKeepingLog('Đợt đăng xong: ' + batch.length + ' bài' + (held.length ? ' · ' + held.length + ' bài chờ xác nhận' : ''));
+    });
+  }
+  function simulateApi(all) {
+    var held = holdNew(all, 'API');
+    var batch = all.filter(function (p) { return p.status === 'approved'; });
+    batch.forEach(function (p) {
+      var mixed = postType(p) === 'Trộn ảnh + video';
+      state.jobs[p.id + ':fb'] = mixed ? 'manual' : 'queued';
+      if (postType(p) === 'Reels' && !mixed) state.jobs[p.id + ':copyright'] = 'copyright';
+      if (hasIG(p)) state.jobs[p.id + ':ig'] = igManualReason(p) ? 'manual' : 'queued';
+      p.status = mixed ? 'needs' : 'scheduled';
+      audit('worker', 'API', 'Nhận job ' + p.code + ': tạo container trước giờ đăng, publish đúng giờ');
+    });
+    render();
+    logLine('worker › nhận ' + batch.length + ' bài; tạo container IG trước giờ đăng vài phút, publish đúng giờ; comment dưới bài FB và IG ngay khi bài lên.' + (held.length ? ' Dừng ' + held.length + ' bài có vấn đề mới chưa xác nhận.' : ''));
+    toast('Worker đã nhận ' + batch.length + ' bài');
+  }
+
+  // ---------- Kiểm tra sau đăng (mục 5) ----------
+  function viewVerify(v) {
+    var browser = state.mode === 'browser';
+    var due = dueForVerify();
+    var log = h('div', { class: 'log', id: 'log', 'aria-live': 'polite' });
+    v.appendChild(h('div', { class: 'panel' },
+      h('div', { class: 'panel-head' }, h('h4', { text: browser ? 'Đợt kiểm tra của Claude · sau giờ đăng' : 'Worker kiểm tra sau 5 phút' }), modeBadge()),
+      h('p', { text: 'Theo mục 5 của flow, mỗi bài đã đến giờ được kiểm tra 6 điểm: bài có lên không (đặc biệt IG), caption có bị cắt, cover trên lưới profile IG, bài trùng trên FB, Story trùng, bài không lên dù đã bấm đăng. Lỗi nào không tự sửa được thì sinh việc làm tay. Comment dưới bài FB và IG cũng làm ở đợt này.' }),
+      h('div', { class: 'row' },
+        h('button', { class: 'btn primary', type: 'button', disabled: running || !due.length || !can('act.runBatch'), onclick: function () { simulateVerify(due); } }, (browser ? 'Mô phỏng đợt kiểm tra' : 'Mô phỏng worker kiểm tra') + ' (' + due.length + ' bài)'),
+        !due.length ? h('span', { class: 'muted', text: 'Chưa có bài đã lên lịch nào tới giờ đăng. Đổi "Giờ hiện tại" ở thanh trên sang sau giờ đăng.' }) : null),
+      log));
+    var done = state.posts.filter(function (p) { return state.verified[p.id]; });
+    if (done.length) {
+      var cards = h('div', { class: 'cards' });
+      done.forEach(function (p) {
+        var r = state.verified[p.id];
+        cards.appendChild(h('div', { class: 'panel' },
+          h('div', { class: 'panel-head' }, h('div', { class: 'row' }, h('h4', { text: p.title }), statusChip(p), platBadges(p)), h('span', { class: 'muted', text: p.code + ' · ' + when(p) + ' · kiểm tra lúc ' + r.at })),
+          h('div', { class: 'checks' }, r.checks.map(function (c) { return h('div', { class: 'check ' + c.state }, h('i', { text: c.state === 'ok' ? '✓' : c.state === 'bad' ? '!' : '…' }), h('span', { text: c.text })); })),
+          r.links.length ? h('div', { class: 'row muted' }, r.links.map(function (l) { return h('span', { text: l }); })) : null));
+      });
+      v.appendChild(cards);
+    } else if (!due.length) v.appendChild(h('div', { class: 'empty', text: 'Chưa có kết quả kiểm tra nào trong tuần này.' }));
+  }
+  function simulateVerify(due) {
+    running = true; render();
+    var browser = state.mode === 'browser', steps = [], who = browser ? 'claude' : 'worker';
+    steps.push(['', who + ' › get_verify_batch → ' + due.length + ' bài đã tới giờ (giờ hiện tại ' + state.now.time + ')']);
+    due.forEach(function (p) {
+      steps.push(['', '▸ ' + p.code + ' · ' + p.title]);
+      steps.push(['', '  FB: mở bài → đã lên lúc ' + p.time + ' · ' + media(p).length + ' file đúng thứ tự · caption đủ · Công khai · không có bài trùng']);
+      if (postType(p) === 'Reels') steps.push(['', '  FB Reels: bản quyền đã qua kiểm tra → Reels hiển thị']);
+      if (hasIG(p) && !igManualReason(p)) {
+        if (p.id === 'p1') steps.push(['', '  IG: mở app → KHÔNG thấy bài (lỗi "FB lên nhưng IG không") → tạo việc làm tay: đăng tay bằng app IG']);
+        else steps.push(['', '  IG: bài đã lên · caption ' + charLen(p.caption) + ' ký tự không bị cắt']);
+        if (postType(p) === 'Reels' && p.id === 'p2') steps.push(['', '  IG lưới profile: cover LỆCH frame → tạo việc làm tay: chọn lại Ảnh bìa trên app IG']);
+        else if (postType(p) === 'Reels' || firstIsVideo(p)) steps.push(['', '  IG lưới profile: cover đúng frame']);
+      }
+      if (p.cmtFB) steps.push([p.id + ':cmtfb', '  FB: comment dưới bài bằng tài khoản TDC → "' + p.cmtFB.slice(0, 48) + (p.cmtFB.length > 48 ? '…' : '') + '"']);
+      if (hasIG(p) && p.cmtIG && !igManualReason(p) && p.id !== 'p1') steps.push([p.id + ':cmtig', '  IG: comment dưới bài bằng tài khoản TDC' + (browser ? ' (trên instagram.com)' : '') + ' → "' + p.cmtIG.slice(0, 48) + (p.cmtIG.length > 48 ? '…' : '') + '"']);
+      if (hasIG(p) && p.storyLink) steps.push(['', '  IG Story: kiểm tra IG có tự đăng Story không → ' + (p.id === 'p1' ? 'bài chưa lên nên chưa có' : 'không') + ' → giữ việc "Story dẫn link" cho người làm trên điện thoại']);
+      steps.push([p.id + ':verify', '  report_published → permalink đã ghi vào database']);
+    });
+    steps.push(['', who + ' › xong đợt kiểm tra.']);
+    runSteps(steps, function () {
+      due.forEach(function (p) {
+        var checks = [], links = [], needs = false;
+        checks.push({ state: 'ok', text: 'FB: bài đã lên đúng giờ, đúng thứ tự file, caption đủ, Công khai' });
+        checks.push({ state: 'ok', text: 'FB: không có bài trùng (không dùng "Chia sẻ lên Facebook")' });
+        links.push('facebook.com/thedesigncouncil/posts/…');
+        if (postType(p) === 'Reels') { checks.push({ state: 'ok', text: 'FB Reels: đã qua kiểm tra bản quyền' }); state.jobs[p.id + ':copyright'] = 'done'; }
+        if (hasIG(p)) {
+          if (igManualReason(p)) checks.push({ state: 'wait', text: 'IG: đang chờ người đăng bằng app (' + igManualReason(p) + ')' });
+          else if (p.id === 'p1') {
+            checks.push({ state: 'bad', text: 'IG: không thấy bài → việc làm tay "Đăng tay bằng app IG" (lỗi 1, mục 5)' });
+            state.jobs[p.id + ':ig'] = 'failed'; needs = true;
+            state.extraTasks.push({ id: p.id + ':igfail', post: p, kind: 'ig-app', title: 'Đăng tay bằng app IG (Business Suite không lên)' });
+          } else { checks.push({ state: 'ok', text: 'IG: bài đã lên, caption không bị cắt' }); state.jobs[p.id + ':ig'] = 'done'; links.push('instagram.com/p/…'); }
+          if (postType(p) === 'Reels' && p.id === 'p2') {
+            checks.push({ state: 'bad', text: 'IG lưới profile: cover lệch frame → việc làm tay "Chọn lại Ảnh bìa" (lỗi 3, mục 5)' }); needs = true;
+            state.extraTasks.push({ id: p.id + ':coverfix', post: p, kind: 'cover-fix', title: 'Chọn lại Ảnh bìa trên app IG (cover lệch)' });
+          } else if (postType(p) === 'Reels' || firstIsVideo(p)) checks.push({ state: 'ok', text: 'IG lưới profile: cover đúng frame' });
+          if (p.storyLink) checks.push({ state: 'wait', text: 'IG Story: IG không tự đăng Story → người làm Story dẫn link (việc làm tay)' });
+        }
+        if (p.cmtFB) { checks.push({ state: 'ok', text: 'FB: đã comment dưới bài bằng tài khoản TDC' }); state.jobs[p.id + ':cmtfb'] = 'done'; }
+        if (hasIG(p) && p.cmtIG) {
+          if (igManualReason(p) || p.id === 'p1') checks.push({ state: 'wait', text: 'IG: comment dưới bài sẽ đăng khi bài IG lên' });
+          else { checks.push({ state: 'ok', text: 'IG: đã comment dưới bài bằng tài khoản TDC' }); state.jobs[p.id + ':cmtig'] = 'done'; }
+        }
+        state.jobs[p.id + ':fb'] = 'done'; state.jobs[p.id + ':verify'] = 'done';
+        p.status = needs ? 'needs' : 'verified';
+        state.verified[p.id] = { at: state.now.time, checks: checks, links: links };
+        audit(browser ? 'Claude' : 'worker', browser ? 'MCP (thay mặt ' + me() + ')' : 'API', 'report_published ' + p.code + (needs ? ' · phát hiện lỗi, tạo việc làm tay' : ' · đạt'));
+      });
+      finishKeepingLog('Kiểm tra xong ' + due.length + ' bài');
+    });
+  }
+
+  // ---------- Việc làm tay ----------
+  var TASK_STEPS = {
+    story: function (p) { return ['Đợi bài IG lên; kiểm tra IG chưa tự đăng Story để không bị 2 Story trùng.', 'Mở bài vừa đăng, bấm icon Chia sẻ (máy bay giấy) → Thêm bài viết vào tin.', 'Bấm icon sticker (mặt cười) → chọn sticker Liên kết.', 'Dán link và câu giới thiệu bên dưới, rồi đăng Story.']; },
+    mixed: function (p) { return ['Vào Page, bấm ô tạo bài viết ("Bạn đang nghĩ gì?").', 'Upload ảnh và video theo thứ tự 01–' + pad(media(p).length) + ' (lấy từ folder trên Drive), dán caption.', 'Kiểm tra đối tượng xem bài viết: Công khai.', 'Chọn Lên lịch ' + when(p) + ' hoặc Đăng ngay. Chờ tải xong mới rời trang.']; },
+    'fb-app': function (p) { return ['Mở app Facebook, chuyển sang Page The Design Council.', 'Tạo ' + (postType(p) === 'Reels' ? 'Reel' : 'bài viết') + ', chọn file theo thứ tự 01–' + pad(media(p).length) + ' từ folder trên Drive.', 'Thêm nhạc: ' + (musicLabel(p.musicFB) || 'theo ghi chú') + '. Dán caption.', 'Đối tượng: Công khai. Cần hẹn giờ thì chọn lên lịch; bấm Đăng.']; },
+    'ig-app': function (p) {
+      var reel = postType(p) === 'Reels';
+      return reel
+        ? ['Bấm dấu +, chọn Reel. Chọn video, bấm Tiếp.', 'Viết caption và chọn cover' + (musicLabel(p.musicIG) ? '; thêm nhạc: ' + musicLabel(p.musicIG) : '') + '.', 'Kiểm tra "Chia sẻ lên Facebook": TẮT (FB đã đăng riêng).', 'Cần hẹn giờ: Tùy chọn khác → Lên lịch bài viết. Bấm Chia sẻ / Lên lịch.']
+        : ['Bấm dấu +, chọn Bài viết. Bật chọn nhiều ảnh, bấm từng ảnh theo đúng thứ tự 01–' + pad(media(p).length) + ' (tối đa 20).', (firstIsVideo(p) ? 'Slide đầu là motion: Chỉnh sửa → Ảnh bìa → chọn cover. ' : '') + (musicLabel(p.musicIG) ? 'Thêm nhạc: ' + musicLabel(p.musicIG) + '.' : 'Thêm nhạc nếu cần: không lời, nhẹ nhàng.'), 'Bấm Tiếp, viết caption' + (p.perSlide ? ' riêng từng ảnh (vuốt qua từng ảnh)' : '') + '; mỗi caption ≤ 2.200 ký tự, ≤ 5 hashtag.', 'Kiểm tra "Chia sẻ lên Facebook": TẮT. Cần hẹn giờ: Tùy chọn khác → Lên lịch bài viết. Bấm Chia sẻ / Lên lịch.'];
+    },
+    'cover-fix': function (p) { return ['Mở trang profile IG (lưới bài), xác nhận cover lệch hoặc sai frame.', 'Mở bài → ⋯ → Chỉnh sửa → Ảnh bìa.', 'Chọn frame đúng' + (p.cover && p.cover.mode === 'frame' ? ' (giây ' + p.cover.sec + ')' : ' (frame đầu)') + ' hoặc tải ảnh cover riêng → Xong.', 'Kiểm tra lại lưới profile.']; }
+  };
+  function viewManual(v) {
+    var tasks = manualTasks();
+    if (!tasks.length) { v.appendChild(h('div', { class: 'empty', text: 'Không có việc làm tay. Story dẫn link, bài trộn ảnh + video, IG có nhạc hoặc caption từng ảnh, và lỗi phát hiện sau đăng sẽ hiện ở đây.' })); return; }
+    v.appendChild(h('p', { class: 'muted ann', text: 'Những việc API và Business Suite không làm được, hoặc lỗi phát hiện sau đăng. Hệ thống soạn sẵn nội dung và các bước theo đúng tên nút trong flow; người làm trên điện thoại hoặc trên Page rồi bấm Xong.' }));
+    var cards = h('div', { class: 'cards' });
+    tasks.forEach(function (t) {
+      var p = t.post, done = !!state.manualDone[t.id], steps = TASK_STEPS[t.kind](p);
+      var copies = [];
+      if (t.kind === 'story') { copies.push(['Sao chép link', p.storyLink]); copies.push(['Sao chép câu', p.storyText]); }
+      else copies.push(['Sao chép caption', p.perSlide ? p.slideCaptions.join('\n---\n') : p.caption]);
+      cards.appendChild(h('div', { class: 'panel' },
+        h('div', { class: 'panel-head' },
+          h('div', { style: 'display:grid;gap:4px' }, h('h4', { text: t.title + ' · ' + p.title }), h('div', { class: 'row muted' }, p.code + ' · ' + when(p) + ' ', platBadges(p))),
+          done ? h('span', { class: 'chip ok', text: 'Xong' }) : h('span', { class: 'chip block', text: 'Cần người' })),
+        h('ol', { class: 'steps-sm' }, steps.map(function (st) { return h('li', { text: st }); })),
+        h('div', { style: 'display:grid;gap:6px' }, copies.map(function (c) { return h('div', { class: 'copybox' }, h('span', { text: c[1].split('\n')[0] + (c[1].indexOf('\n') > 0 ? ' …' : '') }), h('button', { class: 'btn small', type: 'button', onclick: function () { copy(c[1]); } }, c[0])); })),
+        h('div', { class: 'row' },
+          h('button', { class: 'btn primary', type: 'button', disabled: done, onclick: function () {
+            state.manualDone[t.id] = true;
+            if (t.kind === 'story') state.jobs[p.id + ':story'] = 'done';
+            if (t.kind === 'mixed') state.jobs[p.id + ':fb'] = 'done';
+            if (t.kind === 'ig-app') state.jobs[p.id + ':ig'] = 'done';
+            if (t.kind === 'fb-app') state.jobs[p.id + ':fb'] = 'done';
+            if (!manualTasks().some(function (x) { return x.post === p && !state.manualDone[x.id]; }) && p.status === 'needs') p.status = state.verified[p.id] ? 'verified' : 'scheduled';
+            audit(me(), 'web', 'Xong việc làm tay: ' + t.title + ' · ' + p.code); render(); toast('Đã đánh dấu xong');
+          } }, done ? 'Đã xong' : 'Đánh dấu xong'))));
+    });
+    v.appendChild(cards);
+  }
+
+  // ---------- Cài đặt ----------
+  function viewSettings(v) {
+    var s = state.settings;
+    var f = function (key, label, type, note) {
+      var inp = h('input', { class: 'input', type: type, id: 'set-' + key, step: type === 'number' ? '1' : null });
+      inp.value = s[key];
+      inp.addEventListener('change', function () { s[key] = type === 'number' ? +inp.value : inp.value; audit(me(), 'web', 'Đổi cài đặt ' + label + ' → ' + inp.value); render(); toast('Đã lưu; mọi bài được kiểm tra lại theo tham số mới'); });
+      return h('div', { class: 'field' }, h('label', { for: 'set-' + key, text: label }), inp, note ? h('span', { class: 'muted', text: note }) : null);
+    };
+    v.appendChild(h('div', { class: 'panel' },
+      h('h4', { text: 'Tham số quy tắc (rule_settings) · đổi là có hiệu lực ngay, không cần sửa code' }),
+      h('div', { class: 'settings-grid' },
+        f('win1a', 'Khung 1 từ', 'time', 'Mục 2: 10:00–13:00'), f('win1b', 'Khung 1 đến', 'time'),
+        f('win2a', 'Khung 2 từ', 'time', 'Mục 2: 19:00–22:00'), f('win2b', 'Khung 2 đến', 'time'),
+        f('gap', 'Khoảng cách 2 bài (phút)', 'number', 'Mục 2: 90'),
+        f('lead', 'Lên lịch cách hiện tại tối thiểu (phút)', 'number', 'Mục 2: 20, chỉ chế độ Trình duyệt'),
+        f('capMax', 'Caption IG tối đa (ký tự)', 'number', 'Mục 2: 2.200'),
+        f('tagMax', 'Hashtag IG tối đa', 'number', 'Mục 2: 5'),
+        f('carB', 'Carousel IG tối đa · Trình duyệt', 'number', 'Mục 2: 10 qua Business Suite'),
+        f('carA', 'Carousel IG tối đa · API / app', 'number', 'Mục 2: 20 qua app; API cũng 20'),
+        f('simDays', 'So caption trùng trong (ngày)', 'number', 'R11'))));
+    v.appendChild(h('div', { class: 'panel' },
+      h('h4', { text: 'Hồ sơ định dạng TDC · v1 (rút từ báo cáo; xem trang Phương án)' }),
+      h('dl', { class: 'kv' },
+        h('dt', { text: 'Một bài' }), h('dd', { text: 'Một folder trên Google Drive, file đã đánh số liên tục từ 01; số = thứ tự đăng; 00 = ảnh cover riêng (tuỳ chọn)' }),
+        h('dt', { text: 'Lưu trữ' }), h('dd', { text: 'Bản gốc giữ vĩnh viễn trên Drive: TDC Post/năm/tháng/<ngày>_<mã bài>_<tên>/ · bản nén trên R2 để Meta tải về' }),
+        h('dt', { text: 'Loại bài' }), h('dd', { text: 'Ảnh đơn · carousel · Reels · trộn ảnh + video (tự suy ra từ file)' }),
+        h('dt', { text: 'Cover' }), h('dd', { text: 'Video/motion: frame đầu là cover mặc định; Reels FB chọn frame nếu cần; slide đầu motion trên IG: Chỉnh sửa → Ảnh bìa' }),
+        h('dt', { text: 'Caption' }), h('dd', { text: 'Chung, hoặc riêng từng ảnh (IG, làm tay). IG ≤ 2.200 ký tự, ≤ 5 hashtag' }),
+        h('dt', { text: 'Reels FB' }), h('dd', { text: 'Có tiêu đề; mô tả không bắt buộc; chờ kiểm tra bản quyền' }),
+        h('dt', { text: 'Nền tảng' }), h('dd', { text: 'Chỉ FB hoặc FB + IG; FB và IG là 2 mục riêng; FB để Công khai' }),
+        h('dt', { text: 'CTA' }), h('dd', { text: 'FB: comment bằng tài khoản TDC sau khi bài lên · IG: Story dẫn link (Thêm bài viết vào tin → sticker Liên kết)' }),
+        h('dt', { text: 'Chưa có trong báo cáo' }), h('dd', { text: '10 điểm cần họp content: đặt tên, bản cắt FB/IG, tỉ lệ, cấu trúc caption, hashtag cố định, mẫu CTA, nhạc, cách tính 1h30, giọng văn' }))));
+    v.appendChild(h('div', { class: 'panel' },
+      h('h4', { text: 'Thuật ngữ giao diện (mục 6 của báo cáo)' }),
+      h('div', { class: 'tbl' }, h('table', { class: 'plain' },
+        h('thead', null, h('tr', null, h('th', { text: 'Dùng trong app' }), h('th', { text: 'Thay cho' }), h('th', { text: 'Ghi chú' }))),
+        h('tbody', null, [
+          ['2.200 ký tự', 'Caption max 2.200 từ', 'IG tính theo ký tự'],
+          ['Reels (nút: Tạo Reel / Reel)', 'Đăng thước phim ngắn', 'Một tên cho cả FB và IG'],
+          ['Kéo thả', 'Nắm, nắm kéo file', 'Thuật ngữ chuẩn'],
+          ['Ô tạo bài viết trên Page ("Bạn đang nghĩ gì?")', 'Ô status', 'Đúng tên trên giao diện FB'],
+          ['Kiểm tra bản quyền', 'Check bản quyền', 'Rõ nghĩa hơn'],
+          ['Tùy chọn khác → Lên lịch bài viết', 'Lựa chọn khác', 'Tên mục trên app IG'],
+          ['Thêm bài viết vào tin', 'Thêm vào tin', 'Đúng tên nút trên app IG'],
+          ['Icon sticker → sticker Liên kết', 'Ô vuông có mặt cười hình tờ giấy', 'Gọi đúng tên để dễ tìm'],
+          ['Trùng bài', 'Lặp 2 bài', 'Thống nhất cách gọi'],
+          ['Comment', 'Cmt', 'Viết đầy đủ'],
+          ['Hoàn tất / Đăng', 'Bấm hoàn thành', 'Tên nút cuối trên Business Suite có thể khác theo bản cập nhật']
+        ].map(function (r) { return h('tr', null, r.map(function (c) { return h('td', { text: c }); })); }))))));
+  }
+
+  // ---------- Người dùng & quyền ----------
+  function viewUsers(v) {
+    var adminCount = function () { return state.users.filter(function (u) { return u.role === 'admin' && u.status !== 'locked'; }).length; };
+    var email = h('input', { class: 'input', id: 'inv-email', type: 'email', placeholder: 'tên@<tên miền TDC>' });
+    var role = h('select', { class: 'input', id: 'inv-role' }, Object.keys(ROLES).map(function (r) { return h('option', { value: r, text: ROLES[r] }); }));
+    role.value = 'content';
+    v.appendChild(h('div', { class: 'panel' },
+      h('h4', { text: 'Mời người mới' }),
+      h('p', { class: 'muted', text: 'Người được mời đăng nhập bằng tài khoản Google Workspace của TDC. Chưa được mời thì không vào được, kể cả khi có link.' }),
+      h('div', { class: 'two' },
+        h('div', { class: 'field' }, h('label', { for: 'inv-email', text: 'Email Google Workspace' }), email),
+        h('div', { class: 'field' }, h('label', { for: 'inv-role', text: 'Vai trò' }), role)),
+      h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'button', onclick: function () {
+        var e = email.value.trim();
+        if (e.indexOf('@') < 1) { toast('Nhập email hợp lệ'); return; }
+        state.users.push({ id: 'u' + (state.users.length + 1), name: e, role: role.value, status: 'invited', claude: false, last: '—' });
+        audit(me(), 'web', 'Mời ' + e + ' với vai trò ' + ROLES[role.value]); render(); toast('Đã gửi lời mời');
+      } }, 'Gửi lời mời'))));
+
+    var tb = h('tbody');
+    state.users.forEach(function (u) {
+      var sel = h('select', { class: 'input', 'aria-label': 'Vai trò của ' + u.name, style: 'min-width:140px' }, Object.keys(ROLES).map(function (r) { return h('option', { value: r, text: ROLES[r] }); }));
+      sel.value = u.role;
+      sel.addEventListener('change', function () {
+        if (u.role === 'admin' && sel.value !== 'admin' && adminCount() <= 1) { sel.value = 'admin'; toast('Phải còn ít nhất 1 admin'); return; }
+        audit(me(), 'web', 'Đổi vai trò ' + u.name + ': ' + ROLES[u.role] + ' → ' + ROLES[sel.value]);
+        u.role = sel.value; render(); toast('Đã đổi vai trò; quyền có hiệu lực ngay');
+      });
+      var statusChipU = h('span', { class: 'chip ' + (u.status === 'active' ? 'ok' : u.status === 'invited' ? 'info' : 'block'), text: u.status === 'active' ? 'Hoạt động' : u.status === 'invited' ? 'Đã mời' : 'Đã khoá' });
+      var actions = h('div', { class: 'row' });
+      if (u.claude) actions.appendChild(h('button', { class: 'btn small', type: 'button', onclick: function () { u.claude = false; audit(me(), 'web', 'Thu hồi kết nối Claude của ' + u.name); render(); toast('Đã thu hồi kết nối Claude'); } }, 'Thu hồi Claude'));
+      if (u.status === 'locked') actions.appendChild(h('button', { class: 'btn small', type: 'button', onclick: function () { u.status = 'active'; audit(me(), 'web', 'Mở khoá ' + u.name); render(); } }, 'Mở khoá'));
+      else if (u.status === 'invited') actions.appendChild(h('button', { class: 'btn small', type: 'button', onclick: function () { state.users = state.users.filter(function (x) { return x !== u; }); audit(me(), 'web', 'Huỷ lời mời ' + u.name); render(); } }, 'Huỷ lời mời'));
+      else if (u !== state.user) actions.appendChild(h('button', { class: 'btn small', type: 'button', onclick: function () {
+        if (u.role === 'admin' && adminCount() <= 1) { toast('Phải còn ít nhất 1 admin'); return; }
+        u.status = 'locked'; u.claude = false; audit(me(), 'web', 'Khoá tài khoản ' + u.name + ' (dừng mọi phiên và kết nối Claude)'); render();
+      } }, 'Khoá'));
+      tb.appendChild(h('tr', null,
+        h('td', null, u.name + (u === state.user ? ' (bạn)' : '')), h('td', null, sel), h('td', null, statusChipU),
+        h('td', { text: u.claude ? 'Đã kết nối' : '—' }), h('td', { class: 'num', text: u.last }), h('td', null, actions)));
+    });
+    v.appendChild(h('div', { class: 'panel' }, h('h4', { text: 'Người dùng (' + state.users.length + ')' }),
+      h('div', { class: 'jobs' }, h('table', null, h('thead', null, h('tr', null, ['Người', 'Vai trò', 'Trạng thái', 'Claude', 'Đăng nhập gần nhất', 'Thao tác'].map(function (t) { return h('th', { text: t }); }))), tb)),
+      h('p', { class: 'muted', text: 'Đổi vai trò có hiệu lực ngay, kể cả với Claude đang kết nối bằng tài khoản đó. Khoá tài khoản thì mọi phiên đăng nhập và kết nối Claude của người đó dừng ngay. Mọi thay đổi ghi vào Nhật ký.' })));
+
+    var head = h('tr', null, h('th', { text: 'Việc' }), Object.keys(ROLES).map(function (r) { return h('th', { text: ROLES[r] }); }));
+    var mb = h('tbody');
+    MATRIX.forEach(function (row) {
+      mb.appendChild(h('tr', null, h('td', { text: row[0] }), Object.keys(ROLES).map(function (r) { var y = (PERMS[row[1]] || []).indexOf(r) >= 0; return h('td', { class: y ? 'y' : 'n', text: y ? '✓' : '—' }); })));
+    });
+    v.appendChild(h('div', { class: 'panel' }, h('h4', { text: 'Ma trận quyền theo vai trò' }), h('div', { class: 'jobs' }, h('table', { class: 'matrix' }, h('thead', null, head), mb))));
+  }
+
+  // ---------- Nhật ký ----------
+  function viewAudit(v) {
+    v.appendChild(h('p', { class: 'muted ann', text: 'Mọi hành động trong phiên này, ai làm và qua kênh nào. Đây là bảng audit.events; cùng với ' + state.evalCount.toLocaleString('vi-VN') + ' lần chạy quy tắc (rule_evaluations) và các bản sửa caption, đây là dữ liệu training sau này.' }));
+    v.appendChild(h('div', { class: 'auditlist' }, state.audit.map(function (a) { return h('div', { class: 'audit' }, h('span', { class: 'num muted', text: a.at }), h('span', { class: 'who', text: a.who + ' · ' + a.via }), h('span', { text: a.action })); })));
+  }
+
+  render();
+
+  var key = 'tdcpost-mockup-review', saved = {};
+  try { saved = JSON.parse(localStorage.getItem(key) || '{}'); } catch (e) { saved = {}; }
+  document.querySelectorAll('#review-list input[type=checkbox]').forEach(function (box) {
+    if (Object.prototype.hasOwnProperty.call(saved, box.id)) box.checked = !!saved[box.id];
+    box.addEventListener('change', function () { saved[box.id] = box.checked; try { localStorage.setItem(key, JSON.stringify(saved)); } catch (e) {} });
+  });
+})();
+</script>
+</body>
+</html>

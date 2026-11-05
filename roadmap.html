@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>TDC Post · Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;500;600;700&family=Arimo:wght@400;700&display=swap">
+<style>
+/* Layout: thanh trang trên cùng · khối LAB mở đầu · mục lục dính bên trái (desktop) + cột nội dung ~760px.
+   Nhận diện theo design system TDC Coaching: giấy ấm, chữ condensed để nói, chữ thường để đọc,
+   mỗi trang 1 màu LAB. Một theme sáng, có chủ đích (TDC không dùng dark mode). */
+:root {
+  --paper: #F8F7F5;
+  --raised: #FFFFFF;
+  --sunk: #EFECE7;
+  --line: #E3DFD8;
+  --line-strong: #8C867D;
+  --ink: #121211;
+  --ink-soft: #3A3835;
+  --ink-muted: #6B6760;
+  --red: #E22E32;
+  --red-deep: #B8232A;
+  --red-tint: #FBE7E5;
+  --ok: #276B43;
+  --ok-tint: #E7F2EA;
+  --warn: #9A5B0B;
+  --warn-tint: #FBEFD9;
+  --lab: #C994EB;
+  --lab-soft: #E1C3F4;
+  --lab-strong: #C994EB;
+  --f-display: "Archivo Narrow", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --f-body: Arimo, Arial, "Helvetica Neue", sans-serif;
+  --f-mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  color-scheme: light;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+body.lab-sky { --lab: #C0DEFC; --lab-soft: #E0EFFE; --lab-strong: #9CCBFA; }
+body.lab-lime { --lab: #BEE059; --lab-soft: #D9ED9D; --lab-strong: #BEE059; }
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 72px; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 15px/1.6 var(--f-body);
+}
+img { max-width: 100%; }
+a { color: var(--ink); text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--ink); }
+:focus-visible { outline: 2px solid var(--red-deep); outline-offset: 2px; border-radius: 4px; }
+
+/* ---------- Thanh trang ---------- */
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 10; background: var(--paper);
+}
+.topbar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.topbar-in {
+  max-width: 1180px; margin: 0 auto;
+  padding-block: 10px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.brand { display: flex; align-items: baseline; gap: 8px; text-decoration: none; margin-right: auto; }
+.brand-mark { font: 700 20px/1 var(--f-display); color: var(--red); letter-spacing: -0.2px; }
+.brand-name { font: 600 12px/1 var(--f-display); letter-spacing: 0.8px; text-transform: uppercase; color: var(--ink-muted); }
+.pages { display: flex; gap: 4px; padding: 4px; background: var(--sunk); border-radius: 999px; }
+.pages a {
+  font: 600 14px/1 var(--f-display); letter-spacing: 0.3px;
+  text-decoration: none; color: var(--ink-soft);
+  padding: 8px 14px; border-radius: 999px;
+}
+.pages a:hover { background: var(--raised); color: var(--ink); }
+.pages a[aria-current="page"] { background: var(--lab-strong); color: var(--ink); }
+
+/* ---------- Mở đầu ---------- */
+.hero-wrap {
+  max-width: 1180px; margin: 0 auto;
+  padding-top: 24px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.hero {
+  background: var(--lab);
+  border-radius: var(--radius-lg);
+  padding: clamp(24px, 4vw, 44px);
+  position: relative; overflow: hidden;
+  display: grid; gap: 14px;
+}
+.hero::after {
+  content: ""; position: absolute; right: -40px; top: -40px;
+  width: 220px; height: 220px; border-radius: 50%;
+  background: var(--lab-soft); opacity: 0.9; pointer-events: none;
+}
+.hero > * { position: relative; z-index: 1; }
+.paren { font: 600 13px/1.2 var(--f-display); letter-spacing: 0.6px; color: var(--ink-soft); }
+.hero h1 {
+  margin: 0; font: 700 clamp(32px, 5.2vw, 52px)/1.02 var(--f-display);
+  letter-spacing: -0.6px; text-wrap: balance; max-width: 18ch;
+}
+.hero .lead { margin: 0; font-size: 17px; line-height: 1.55; max-width: 62ch; color: var(--ink); }
+.hero .meta { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--ink-soft); }
+
+/* ---------- Khung trang ---------- */
+.layout {
+  max-width: 1180px; margin: 0 auto;
+  padding-block: 32px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; grid-template-columns: 1fr; gap: 32px;
+}
+@media (min-width: 1024px) {
+  .layout { grid-template-columns: 220px minmax(0, 1fr); gap: 48px; }
+}
+.toc { display: none; }
+@media (min-width: 1024px) {
+  .toc { display: block; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 72px); align-self: start; }
+}
+.toc .label { margin-bottom: 10px; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.toc a {
+  display: block; padding: 6px 10px; border-radius: 8px;
+  font: 500 14px/1.3 var(--f-display); text-decoration: none; color: var(--ink-soft);
+}
+.toc a:hover { background: var(--sunk); color: var(--ink); }
+
+.content { min-width: 0; max-width: 780px; display: grid; gap: 56px; }
+
+/* ---------- Chữ ---------- */
+.label {
+  font: 600 12px/16px var(--f-display); letter-spacing: 0.8px; text-transform: uppercase; color: var(--ink-muted);
+}
+section { display: grid; gap: 16px; min-width: 0; }
+section > header { display: grid; gap: 6px; }
+h2 {
+  margin: 0; font: 700 32px/1.08 var(--f-display); letter-spacing: -0.3px; text-wrap: balance;
+}
+h3 {
+  margin: 12px 0 0; font: 600 20px/1.2 var(--f-display); text-wrap: balance;
+}
+p { margin: 0; max-width: 68ch; }
+.answer { font-size: 17px; line-height: 1.55; }
+strong { font-weight: 700; }
+code {
+  font: 13px/1.4 var(--f-mono); background: var(--sunk); padding: 1px 5px; border-radius: 5px;
+  overflow-wrap: anywhere;
+}
+mark { background: var(--lab-soft); color: var(--ink); padding: 0 3px; border-radius: 3px; }
+ul, ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; max-width: 68ch; }
+li::marker { color: var(--ink-muted); }
+.steps { counter-reset: s; list-style: none; padding: 0; gap: 10px; }
+.steps > li {
+  counter-increment: s; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; align-items: start;
+}
+.steps > li::before {
+  content: counter(s, decimal-leading-zero);
+  font: 700 18px/1.45 var(--f-display); color: var(--ink-muted); font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Bảng ---------- */
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--raised); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; line-height: 1.45; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+th {
+  font: 600 12px/16px var(--f-display); letter-spacing: 0.8px; text-transform: uppercase;
+  color: var(--ink-muted); background: var(--paper); white-space: nowrap;
+}
+td:first-child { font-weight: 700; }
+table.plain td:first-child { font-weight: 400; }
+.tbl.wide table { min-width: 720px; }
+.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ---------- Chip trạng thái ---------- */
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  font: 600 12px/1 var(--f-body); padding: 5px 8px; border-radius: var(--radius-sm);
+  background: var(--sunk); color: var(--ink-soft);
+}
+.chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.chip.block { background: var(--red-tint); color: var(--red-deep); }
+.chip.warn { background: var(--warn-tint); color: var(--warn); }
+.chip.ok { background: var(--ok-tint); color: var(--ok); }
+.chip.hand { background: var(--sunk); color: var(--ink-soft); }
+
+/* ---------- Khối phụ ---------- */
+.note {
+  background: var(--sunk); border-radius: var(--radius-md); padding: 16px 18px;
+  display: grid; gap: 8px; max-width: 72ch;
+}
+.note.key { background: var(--lab-soft); }
+.note .label { color: var(--ink-soft); }
+.grid-2 { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.card {
+  background: var(--raised); border: 1px solid var(--line); border-radius: var(--radius-md);
+  padding: 16px 18px; display: grid; gap: 8px; align-content: start; min-width: 0;
+}
+.card h4 { margin: 0; font: 600 18px/1.25 var(--f-display); }
+pre {
+  margin: 0; overflow-x: auto; background: var(--ink); color: var(--paper);
+  border-radius: var(--radius-md); padding: 16px 18px; font: 13px/1.6 var(--f-mono);
+}
+.checklist { list-style: none; padding: 0; gap: 8px; }
+.checklist li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; align-items: start; }
+.checklist input { margin: 3px 0 0; width: 16px; height: 16px; accent-color: var(--ink); }
+.checklist label { cursor: pointer; }
+.checklist .done-note { color: var(--ok); font-weight: 700; }
+.sources { font-size: 13px; color: var(--ink-muted); }
+.sources a { color: var(--ink-soft); }
+
+/* ---------- Sơ đồ SVG ---------- */
+.diagram { overflow-x: auto; background: var(--raised); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 12px; }
+.diagram svg { display: block; width: 100%; min-width: 640px; height: auto; }
+.diagram figcaption { font-size: 13px; color: var(--ink-muted); padding: 8px 4px 2px; }
+.d-box { fill: var(--raised); stroke: var(--line-strong); stroke-width: 1.25; }
+.d-accent { fill: var(--lab-soft); stroke: var(--ink); stroke-width: 1.5; }
+.d-lane { fill: var(--sunk); stroke: none; }
+.d-line { fill: none; stroke: var(--ink-muted); stroke-width: 1.25; }
+.d-dash { fill: none; stroke: var(--ink-muted); stroke-width: 1.25; stroke-dasharray: 4 4; }
+.d-head { fill: var(--ink-muted); }
+.d-t { fill: var(--ink); font: 600 14px var(--f-display); }
+.d-s { fill: var(--ink-muted); font: 400 12px var(--f-body); }
+.d-l { fill: var(--ink-soft); font: 400 11.5px var(--f-body); }
+.d-big { fill: var(--ink); font: 700 16px var(--f-display); }
+.d-gate { fill: var(--lab-strong); stroke: var(--ink); stroke-width: 1.25; }
+.d-gate-q { fill: var(--raised); stroke: var(--ink-muted); stroke-width: 1.25; }
+
+.foot {
+  max-width: 1180px; margin: 0 auto; padding-block: 24px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-muted);
+  display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between;
+}
+.next-page {
+  display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+  background: var(--raised); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 18px 20px;
+}
+.next-page a { font: 700 20px/1.2 var(--f-display); text-decoration: none; }
+.next-page a::after { content: " ↘"; color: var(--red); }
+
+@media (max-width: 560px) {
+  h2 { font-size: 27px; }
+  .pages a { padding: 8px 10px; font-size: 13px; }
+  .brand-name { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+
+tr.ph td { background: var(--lab-soft); font: 700 14px/1.3 var(--f-display); letter-spacing: 0.3px; }
+</style>
+</head>
+<body class="lab-lime">
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="index.html"><span class="brand-mark">TDC Post</span><span class="brand-name">Hệ thống đăng bài FB &amp; IG</span></a>
+    <nav class="pages" aria-label="Tài liệu">
+      <a href="index.html">Phương án</a>
+      <a href="roadmap.html" aria-current="page">Roadmap</a>
+      <a href="techstack.html">Tech stack</a>
+      <a href="designsystem.html">Design system</a>
+      <a href="mockup.html">Giao diện</a>
+      <a href="trienkhai.html">Triển khai</a>
+      <a href="huongdan.html">Hướng dẫn</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero-wrap">
+  <div class="hero">
+    <span class="paren">( Roadmap · bản 30.10.2026 )</span>
+    <h1>Đăng bài thật từ ngày 10, cả team dùng app sau 3 tuần</h1>
+    <p class="lead">Bắt đầu từ chỗ khó nhất: chốt chuẩn định dạng TDC. Sau đó dựng lõi dữ liệu và engine, chạy chế độ Trình duyệt, rồi mới làm web app. Chế độ API chạy song song và không chặn tiến độ. Làm cùng 2 phiên Claude Code song song: khoảng 88 giờ AI và 41 giờ người trong 15 ngày làm việc.</p>
+    <div class="meta"><span>Ước tính cho 1 người điều phối gần như toàn thời gian, tính theo ngày làm việc · chi tiết ở mục <a href="#thoi-gian">Thời gian</a></span></div>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="toc" aria-label="Mục lục">
+    <div class="label">Trên trang này</div>
+    <ol>
+      <li><a href="#giai-doan">Các giai đoạn</a></li>
+      <li><a href="#thoi-gian">Thời gian khi làm cùng AI</a></li>
+      <li><a href="#tuan-1">Việc tuần 1</a></li>
+      <li><a href="#can-tu-tdc">Cần gì từ TDC</a></li>
+      <li><a href="#tuong-lai">Tương lai: agent kiểm tra</a></li>
+    </ol>
+  </aside>
+
+  <main class="content">
+
+    <section id="giai-doan">
+      <header><span class="paren">( Các giai đoạn )</span><h2>Mỗi giai đoạn chỉ mở khi qua cổng của giai đoạn trước</h2></header>
+      <p class="answer">Cổng 1 là cổng quan trọng nhất: nếu hồ sơ định dạng chưa đúng format TDC, mọi phần sau sẽ đăng sai một cách rất nhất quán.</p>
+      <figure class="diagram" style="margin:0">
+        <svg viewBox="0 0 760 744" role="img" aria-label="Roadmap 5 giai đoạn và 4 cổng, chế độ API chạy song song">
+          <!-- API lane -->
+          <rect class="d-lane" x="552" y="16" width="184" height="552" rx="10"/>
+          <rect class="d-dash" x="552" y="16" width="184" height="552" rx="10"/>
+          <text class="d-l" x="566" y="44">( Song song, từ ngày 1 )</text>
+          <text class="d-big" x="566" y="68">Chế độ API</text>
+          <text class="d-s" x="566" y="98">Tạo app Business</text>
+          <text class="d-s" x="566" y="118">System User + token</text>
+          <text class="d-s" x="566" y="138">Chuyển Live mode</text>
+          <text class="d-s" x="566" y="158">Đăng thử bài công khai</text>
+          <line class="d-line" x1="566" y1="180" x2="722" y2="180"/>
+          <text class="d-t" x="566" y="204">Đạt</text>
+          <text class="d-s" x="566" y="224">Bật API theo từng loại</text>
+          <text class="d-s" x="566" y="244">bài, thay dần chế độ</text>
+          <text class="d-s" x="566" y="264">Trình duyệt</text>
+          <text class="d-t" x="566" y="296">Không đạt</text>
+          <text class="d-s" x="566" y="316">Giữ chế độ Trình duyệt,</text>
+          <text class="d-s" x="566" y="336">cân nhắc dịch vụ trung</text>
+          <text class="d-s" x="566" y="356">gian (Ayrshare, Publer)</text>
+
+          <!-- gate connectors -->
+          <path class="d-line" d="M56 112V168"/>
+          <path class="d-line" d="M56 264V320"/>
+          <path class="d-line" d="M56 416V472"/>
+          <path class="d-line" d="M56 568V624"/>
+
+          <!-- phase 0 -->
+          <rect class="d-box" x="24" y="16" width="512" height="96" rx="10"/>
+          <line class="d-line" x1="212" y1="32" x2="212" y2="96" style="stroke:var(--line)"/>
+          <text class="d-l" x="40" y="44">Giai đoạn 0 · ngày 1–2</text>
+          <text class="d-big" x="40" y="68">Chuẩn định dạng TDC</text>
+          <text class="d-s" x="228" y="46">Hồ sơ định dạng v1 rút từ báo cáo (đã có)</text>
+          <text class="d-s" x="228" y="66">Họp content chốt 10 điểm còn thiếu → v2</text>
+          <text class="d-s" x="228" y="86">VPS Việt Nam + đo băng thông; Drive + R2; tên miền</text>
+          <polygon class="d-gate" points="46,140 56,130 66,140 56,150"/>
+          <text class="d-t" x="80" y="145">Cổng 1: designer và content duyệt hồ sơ định dạng v2</text>
+
+          <!-- phase 1 -->
+          <rect class="d-box" x="24" y="168" width="512" height="96" rx="10"/>
+          <line class="d-line" x1="212" y1="184" x2="212" y2="248" style="stroke:var(--line)"/>
+          <text class="d-l" x="40" y="196">Giai đoạn 1 · ngày 1–7</text>
+          <text class="d-big" x="40" y="220">Lõi dữ liệu + engine</text>
+          <text class="d-s" x="228" y="198">Database, migration, Drive (bản gốc) + R2 (bản nén)</text>
+          <text class="d-s" x="228" y="218">Bản nén, hash, kiểm tra thông số file</text>
+          <text class="d-s" x="228" y="238">Engine R01–R15, MCP server + OAuth</text>
+          <polygon class="d-gate-q" points="46,292 56,282 66,292 56,302"/>
+          <text class="d-t" x="80" y="297">Cổng 2: engine bắt đúng lỗi trên 1 tháng bài cũ</text>
+
+          <!-- phase 2 -->
+          <rect class="d-box" x="24" y="320" width="512" height="96" rx="10"/>
+          <line class="d-line" x1="212" y1="336" x2="212" y2="400" style="stroke:var(--line)"/>
+          <text class="d-l" x="40" y="348">Giai đoạn 2 · ngày 8–14</text>
+          <text class="d-big" x="40" y="372">Chế độ Trình duyệt</text>
+          <text class="d-s" x="228" y="350">Drive for desktop trên máy chạy Chrome</text>
+          <text class="d-s" x="228" y="370">Claude lên lịch theo lô trên Business Suite</text>
+          <text class="d-s" x="228" y="390">Đợt kiểm tra sau đăng: CTA, Story, báo cáo</text>
+          <polygon class="d-gate-q" points="46,444 56,434 66,444 56,454"/>
+          <text class="d-t" x="80" y="449">Cổng 3: 1 tuần đăng thật, không trùng, không sót lỗi</text>
+
+          <!-- phase 3 -->
+          <rect class="d-box" x="24" y="472" width="512" height="96" rx="10"/>
+          <line class="d-line" x1="212" y1="488" x2="212" y2="552" style="stroke:var(--line)"/>
+          <text class="d-l" x="40" y="500">Giai đoạn 3 · ngày 3–15</text>
+          <text class="d-big" x="40" y="524">Web app cho cả team</text>
+          <text class="d-s" x="228" y="502">Design system, đăng nhập, 10 màn hình</text>
+          <text class="d-s" x="228" y="522">Luồng duyệt, thông báo, việc làm tay</text>
+          <text class="d-s" x="228" y="542">Chuyển cả team; Business Suite thành dự phòng</text>
+          <polygon class="d-gate-q" points="46,596 56,586 66,596 56,606"/>
+          <text class="d-t" x="80" y="601">Cổng 4: team dùng hằng ngày qua app</text>
+
+          <!-- phase 4 -->
+          <rect class="d-box" x="24" y="624" width="512" height="96" rx="10"/>
+          <line class="d-line" x1="212" y1="640" x2="212" y2="704" style="stroke:var(--line)"/>
+          <text class="d-l" x="40" y="652">Giai đoạn 4 · từ ngày 14</text>
+          <text class="d-big" x="40" y="676">Dữ liệu và training</text>
+          <text class="d-s" x="228" y="654">Thu chỉ số hiệu quả bài theo mốc 1h/24h/7 ngày</text>
+          <text class="d-s" x="228" y="674">Xuất bộ dữ liệu có phiên bản (JSONL)</text>
+          <text class="d-s" x="228" y="694">Thử mô hình viết caption theo giọng TDC</text>
+        </svg>
+        <figcaption>Cổng tô màu là cổng quyết định nhất. Cột xám bên phải chạy song song với giai đoạn 0–3. Cuộn ngang trên điện thoại để xem hết.</figcaption>
+      </figure>
+    </section>
+
+    <section id="thoi-gian">
+      <header><span class="paren">( Thời gian khi làm cùng AI )</span><h2>3 tuần tới khi cả team dùng app, với 2 phiên Claude Code chạy song song</h2></header>
+      <p class="answer">Ước tính cho <strong>1 người điều phối gần như toàn thời gian</strong>, làm cùng <strong>2 phiên Claude Code chạy song song</strong>: phiên A làm phần lõi (database, nhận file, engine, MCP, chế độ Trình duyệt), phiên B làm web app từ ngày 3 dựa trên tab Giao diện đã có và hợp đồng API chốt cùng ngày. Đăng bài thật từ <strong>ngày 10</strong>, cả team chuyển sang app ở <strong>ngày 15</strong>.</p>
+      <div class="grid-2">
+        <div class="card"><span class="label">Claude Code làm</span><h4 class="num" style="font-size:32px">~88 giờ</h4><p class="muted">Chia cho 2 phiên chạy song song: lõi khoảng 49 giờ, web app khoảng 39 giờ.</p></div>
+        <div class="card"><span class="label">Người làm</span><h4 class="num" style="font-size:32px">~41 giờ</h4><p class="muted">Họp, duyệt, review 2 luồng code, thử bằng tài khoản thật, chạy đợt đăng trong tuần thử thật.</p></div>
+        <div class="card"><span class="label">Lịch</span><h4 class="num" style="font-size:32px">15 ngày làm việc</h4><p class="muted">3 tuần. Đăng thật từ ngày 10; chạy thật 5 ngày để qua Cổng 3.</p></div>
+      </div>
+
+      <figure class="diagram" style="margin:0">
+        <svg viewBox="0 0 760 404" role="img" aria-label="Timeline 15 ngày làm việc theo giai đoạn, hai phiên Claude Code song song">
+          <defs>
+            <pattern id="wait" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--paper)"/><line x1="0" y1="0" x2="0" y2="6" stroke="var(--line-strong)" stroke-width="2"/></pattern>
+          </defs>
+          <!-- trục: x(d) = 210 + (d-1) * 35 -->
+          <g>
+            <line x1="210" y1="40" x2="735" y2="40" class="d-line"/>
+            <text class="d-l" x="212" y="30">Tuần 1</text><text class="d-l" x="387" y="30">Tuần 2</text><text class="d-l" x="562" y="30">Tuần 3</text>
+            <line x1="385" y1="36" x2="385" y2="332" stroke="var(--line)"/>
+            <line x1="560" y1="36" x2="560" y2="332" stroke="var(--line)"/>
+          </g>
+          <!-- cổng -->
+          <g>
+            <line x1="280" y1="40" x2="280" y2="332" class="d-dash"/>
+            <line x1="455" y1="40" x2="455" y2="332" class="d-dash"/>
+            <line x1="700" y1="40" x2="700" y2="332" class="d-dash"/>
+            <line x1="735" y1="40" x2="735" y2="332" class="d-dash"/>
+            <polygon class="d-gate" points="270,344 280,334 290,344 280,354"/><text class="d-t" x="280" y="372" text-anchor="middle">C1 · ngày 2</text>
+            <polygon class="d-gate-q" points="445,344 455,334 465,344 455,354"/><text class="d-t" x="455" y="372" text-anchor="middle">C2 · ngày 7</text>
+            <polygon class="d-gate-q" points="690,344 700,334 710,344 700,354"/><text class="d-t" x="684" y="372" text-anchor="end">C3 · ngày 14</text>
+            <polygon class="d-gate-q" points="725,344 735,334 745,344 735,354"/><text class="d-t" x="736" y="392" text-anchor="end">C4 · ngày 15</text>
+          </g>
+          <!-- hàng 1: GĐ0 ngày 1–2 -->
+          <text class="d-t" x="24" y="62">0 · Chuẩn định dạng</text><text class="d-s" x="24" y="78">AI 2 giờ · người 5 giờ</text>
+          <rect class="d-accent" x="210" y="56" width="70" height="20" rx="5"/>
+          <!-- hàng 2: GĐ1 phiên A ngày 1–7 -->
+          <text class="d-t" x="24" y="102">1 · Lõi + engine (phiên A)</text><text class="d-s" x="24" y="118">AI 39 giờ · người 14 giờ</text>
+          <rect class="d-accent" x="210" y="96" width="245" height="20" rx="5"/>
+          <!-- hàng 3: GĐ2 dựng ngày 8–9 -->
+          <text class="d-t" x="24" y="142">2 · Trình duyệt (phiên A)</text><text class="d-s" x="24" y="158">AI 8 giờ · người 6 giờ</text>
+          <rect class="d-accent" x="455" y="136" width="70" height="20" rx="5"/>
+          <!-- hàng 4: chạy thật ngày 10–14 -->
+          <text class="d-t" x="24" y="182">2 · Chạy thật 1 tuần</text><text class="d-s" x="24" y="198">người ~4 giờ · không rút ngắn</text>
+          <rect x="525" y="176" width="175" height="20" rx="5" fill="url(#wait)" stroke="var(--line-strong)"/>
+          <!-- hàng 5: GĐ3 phiên B ngày 3–15 -->
+          <text class="d-t" x="24" y="222">3 · Web app (phiên B)</text><text class="d-s" x="24" y="238">AI 39 giờ · người 12 giờ</text>
+          <rect class="d-accent" x="280" y="216" width="280" height="20" rx="5"/>
+          <rect class="d-box" x="560" y="216" width="175" height="20" rx="5"/>
+          <text class="d-l" x="568" y="230">thử với content, chuyển team</text>
+          <!-- hàng 6: API song song -->
+          <text class="d-t" x="24" y="262">API · song song</text><text class="d-s" x="24" y="278">AI 8 giờ · người 5 giờ</text>
+          <rect class="d-box" x="210" y="256" width="105" height="20" rx="5"/>
+          <text class="d-l" x="216" y="270">tạo app Meta</text>
+          <rect x="315" y="256" width="420" height="20" rx="5" fill="url(#wait)" stroke="var(--line-strong)"/>
+          <text class="d-l" x="323" y="270" style="fill:var(--ink)">chờ Meta cấp quyền · có quyền thì dev thêm 2 ngày</text>
+          <!-- hàng 7: GĐ4 -->
+          <text class="d-t" x="24" y="302">4 · Dữ liệu, training</text><text class="d-s" x="24" y="318">AI 12 giờ · người 4 giờ</text>
+          <rect class="d-accent" x="665" y="296" width="70" height="20" rx="5"/>
+          <text class="d-l" x="658" y="310" text-anchor="end">job số liệu ngày 14–15; thử training sau 2–3 tháng dữ liệu</text>
+          <!-- chú thích -->
+          <rect class="d-accent" x="24" y="340" width="14" height="12" rx="3"/><text class="d-l" x="44" y="350">Claude Code làm chính</text>
+          <rect class="d-box" x="24" y="360" width="14" height="12" rx="3"/><text class="d-l" x="44" y="370">Người làm chính</text>
+          <rect x="24" y="380" width="14" height="12" rx="3" fill="url(#wait)" stroke="var(--line-strong)"/><text class="d-l" x="44" y="390">Thời gian chờ, AI không rút ngắn được</text>
+        </svg>
+        <figcaption>Trục ngang là ngày làm việc (5 ngày một tuần). Hàng 2–3 là phiên Claude A, hàng 5 là phiên B, chạy cùng lúc. Cuộn ngang trên điện thoại để xem hết.</figcaption>
+      </figure>
+
+      <h3>Chi tiết từng việc</h3>
+      <div class="tbl wide"><table class="plain">
+        <thead><tr><th>Việc</th><th>Claude Code làm</th><th>Người làm</th><th class="num">Giờ AI</th><th class="num">Giờ người</th><th class="num">Ngày</th></tr></thead>
+        <tbody>
+          <tr class="ph"><td colspan="6">Giai đoạn 0 · Chuẩn định dạng · ngày 1–2</td></tr>
+          <tr><td>Hồ sơ định dạng v1</td><td>Rút từ báo cáo</td><td>—</td><td class="num">xong</td><td class="num">—</td><td class="num">—</td></tr>
+          <tr><td>Họp content, chốt 10 điểm</td><td>Đã soạn sẵn danh sách câu hỏi</td><td>Bạn + content + designer họp</td><td class="num">—</td><td class="num">2</td><td class="num">1</td></tr>
+          <tr><td>Hồ sơ v2 + tham số quy tắc</td><td>Cập nhật theo biên bản họp</td><td>Duyệt (Cổng 1)</td><td class="num">1</td><td class="num">1</td><td class="num">2</td></tr>
+          <tr><td>Hạ tầng: VPS, Drive, R2, tên miền</td><td>Hướng dẫn từng bước; đo băng thông quốc tế</td><td>Thuê, tạo tài khoản, thanh toán</td><td class="num">1</td><td class="num">2</td><td class="num">1–2</td></tr>
+
+          <tr class="ph"><td colspan="6">Giai đoạn 1 · Lõi dữ liệu + engine · phiên A · ngày 1–7</td></tr>
+          <tr><td>Repo, Docker Compose, deploy lên VPS</td><td>Dựng khung, CI, script deploy</td><td>Cấp quyền truy cập VPS, xem chạy</td><td class="num">3</td><td class="num">1</td><td class="num">1</td></tr>
+          <tr><td>Database 7 schema, migration, ràng buộc</td><td>Viết schema, khoá ngoại, UNIQUE, bảng chỉ thêm, <code>rule_overrides</code>, dữ liệu mẫu</td><td>Review cấu trúc bảng</td><td class="num">4</td><td class="num">2</td><td class="num">2</td></tr>
+          <tr><td>Hợp đồng API cho phiên B</td><td>Viết OpenAPI + dữ liệu giả để web app làm song song</td><td>Duyệt</td><td class="num">2</td><td class="num">1</td><td class="num">3</td></tr>
+          <tr><td>Nhận file từ Drive</td><td>Watcher, kiểm tra R05/R10, đổi tên, chuyển folder</td><td>Thử với vài folder thật</td><td class="num">5</td><td class="num">1</td><td class="num">3</td></tr>
+          <tr><td>Media worker</td><td>sharp, ffmpeg, bản nén lên R2, hash ảnh</td><td>Xem bản nén có đạt chất lượng</td><td class="num">5</td><td class="num">1</td><td class="num">4</td></tr>
+          <tr><td>Engine quy tắc R01–R15 + bộ test</td><td>Định nghĩa quy tắc, mức "cần xác nhận" kèm cách xử lý, gợi ý sửa, test từng quy tắc</td><td>Gom 1 tháng bài cũ, xem kết quả</td><td class="num">9</td><td class="num">3</td><td class="num">4–5</td></tr>
+          <tr><td>Đăng nhập, phân quyền, MCP server + OAuth</td><td>Google Workspace SSO, danh sách mời, 4 vai trò kiểm ở backend, khoảng 20 tool MCP</td><td>Mời tài khoản thật, thử từng vai trò, kết nối Claude</td><td class="num">10</td><td class="num">3</td><td class="num">6–7</td></tr>
+          <tr><td>Chạy engine trên bài cũ (Cổng 2)</td><td>Chạy, báo cáo lỗi bắt được / bỏ sót</td><td>Xác nhận kết quả đúng</td><td class="num">1</td><td class="num">2</td><td class="num">7</td></tr>
+
+          <tr class="ph"><td colspan="6">Giai đoạn 2 · Chế độ Trình duyệt · phiên A · ngày 8–14</td></tr>
+          <tr><td>Máy chạy Chrome cho Claude</td><td>—</td><td>Cài Drive for desktop, đăng nhập admin Page</td><td class="num">—</td><td class="num">1</td><td class="num">8</td></tr>
+          <tr><td>Tool đợt đăng, đợt kiểm tra + hướng dẫn thao tác Business Suite</td><td>Viết tool MCP và bộ hướng dẫn cho Claude in Chrome</td><td>Góp ý theo cách team đang bấm</td><td class="num">6</td><td class="num">2</td><td class="num">8–9</td></tr>
+          <tr><td>Chạy thử với bài nháp</td><td>Chạy đợt, sửa chỗ thao tác sai</td><td>Theo dõi, xoá bài thử</td><td class="num">2</td><td class="num">3</td><td class="num">9</td></tr>
+          <tr><td>1 tuần đăng thật (Cổng 3)</td><td>Chạy 2 đợt mỗi ngày bằng subscription</td><td>Ra lệnh mỗi đợt (~20 phút), xử lý việc làm tay</td><td class="num">—</td><td class="num">4</td><td class="num">10–14</td></tr>
+
+          <tr class="ph"><td colspan="6">Giai đoạn 3 · Web app cho cả team · phiên B · ngày 3–15</td></tr>
+          <tr><td>Design system TDC Post: token + component</td><td>Dựng theo tab Design system (kế thừa TDC Coaching)</td><td>Xem nhanh</td><td class="num">5</td><td class="num">1</td><td class="num">3</td></tr>
+          <tr><td>Đăng nhập + 10 màn hình theo tab Giao diện</td><td>Dựng từ mockup (gồm Người dùng &amp; quyền, khung xem trước theo lớp, chọn nhạc), nối dữ liệu giả rồi API thật</td><td>Review từng màn</td><td class="num">21</td><td class="num">4</td><td class="num">4–8</td></tr>
+          <tr><td>Xác nhận 2 lớp, duyệt, thông báo, việc làm tay</td><td>Hộp xác nhận, xác nhận lại, luồng duyệt, Telegram/Zalo, nhật ký</td><td>Thử nhận thông báo</td><td class="num">7</td><td class="num">1</td><td class="num">9–10</td></tr>
+          <tr><td>Thử với content (2 buổi)</td><td>Sửa theo góp ý</td><td>Team content dùng thử và góp ý</td><td class="num">4</td><td class="num">4</td><td class="num">11–13</td></tr>
+          <tr><td>Hướng dẫn + chuyển team (Cổng 4)</td><td>Viết hướng dẫn sử dụng</td><td>Hướng dẫn team, tạo tài khoản</td><td class="num">2</td><td class="num">2</td><td class="num">14–15</td></tr>
+
+          <tr class="ph"><td colspan="6">Song song · Chế độ API · khi Meta cấp quyền (ngoài 3 tuần)</td></tr>
+          <tr><td>App Meta, System User, token, Live mode</td><td>Hướng dẫn từng bước</td><td>Thao tác trên Business Portfolio</td><td class="num">—</td><td class="num">3</td><td class="num">1–3</td></tr>
+          <tr><td>ApiPublisher + insights + thử</td><td>Graph API FB/IG, Reels, comment, đọc số liệu</td><td>Thử đăng bài công khai</td><td class="num">8</td><td class="num">2</td><td class="num">2 ngày khi có quyền</td></tr>
+
+          <tr class="ph"><td colspan="6">Giai đoạn 4 · Dữ liệu và training (ngoài 3 tuần)</td></tr>
+          <tr><td>Job số liệu 1h / 24h / 7 ngày</td><td>Viết job, lưu metric_snapshots</td><td>—</td><td class="num">3</td><td class="num">—</td><td class="num">14–15</td></tr>
+          <tr><td>Xuất bộ dữ liệu có phiên bản</td><td>Xuất JSONL, ghi manifest, sha256</td><td>Chọn bộ lọc dữ liệu</td><td class="num">3</td><td class="num">1</td><td class="num">sau 1–2 tháng</td></tr>
+          <tr><td>Thử mô hình viết caption giọng TDC</td><td>Chuẩn bị dữ liệu, chạy thử, so sánh</td><td>Content chấm điểm bản viết</td><td class="num">6</td><td class="num">3</td><td class="num">sau 2–3 tháng</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Điều kiện để giữ được 3 tuần</h3>
+      <ul>
+        <li><strong>Họp content trong ngày 1.</strong> Engine và phiên B đều chờ hồ sơ v2; buổi họp trễ bao nhiêu ngày thì cả lịch trễ bấy nhiêu.</li>
+        <li><strong>Người điều phối gần như toàn thời gian.</strong> 2 phiên Claude Code chạy cùng lúc nên lượng code cần review dồn gấp đôi; review là nút thắt của lịch này.</li>
+        <li><strong>Chốt hợp đồng API ở ngày 3.</strong> Phiên B làm web app trên dữ liệu giả theo hợp đồng này; đổi hợp đồng giữa chừng sẽ làm cả hai phiên phải sửa.</li>
+        <li><strong>Chạy thật 1 tuần thay vì 2.</strong> Ít bằng chứng hơn trước khi chuyển cả team, nên giữ Business Suite làm dự phòng thêm 1 tuần sau ngày 15 và chạy đợt kiểm tra sau đăng mỗi ngày.</li>
+        <li><strong>Hạn mức Claude:</strong> khoảng 88 giờ Claude Code trong 3 tuần, 2 phiên song song, cộng 2 đợt đăng mỗi ngày. Cần gói Max mức cao để không bị ngắt giữa chừng.</li>
+        <li><strong>Không có dự phòng bên trong 3 tuần.</strong> Nếu buổi họp đổi nhiều yêu cầu hoặc lỗi lộ ra khi đăng thật, tuần 4 là tuần đệm. Chế độ API (chờ Meta) và training (chờ dữ liệu) nằm ngoài 3 tuần này.</li>
+      </ul>
+    </section>
+
+    <section id="tuan-1">
+      <header><span class="paren">( Việc tuần 1 )</span><h2>Ngày 1–2: việc của TDC quyết định tốc độ cả lịch</h2></header>
+      <p>Đánh dấu khi xong; trạng thái chỉ lưu trên trình duyệt của bạn.</p>
+      <ul class="checklist" id="week1">
+        <li><input type="checkbox" id="w0" checked><label for="w0"><span class="done-note">Xong:</span> <strong>Claude</strong> dựng hồ sơ định dạng v1 từ báo cáo (trang <a href="index.html#chuan-tdc">Phương án</a>).</label></li>
+        <li><input type="checkbox" id="w1"><label for="w1"><strong>Bạn + content + designer:</strong> chốt dần 8 điểm còn lại ở trang <a href="index.html#chuan-tdc">Phương án</a> (kích thước đã giao team media). Không cần bài mẫu; caption tiêu biểu cho Claude lấy từ bài đã đăng.</label></li>
+        <li><input type="checkbox" id="w2"><label for="w2"><strong>Claude:</strong> cập nhật hồ sơ định dạng lên v2 theo kết quả họp.</label></li>
+        <li><input type="checkbox" id="w3"><label for="w3"><strong>Bạn + designer + content:</strong> duyệt hồ sơ định dạng v2 (Cổng 1).</label></li>
+        <li><input type="checkbox" id="w4"><label for="w4"><strong>Bạn:</strong> chọn máy chạy Chrome cho Claude, đăng nhập tài khoản admin Page trên máy đó.</label></li>
+        <li><input type="checkbox" id="w5"><label for="w5"><strong>Bạn:</strong> thuê VPS Việt Nam, tạo thư mục chia sẻ <code>TDC Post/</code> và <code>_inbox/</code> trên Google Drive của TDC, tạo tài khoản Cloudflare R2, chọn tên miền. <strong>Claude:</strong> đo băng thông quốc tế từ VPS tới R2 và Meta; chưa đạt thì chuyển Singapore.</label></li>
+        <li><input type="checkbox" id="w6"><label for="w6"><strong>Claude:</strong> dựng repo, schema database v1 và migration đầu tiên.</label></li>
+        <li><input type="checkbox" id="w7"><label for="w7"><strong>Song song, bạn:</strong> tạo app Meta loại Business và System User theo các bước ở trang <a href="index.html#xac-thuc">Phương án</a>.</label></li>
+      </ul>
+    </section>
+
+    <section id="can-tu-tdc">
+      <header><span class="paren">( Cần gì từ TDC )</span><h2>Mỗi giai đoạn cần một quyết định của người</h2></header>
+      <div class="tbl wide"><table>
+        <thead><tr><th>Giai đoạn</th><th>Bàn giao</th><th>Cần từ TDC</th></tr></thead>
+        <tbody>
+          <tr><td>0 · Chuẩn định dạng</td><td>Hồ sơ định dạng v2, VPS đã đo băng thông</td><td>Kết quả họp content cho 10 điểm cần chốt; người duyệt hồ sơ</td></tr>
+          <tr><td>1 · Lõi + engine</td><td>Database, kho file, engine, MCP chạy được trong Claude</td><td>1 tháng bài cũ (file + caption) để chạy thử engine</td></tr>
+          <tr><td>2 · Trình duyệt</td><td>Claude lên lịch và kiểm tra bài thật theo đợt</td><td>Người ra lệnh mỗi đợt; người xử lý việc "cần người"</td></tr>
+          <tr><td>3 · Web app</td><td>App cho team content soạn, duyệt, xem lịch; Claude kết nối bằng đăng nhập</td><td>Tài khoản cho từng người; phân vai content / duyệt / admin</td></tr>
+          <tr><td>4 · Training</td><td>Bộ dữ liệu có phiên bản, mô hình thử nghiệm</td><td>Mục tiêu training cụ thể; đồng ý dùng dữ liệu nội bộ</td></tr>
+          <tr><td>Song song · API</td><td>Chế độ API bật theo từng loại bài</td><td>Quyền admin Business Portfolio để tạo app và System User</td></tr>
+          <tr><td>Tương lai · Agent kiểm tra</td><td>Báo cáo có ảnh chụp từng tấm sau mỗi bài</td><td>Tài khoản FB/IG phụ để xem; chốt kênh gửi, người nhận, thao tác của người kiểm duyệt</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="tuong-lai">
+      <header><span class="paren">( Tương lai · sau khi hệ thống ổn định )</span><h2>Agent kiểm tra bằng Playwright: bấm qua từng tấm, chụp lại, gửi báo cáo cho người kiểm duyệt</h2></header>
+      <p class="answer">Không nằm trong 3 tuần. Agent chỉ bắt đầu khi các phần đang trong kế hoạch đã chạy ổn định, vì nó dựa vào permalink, lịch đăng và luồng duyệt của hệ thống chính. Mô tả đầy đủ ở trang <a href="index.html#tuong-lai">Phương án</a>.</p>
+      <div class="tbl wide"><table class="plain">
+        <tbody>
+          <tr><td><strong>Điều kiện bắt đầu</strong></td><td>Đã qua Cổng 4; hệ thống chạy ổn định khoảng 4 tuần liên tục (đợt đăng và đợt kiểm tra không còn lỗi lặp lại); có một tài khoản FB/IG dùng để xem; đã chốt 4 câu hỏi bên dưới.</td></tr>
+          <tr><td><strong>Phạm vi</strong></td><td>Job <code>inspect.post</code> chạy sau mỗi bài; Playwright CLI mở bài trên FB và IG, bấm qua từng tấm, chụp và lưu ảnh; so với file đã duyệt; tạo báo cáo; gửi cho người kiểm duyệt; người kiểm duyệt bấm Đạt hoặc Có lỗi.</td></tr>
+          <tr><td><strong>Thời gian khi làm cùng AI</strong></td><td>Khoảng 3–4 ngày làm việc: Claude Code khoảng 16 giờ (script Playwright, so khớp ảnh, báo cáo, gửi thông báo, màn hình báo cáo), người khoảng 6 giờ (tạo tài khoản xem, thử trên bài thật, duyệt mẫu báo cáo).</td></tr>
+          <tr><td><strong>Không làm thay</strong></td><td>Agent không sửa hay xoá bài. Lỗi phát hiện được chuyển thành việc làm tay như hiện nay.</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Câu hỏi cần chốt khi bắt đầu</h3>
+      <div class="tbl wide"><table>
+        <thead><tr><th>Câu hỏi</th><th>Đề xuất mặc định</th></tr></thead>
+        <tbody>
+          <tr><td>Báo cáo gửi qua kênh nào?</td><td>Báo cáo đầy đủ trong app; Telegram gửi tin ngắn kèm ảnh và link mở báo cáo</td></tr>
+          <tr><td>Ai nhận báo cáo của mỗi bài?</td><td>Người đã bấm Duyệt bài đó; người này chọn thêm người nhận nếu cần</td></tr>
+          <tr><td>Người kiểm duyệt làm gì với báo cáo?</td><td>Bấm Đạt hoặc Có lỗi; có lỗi thì chọn tấm nào lỗi, ghi chú, hệ thống tạo việc sửa và lưu lại làm dữ liệu training</td></tr>
+          <tr><td>Agent mở FB / IG bằng tài khoản nào?</td><td>Một tài khoản phụ chỉ để xem, không có quyền quản trị Page, để nếu Meta khoá tạm thì không ảnh hưởng việc quản trị</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <div class="next-page"><span class="label">Tiếp theo</span><a href="techstack.html">Tech stack</a></div>
+  </main>
+</div>
+
+<footer class="foot"><span>TDC Post · Roadmap · 30.10.2026</span><span><a href="index.html">Phương án</a> · Roadmap · <a href="techstack.html">Tech stack</a> · <a href="designsystem.html">Design system</a> · <a href="mockup.html">Giao diện</a> · <a href="trienkhai.html">Triển khai</a> · <a href="huongdan.html">Hướng dẫn</a></span></footer>
+
+<script>
+(function () {
+  var key = 'tdcpost-week1';
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(key) || '{}'); } catch (e) { saved = {}; }
+  document.querySelectorAll('#week1 input[type=checkbox]').forEach(function (box) {
+    if (Object.prototype.hasOwnProperty.call(saved, box.id)) box.checked = !!saved[box.id];
+    box.addEventListener('change', function () {
+      saved[box.id] = box.checked;
+      try { localStorage.setItem(key, JSON.stringify(saved)); } catch (e) {}
+    });
+  });
+})();
+</script>
+</body>
+</html>

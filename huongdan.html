@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>TDC Post · Hướng dẫn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;500;600;700&family=Arimo:wght@400;700&display=swap">
+<style>
+/* Layout: thanh trang trên cùng · khối LAB mở đầu · mục lục dính bên trái (desktop) + cột nội dung ~760px.
+   Nhận diện theo design system TDC Coaching: giấy ấm, chữ condensed để nói, chữ thường để đọc,
+   mỗi trang 1 màu LAB. Một theme sáng, có chủ đích (TDC không dùng dark mode). */
+:root {
+  --paper: #F8F7F5;
+  --raised: #FFFFFF;
+  --sunk: #EFECE7;
+  --line: #E3DFD8;
+  --line-strong: #8C867D;
+  --ink: #121211;
+  --ink-soft: #3A3835;
+  --ink-muted: #6B6760;
+  --red: #E22E32;
+  --red-deep: #B8232A;
+  --red-tint: #FBE7E5;
+  --ok: #276B43;
+  --ok-tint: #E7F2EA;
+  --warn: #9A5B0B;
+  --warn-tint: #FBEFD9;
+  --lab: #C994EB;
+  --lab-soft: #E1C3F4;
+  --lab-strong: #C994EB;
+  --f-display: "Archivo Narrow", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --f-body: Arimo, Arial, "Helvetica Neue", sans-serif;
+  --f-mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  color-scheme: light;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+body.lab-sky { --lab: #C0DEFC; --lab-soft: #E0EFFE; --lab-strong: #9CCBFA; }
+body.lab-lime { --lab: #BEE059; --lab-soft: #D9ED9D; --lab-strong: #BEE059; }
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 72px; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 15px/1.6 var(--f-body);
+}
+img { max-width: 100%; }
+a { color: var(--ink); text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--ink); }
+:focus-visible { outline: 2px solid var(--red-deep); outline-offset: 2px; border-radius: 4px; }
+
+/* ---------- Thanh trang ---------- */
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 10; background: var(--paper);
+}
+.topbar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.topbar-in {
+  max-width: 1180px; margin: 0 auto;
+  padding-block: 10px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.brand { display: flex; align-items: baseline; gap: 8px; text-decoration: none; margin-right: auto; }
+.brand-mark { font: 700 20px/1 var(--f-display); color: var(--red); letter-spacing: -0.2px; }
+.brand-name { font: 600 12px/1 var(--f-display); letter-spacing: 0.8px; text-transform: uppercase; color: var(--ink-muted); }
+.pages { display: flex; gap: 4px; padding: 4px; background: var(--sunk); border-radius: 999px; }
+.pages a {
+  font: 600 14px/1 var(--f-display); letter-spacing: 0.3px;
+  text-decoration: none; color: var(--ink-soft);
+  padding: 8px 14px; border-radius: 999px;
+}
+.pages a:hover { background: var(--raised); color: var(--ink); }
+.pages a[aria-current="page"] { background: var(--lab-strong); color: var(--ink); }
+
+/* ---------- Mở đầu ---------- */
+.hero-wrap {
+  max-width: 1180px; margin: 0 auto;
+  padding-top: 24px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.hero {
+  background: var(--lab);
+  border-radius: var(--radius-lg);
+  padding: clamp(24px, 4vw, 44px);
+  position: relative; overflow: hidden;
+  display: grid; gap: 14px;
+}
+.hero::after {
+  content: ""; position: absolute; right: -40px; top: -40px;
+  width: 220px; height: 220px; border-radius: 50%;
+  background: var(--lab-soft); opacity: 0.9; pointer-events: none;
+}
+.hero > * { position: relative; z-index: 1; }
+.paren { font: 600 13px/1.2 var(--f-display); letter-spacing: 0.6px; color: var(--ink-soft); }
+.hero h1 {
+  margin: 0; font: 700 clamp(32px, 5.2vw, 52px)/1.02 var(--f-display);
+  letter-spacing: -0.6px; text-wrap: balance; max-width: 18ch;
+}
+.hero .lead { margin: 0; font-size: 17px; line-height: 1.55; max-width: 62ch; color: var(--ink); }
+.hero .meta { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--ink-soft); }
+
+/* ---------- Khung trang ---------- */
+.layout {
+  max-width: 1180px; margin: 0 auto;
+  padding-block: 32px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; grid-template-columns: 1fr; gap: 32px;
+}
+@media (min-width: 1024px) {
+  .layout { grid-template-columns: 220px minmax(0, 1fr); gap: 48px; }
+}
+.toc { display: none; }
+@media (min-width: 1024px) {
+  .toc { display: block; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 72px); align-self: start; }
+}
+.toc .label { margin-bottom: 10px; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.toc a {
+  display: block; padding: 6px 10px; border-radius: 8px;
+  font: 500 14px/1.3 var(--f-display); text-decoration: none; color: var(--ink-soft);
+}
+.toc a:hover { background: var(--sunk); color: var(--ink); }
+
+.content { min-width: 0; max-width: 780px; display: grid; gap: 56px; }
+
+/* ---------- Chữ ---------- */
+.label {
+  font: 600 12px/16px var(--f-display); letter-spacing: 0.8px; text-transform: uppercase; color: var(--ink-muted);
+}
+section { display: grid; gap: 16px; min-width: 0; }
+section > header { display: grid; gap: 6px; }
+h2 {
+  margin: 0; font: 700 32px/1.08 var(--f-display); letter-spacing: -0.3px; text-wrap: balance;
+}
+h3 {
+  margin: 12px 0 0; font: 600 20px/1.2 var(--f-display); text-wrap: balance;
+}
+p { margin: 0; max-width: 68ch; }
+.answer { font-size: 17px; line-height: 1.55; }
+strong { font-weight: 700; }
+code {
+  font: 13px/1.4 var(--f-mono); background: var(--sunk); padding: 1px 5px; border-radius: 5px;
+  overflow-wrap: anywhere;
+}
+mark { background: var(--lab-soft); color: var(--ink); padding: 0 3px; border-radius: 3px; }
+ul, ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; max-width: 68ch; }
+li::marker { color: var(--ink-muted); }
+.steps { counter-reset: s; list-style: none; padding: 0; gap: 10px; }
+.steps > li {
+  counter-increment: s; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; align-items: start;
+}
+.steps > li::before {
+  content: counter(s, decimal-leading-zero);
+  font: 700 18px/1.45 var(--f-display); color: var(--ink-muted); font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Bảng ---------- */
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--raised); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; line-height: 1.45; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+th {
+  font: 600 12px/16px var(--f-display); letter-spacing: 0.8px; text-transform: uppercase;
+  color: var(--ink-muted); background: var(--paper); white-space: nowrap;
+}
+td:first-child { font-weight: 700; }
+table.plain td:first-child { font-weight: 400; }
+.tbl.wide table { min-width: 720px; }
+.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ---------- Chip trạng thái ---------- */
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  font: 600 12px/1 var(--f-body); padding: 5px 8px; border-radius: var(--radius-sm);
+  background: var(--sunk); color: var(--ink-soft);
+}
+.chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.chip.block { background: var(--red-tint); color: var(--red-deep); }
+.chip.warn { background: var(--warn-tint); color: var(--warn); }
+.chip.ok { background: var(--ok-tint); color: var(--ok); }
+.chip.hand { background: var(--sunk); color: var(--ink-soft); }
+
+/* ---------- Khối phụ ---------- */
+.note {
+  background: var(--sunk); border-radius: var(--radius-md); padding: 16px 18px;
+  display: grid; gap: 8px; max-width: 72ch;
+}
+.note.key { background: var(--lab-soft); }
+.note .label { color: var(--ink-soft); }
+.grid-2 { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.card {
+  background: var(--raised); border: 1px solid var(--line); border-radius: var(--radius-md);
+  padding: 16px 18px; display: grid; gap: 8px; align-content: start; min-width: 0;
+}
+.card h4 { margin: 0; font: 600 18px/1.25 var(--f-display); }
+pre {
+  margin: 0; overflow-x: auto; background: var(--ink); color: var(--paper);
+  border-radius: var(--radius-md); padding: 16px 18px; font: 13px/1.6 var(--f-mono);
+}
+.checklist { list-style: none; padding: 0; gap: 8px; }
+.checklist li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; align-items: start; }
+.checklist input { margin: 3px 0 0; width: 16px; height: 16px; accent-color: var(--ink); }
+.checklist label { cursor: pointer; }
+.checklist .done-note { color: var(--ok); font-weight: 700; }
+.sources { font-size: 13px; color: var(--ink-muted); }
+.sources a { color: var(--ink-soft); }
+
+/* ---------- Sơ đồ SVG ---------- */
+.diagram { overflow-x: auto; background: var(--raised); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 12px; }
+.diagram svg { display: block; width: 100%; min-width: 640px; height: auto; }
+.diagram figcaption { font-size: 13px; color: var(--ink-muted); padding: 8px 4px 2px; }
+.d-box { fill: var(--raised); stroke: var(--line-strong); stroke-width: 1.25; }
+.d-accent { fill: var(--lab-soft); stroke: var(--ink); stroke-width: 1.5; }
+.d-lane { fill: var(--sunk); stroke: none; }
+.d-line { fill: none; stroke: var(--ink-muted); stroke-width: 1.25; }
+.d-dash { fill: none; stroke: var(--ink-muted); stroke-width: 1.25; stroke-dasharray: 4 4; }
+.d-head { fill: var(--ink-muted); }
+.d-t { fill: var(--ink); font: 600 14px var(--f-display); }
+.d-s { fill: var(--ink-muted); font: 400 12px var(--f-body); }
+.d-l { fill: var(--ink-soft); font: 400 11.5px var(--f-body); }
+.d-big { fill: var(--ink); font: 700 16px var(--f-display); }
+.d-gate { fill: var(--lab-strong); stroke: var(--ink); stroke-width: 1.25; }
+.d-gate-q { fill: var(--raised); stroke: var(--ink-muted); stroke-width: 1.25; }
+
+.foot {
+  max-width: 1180px; margin: 0 auto; padding-block: 24px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-muted);
+  display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between;
+}
+.next-page {
+  display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+  background: var(--raised); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 18px 20px;
+}
+.next-page a { font: 700 20px/1.2 var(--f-display); text-decoration: none; }
+.next-page a::after { content: " ↘"; color: var(--red); }
+
+@media (max-width: 560px) {
+  h2 { font-size: 27px; }
+  .pages a { padding: 8px 10px; font-size: 13px; }
+  .brand-name { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+
+tr.ph td { background: var(--lab-soft); font: 700 14px/1.3 var(--f-display); letter-spacing: 0.3px; }
+/* ---------- Trang Hướng dẫn ---------- */
+body.lab-peach { --lab: #FCD9C0; --lab-soft: #FEECDF; --lab-strong: #F7BE97; }
+.chip.info { background: #E3ECFB; color: #1F3F7A; }
+.shot {
+  margin: 0; min-height: 160px; display: grid; place-items: center; text-align: center;
+  border: 1.5px dashed var(--line-strong); border-radius: var(--radius-md); background: var(--raised);
+  padding: 20px; color: var(--ink-muted); font: 500 14px/1.4 var(--f-display); letter-spacing: 0.2px;
+}
+.toc ol { counter-reset: none; }
+pre { white-space: pre-wrap; }
+</style>
+</head>
+<body class="lab-peach">
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="index.html"><span class="brand-mark">TDC Post</span><span class="brand-name">Hệ thống đăng bài FB &amp; IG</span></a>
+    <nav class="pages" aria-label="Tài liệu">
+      <a href="index.html">Phương án</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="techstack.html">Tech stack</a>
+      <a href="designsystem.html">Design system</a>
+      <a href="mockup.html">Giao diện</a>
+      <a href="trienkhai.html">Triển khai</a>
+      <a href="huongdan.html" aria-current="page">Hướng dẫn</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero-wrap">
+  <div class="hero">
+    <span class="paren">( Hướng dẫn sử dụng · theo vai trò )</span>
+    <h1>Mỗi người làm gì trên TDC Post</h1>
+    <p class="lead">Việc hằng ngày, nút chính và cách xử lý khi gặp lỗi cho Content, Người duyệt, Admin và Designer. Bản này giống trang Hướng dẫn trong app; ở đây có thêm chỗ cho ảnh chụp màn hình.</p>
+    <div class="meta"><span>Áp dụng cho bản app tháng 11.2026</span><span>Tham số mặc định: khung 10:00–13:00 và 19:00–22:00, cách nhau 90 phút</span></div>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="toc" aria-label="Mục lục">
+    <div class="label">Mục lục</div>
+    <ol>
+      <li><a href="#chung">Cho mọi người</a></li>
+      <li><a href="#content">Content</a></li>
+      <li><a href="#reviewer">Người duyệt</a></li>
+      <li><a href="#admin">Admin</a></li>
+      <li><a href="#designer">Designer</a></li>
+      <li><a href="#viec-lam-tay">Việc làm tay</a></li>
+      <li><a href="#claude">Kết nối Claude</a></li>
+    </ol>
+  </aside>
+
+  <main class="content">
+
+    <section id="chung">
+      <header><span class="paren">( 01 · Cho mọi người )</span><h2>Đăng nhập và đường đi của một bài</h2></header>
+      <p class="answer">Đăng nhập bằng tài khoản Google Workspace của TDC đã được admin mời. Menu bên trái chỉ hiện những màn bạn được dùng; nút bị mờ là việc của vai trò khác, di chuột lên để xem ai làm được.</p>
+      <figure class="shot"><span>(ảnh chụp màn hình: trang đăng nhập “Tiếp tục bằng Google”)</span></figure>
+      <h3>Đường đi của một bài</h3>
+      <ol class="steps">
+        <li><span><strong>Designer</strong> thả folder vào <code>TDC Post/_inbox</code> trên Google Drive.</span></li>
+        <li><span><strong>Nhận file</strong>: engine kiểm tra số thứ tự, định dạng, cover, file trùng.</span></li>
+        <li><span><strong>Content</strong> tạo bài từ folder, soạn caption, chọn nền tảng và giờ, rồi Gửi duyệt.</span></li>
+        <li><span><strong>Người duyệt</strong> đọc lý do, xác nhận lại và Duyệt. Bài vào Hàng đợi đăng.</span></li>
+        <li><span><strong>Đăng</strong>: chế độ Trình duyệt thì người duyệt ra lệnh cho Claude lên lịch trên Meta Business Suite; chế độ API thì worker tự đăng đúng giờ.</span></li>
+        <li><span><strong>Sau giờ đăng</strong>: kiểm tra bài đã lên, caption, số file, cover, bài trùng, comment. Lệch thì sinh việc làm tay.</span></li>
+      </ol>
+      <h3>Trạng thái bài</h3>
+      <div class="tbl"><table class="plain">
+        <thead><tr><th>Trạng thái</th><th>Nghĩa là</th></tr></thead>
+        <tbody>
+          <tr><td><span class="chip">Nháp</span></td><td>Đang soạn. Chỉ bài Nháp mới gửi duyệt được.</td></tr>
+          <tr><td><span class="chip warn">Chờ duyệt</span></td><td>Đã gửi, chờ người duyệt.</td></tr>
+          <tr><td><span class="chip warn">Chờ xác nhận</span></td><td>Bài bị huỷ đăng, đang giữ lại. Người duyệt xác nhận lại để đưa vào hàng đợi, hoặc trả lại.</td></tr>
+          <tr><td><span class="chip info">Đã duyệt</span></td><td>Trong hàng đợi, chờ đợt đăng.</td></tr>
+          <tr><td><span class="chip ok">Đã lên lịch</span></td><td>Đã đặt giờ trên Meta.</td></tr>
+          <tr><td><span class="chip ok">Đã đăng · Đã kiểm tra</span></td><td>Bài đã lên; đã qua đợt kiểm tra sau đăng.</td></tr>
+          <tr><td><span class="chip block">Cần người</span></td><td>Còn việc làm tay chưa xong.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><span class="label">Quy tắc không chặn bài</span><p><strong>Cần xác nhận</strong>: phải ghi lý do, người duyệt xác nhận lại. <strong>Cảnh báo</strong>: nên xem. <strong>Gợi ý</strong>: sửa một chạm nếu muốn.</p></div>
+    </section>
+
+    <section id="content">
+      <header><span class="paren">( 02 · Content )</span><h2>Biến folder thành bài, rồi gửi duyệt</h2></header>
+      <p class="answer">Bạn biến folder của designer thành bài: caption, nền tảng, giờ đăng, CTA, rồi gửi duyệt.</p>
+      <h3>Việc hằng ngày</h3>
+      <ol class="steps">
+        <li><span>Mở <strong>Nhận file</strong>. Folder có dấu ✓ ở mọi dòng thì bấm <strong>Tạo bài từ folder</strong>. Folder báo thiếu file thì để nguyên, designer đã được báo.</span></li>
+        <li><span>Ở <strong>Soạn bài</strong>: viết caption, chọn <strong>Chỉ FB</strong> hoặc <strong>FB + IG</strong>, đặt giờ trong khung 10:00–13:00 hoặc 19:00–22:00, cách bài khác ít nhất 90 phút. Xem <strong>Lịch</strong> để tìm ô trống.</span></li>
+        <li><span>Điền CTA nếu có: comment FB / IG (đăng bằng tài khoản TDC sau khi bài lên), Story dẫn link cho IG. Reels cần tiêu đề.</span></li>
+        <li><span>Xem thẻ <strong>Kiểm tra quy tắc</strong>: sửa theo gợi ý, hoặc giữ nguyên và ghi lý do cho vấn đề <strong>Cần xác nhận</strong>.</span></li>
+        <li><span>Bấm <strong>Gửi duyệt</strong>. Bài bị <strong>Trả lại</strong> sẽ về Nháp: sửa rồi gửi lại.</span></li>
+        <li><span>Cuối ngày xem <strong>Việc làm tay</strong> và <strong>Kiểm tra sau đăng</strong>.</span></li>
+      </ol>
+      <figure class="shot"><span>(ảnh chụp màn hình: Nhận file, một folder đạt và nút “Tạo bài từ folder”)</span></figure>
+      <figure class="shot"><span>(ảnh chụp màn hình: Soạn bài, thẻ Kiểm tra quy tắc và nút “Gửi duyệt”)</span></figure>
+      <h3>Nút chính</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Nút</th><th>Làm gì</th></tr></thead>
+        <tbody>
+          <tr><td>Tạo bài từ folder</td><td>Tạo bài nháp, gắn mã bài (TDC-2611-…), đổi tên và chuyển folder vào đúng năm/tháng trên Drive.</td></tr>
+          <tr><td>Lưu nháp</td><td>Lưu lại, bài vẫn là Nháp.</td></tr>
+          <tr><td>Gửi duyệt</td><td>Chuyển bài sang Chờ duyệt. Còn vấn đề chưa xác nhận thì app hỏi lý do trước khi gửi.</td></tr>
+          <tr><td>Sao chép caption</td><td>Ở Việc làm tay: chép nội dung để dán vào app trên điện thoại.</td></tr>
+          <tr><td>Đánh dấu xong</td><td>Báo việc làm tay đã làm xong.</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Khi gặp lỗi</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Gặp</th><th>Làm</th></tr></thead>
+        <tbody>
+          <tr><td>Nút Gửi duyệt mờ</td><td>Bài không còn là Nháp (đã gửi hoặc đã duyệt), hoặc vai trò của bạn không gửi được.</td></tr>
+          <tr><td>Chip đỏ “Cần xác nhận”</td><td>Không chặn bài. Sửa nếu được; không thì ghi lý do rõ, người duyệt sẽ đọc và xác nhận lại.</td></tr>
+          <tr><td>Caption IG quá 2.200 ký tự hoặc quá 5 hashtag</td><td>Rút gọn. Để nguyên thì IG cắt caption hoặc báo lỗi khi đăng.</td></tr>
+          <tr><td>Folder thiếu file, sai số</td><td>Nhờ designer sửa trong _inbox. Không tự đổi tên folder đã nhận.</td></tr>
+          <tr><td>Hộp đỏ báo lỗi</td><td>Đọc dòng gợi ý bên dưới rồi thử lại. Vẫn lỗi thì chụp màn hình gửi admin.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note key"><span class="label">Nhờ Claude soạn giúp</span><p>Trong Claude (đã kết nối TDC Post), gõ ví dụ “Soạn caption cho bài TDC-2611-006 theo giọng TDC” hoặc “Gợi ý giờ đăng tuần này”. Claude sửa bản nháp thay bạn và ghi “Claude thay mặt” trong Nhật ký. Bạn đọc lại rồi mới gửi duyệt.</p></div>
+    </section>
+
+    <section id="reviewer">
+      <header><span class="paren">( 03 · Người duyệt )</span><h2>Chốt bài, rồi ra lệnh cho Claude đăng</h2></header>
+      <p class="answer">Bạn chốt bài trước khi lên Page, và là người ra lệnh cho Claude đăng và kiểm tra.</p>
+      <h3>Việc hằng ngày</h3>
+      <ol class="steps">
+        <li><span>Mở <strong>Chờ duyệt</strong> (số trên menu là số bài đang chờ).</span></li>
+        <li><span>Với mỗi bài: đọc lý do người gửi đã ghi cho từng vấn đề, bấm <strong>Xác nhận N vấn đề</strong> và ghi lý do bạn đồng ý. Vấn đề mới chưa ai xác nhận cũng nằm trong hộp đó.</span></li>
+        <li><span>Bấm <strong>Duyệt</strong> (bài vào Hàng đợi đăng) hoặc <strong>Trả lại</strong> (bài về Nháp cho content).</span></li>
+        <li><span>Chế độ Trình duyệt: mở <strong>Hàng đợi đăng</strong>, bấm <strong>Sao chép lệnh</strong>, dán vào Claude trên máy chạy Chrome. Claude lên lịch từng bài trên Business Suite rồi báo lại. Meta chỉ nhận lịch cách hiện tại ít nhất 20 phút, nên ra lệnh sớm. Chế độ API: worker tự đăng đúng giờ, không cần lệnh.</span></li>
+        <li><span>Sau giờ đăng: mở <strong>Kiểm tra sau đăng</strong> và ra lệnh đợt kiểm tra. Claude kiểm 6 điểm, comment dưới bài; lệch thì sinh việc làm tay.</span></li>
+        <li><span>Bài <strong>Chờ xác nhận</strong>: bài đã bị Huỷ đăng và đang giữ lại. Bấm Xác nhận lại và đưa vào hàng đợi, hoặc Trả lại. Bài từng có lịch đã qua giờ thì không đưa lại được (có thể đã lên, tránh đăng trùng).</span></li>
+      </ol>
+      <figure class="shot"><span>(ảnh chụp màn hình: Chờ duyệt, một bài có lý do người gửi và hộp “Xác nhận N vấn đề”)</span></figure>
+      <figure class="shot"><span>(ảnh chụp màn hình: Hàng đợi đăng, nút “Sao chép lệnh” và bảng việc)</span></figure>
+      <h3>Hai lệnh mẫu cho Claude</h3>
+      <pre>Lên lịch các bài đã duyệt trong 48 giờ tới</pre>
+      <pre>Kiểm tra các bài đã tới giờ</pre>
+      <p>Claude chỉ đăng khi bạn vừa ra lệnh trong chat. Duyệt trong app chưa đủ để Claude tự đăng.</p>
+      <figure class="shot"><span>(ảnh chụp màn hình: Claude Desktop đang chạy đợt đăng, tóm tắt cuối đợt)</span></figure>
+      <h3>Nút chính</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Nút</th><th>Làm gì</th></tr></thead>
+        <tbody>
+          <tr><td>Duyệt</td><td>Đưa bài vào Hàng đợi đăng. Chỉ bấm được khi bạn đã xác nhận lại mọi vấn đề (mỗi vấn đề một lý do).</td></tr>
+          <tr><td>Trả lại</td><td>Bài về Nháp cho content sửa.</td></tr>
+          <tr><td>Xác nhận N vấn đề</td><td>Mở hộp xác nhận lại từng vấn đề (cả vấn đề mới chưa ai xác nhận), mỗi vấn đề một lý do.</td></tr>
+          <tr><td>Sao chép lệnh</td><td>Chép lệnh “Lên lịch các bài đã duyệt trong 48 giờ tới” để dán vào Claude.</td></tr>
+          <tr><td>Mở bài</td><td>Xem toàn bộ bài ở màn Soạn bài.</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Khi gặp lỗi</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Gặp</th><th>Làm</th></tr></thead>
+        <tbody>
+          <tr><td>Claude báo gặp xác minh danh tính, CAPTCHA, bị đăng xuất hoặc giao diện lạ</td><td>Claude dừng cả đợt và không tìm cách vượt. Mở Chrome trên máy đó, tự đăng nhập hoặc xác minh, rồi ra lệnh lại.</td></tr>
+          <tr><td>Planner đã có bài sát giờ</td><td>Xem Lịch (có thể là bài đăng tay ngoài hệ thống). Nhờ content đổi giờ, rồi ra lệnh lại.</td></tr>
+          <tr><td>Không thấy file trên máy</td><td>Kiểm tra Google Drive for desktop đang chạy và đã đồng bộ thư mục TDC Post.</td></tr>
+          <tr><td>Tải file lỗi hoặc Meta báo lỗi</td><td>Claude chỉ thử 1 lần. Ra lệnh lại sau ít phút; vẫn lỗi thì đăng tay và báo admin.</td></tr>
+          <tr><td>Không tìm thấy nhạc IG</td><td>Phần IG thành việc làm tay: đăng bằng app IG trên điện thoại.</td></tr>
+          <tr><td>Nút Duyệt mờ</td><td>Còn vấn đề bạn chưa xác nhận lại: bấm Xác nhận N vấn đề và ghi lý do.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="admin">
+      <header><span class="paren">( 04 · Admin )</span><h2>Người dùng, chế độ đăng, tham số quy tắc</h2></header>
+      <p class="answer">Admin làm được mọi việc của người duyệt, cộng thêm người dùng, chế độ đăng và tham số quy tắc.</p>
+      <h3>Việc thường làm</h3>
+      <ol class="steps">
+        <li><span>Đầu tuần xem <strong>Lịch</strong>, <strong>Hàng đợi đăng</strong> và <strong>Việc làm tay</strong> còn tồn.</span></li>
+        <li><span><strong>Người dùng &amp; quyền</strong>: mời người mới bằng email Google Workspace TDC, tên và vai trò. Người được mời đăng nhập lần đầu là vào được.</span></li>
+        <li><span>Đổi vai trò khi người đổi việc: có hiệu lực ngay, kể cả với Claude của người đó.</span></li>
+        <li><span>Người nghỉ việc hoặc mất máy: <strong>Khoá</strong> (dừng mọi phiên và Claude). Chỉ muốn ngắt Claude: <strong>Thu hồi Claude</strong>.</span></li>
+        <li><span>Công tắc <strong>Đăng qua</strong> trên thanh trên: <strong>Trình duyệt</strong> = Claude lên lịch trên Business Suite; <strong>API</strong> = worker tự đăng qua Graph API.</span></li>
+        <li><span><strong>Cài đặt quy tắc</strong>: khung giờ, khoảng cách, giới hạn IG. Lưu là có hiệu lực ngay, mọi bài được kiểm tra lại.</span></li>
+        <li><span><strong>Nhật ký</strong>: xem ai làm gì, qua web, Claude hay hệ thống.</span></li>
+      </ol>
+      <figure class="shot"><span>(ảnh chụp màn hình: Người dùng &amp; quyền, ô mời người mới và bảng người dùng)</span></figure>
+      <figure class="shot"><span>(ảnh chụp màn hình: Cài đặt quy tắc, các ô “đang áp dụng” và nút Lưu)</span></figure>
+      <h3>Nút chính</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Nút</th><th>Làm gì</th></tr></thead>
+        <tbody>
+          <tr><td>Gửi lời mời</td><td>Thêm người vào danh sách, trạng thái Đã mời.</td></tr>
+          <tr><td>Vai trò (ô chọn)</td><td>Đổi vai trò ngay trong bảng người dùng.</td></tr>
+          <tr><td>Khoá / Mở khoá</td><td>Khoá: đăng xuất mọi phiên, ngắt Claude. Mở khoá: dùng lại được.</td></tr>
+          <tr><td>Thu hồi Claude</td><td>Ngắt kết nối Claude của một người; tài khoản web vẫn dùng bình thường.</td></tr>
+          <tr><td>Lưu (Cài đặt quy tắc)</td><td>Chỉ gửi các ô đã đổi; mỗi lần lưu ghi vào Nhật ký.</td></tr>
+          <tr><td>Trình duyệt / API</td><td>Đổi chế độ đăng cho cả hệ thống.</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Khi gặp lỗi</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Gặp</th><th>Làm</th></tr></thead>
+        <tbody>
+          <tr><td>“Không thể hạ quyền hay khoá admin cuối cùng”</td><td>Mời hoặc nâng thêm một admin trước.</td></tr>
+          <tr><td>“Chỉ mời được email thuộc …”</td><td>Chỉ mời email Google Workspace của TDC.</td></tr>
+          <tr><td>Người được mời báo không vào được</td><td>Kiểm tra email đúng, chưa bị Khoá, và họ đăng nhập đúng tài khoản Google Workspace TDC.</td></tr>
+          <tr><td>Nghi Claude của ai đó làm sai</td><td>Thu hồi Claude ngay, rồi xem Nhật ký lọc “Claude”.</td></tr>
+          <tr><td>Lưu cài đặt báo lỗi</td><td>Đọc giới hạn trong thông báo, ví dụ caption IG tối đa 2.200, khung giờ bắt đầu trước giờ kết thúc.</td></tr>
+          <tr><td>Business Suite liên tục đòi đăng nhập hoặc xác minh</td><td>Kiểm tra hồ sơ Chrome “TDC Post” trên máy đăng bài, đăng nhập lại tài khoản admin Page. Bài gấp thì đăng tay.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><span class="label">Máy chạy Chrome (chế độ Trình duyệt)</span>
+        <ul>
+          <li>Hồ sơ Chrome riêng “TDC Post”, đăng nhập tài khoản admin Page TDC, bật xác minh 2 bước.</li>
+          <li>Google Drive for desktop đồng bộ thư mục TDC Post (để Available offline).</li>
+          <li>Extension Claude đã đăng nhập, được phép mở business.facebook.com, facebook.com, instagram.com.</li>
+          <li>Connector TDC Post đã thêm trong Claude trên máy này. Chi tiết: <code>app/ops/MAY-CHROME.md</code>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="designer">
+      <header><span class="paren">( 05 · Designer )</span><h2>Giao file đúng chuẩn, phần còn lại hệ thống làm</h2></header>
+      <p class="answer">Bạn giao file. Đặt tên, chuyển folder, nén file cho Meta thì hệ thống làm.</p>
+      <h3>Việc hằng ngày</h3>
+      <ol class="steps">
+        <li><span>Mỗi bài một folder. Đánh số file theo thứ tự đăng: 01, 02, 03… liên tục, không nhảy số. 00 là ảnh cover riêng (tuỳ chọn).</span></li>
+        <li><span>Ảnh tỉ lệ 4:5, 1080 px. Video H.264; Reels 1080×1920.</span></li>
+        <li><span>Thả folder vào <code>TDC Post/_inbox</code> trên Google Drive.</span></li>
+        <li><span>Vài phút sau mở <strong>Nhận file</strong>: dòng ✓ là đạt, dòng ! là thiếu số hoặc trùng file.</span></li>
+        <li><span>Thiếu hay sai thì sửa ngay trong folder đó trên Drive (thêm file, đánh số lại). Engine kiểm lại.</span></li>
+        <li><span>Không đổi tên, không chuyển folder đã nhận (đã có mã bài). Cần thay file thì báo content.</span></li>
+      </ol>
+      <figure class="shot"><span>(ảnh chụp màn hình: thư mục _inbox trên Google Drive với một folder đã đánh số 01, 02, 03)</span></figure>
+      <h3>Khi gặp lỗi</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Gặp</th><th>Làm</th></tr></thead>
+        <tbody>
+          <tr><td>“Thiếu file số 03”</td><td>Thêm file 03, hoặc đánh số lại cho liên tục.</td></tr>
+          <tr><td>“File trùng với bài …”</td><td>Kiểm tra có gửi nhầm file của bài cũ không.</td></tr>
+          <tr><td>Folder không hiện trong Nhận file</td><td>Đúng thư mục _inbox chưa? Drive đã đồng bộ xong chưa? Chờ vài phút rồi tải lại trang.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="viec-lam-tay">
+      <header><span class="paren">( 06 · Mọi vai trò )</span><h2>Việc làm tay</h2></header>
+      <p class="answer">Những việc API và Business Suite không làm được, hoặc lỗi phát hiện sau đăng. Hệ thống soạn sẵn nội dung và các bước; người làm trên điện thoại hoặc trên Page rồi bấm Xong.</p>
+      <ol class="steps">
+        <li><span>Mở <strong>Việc làm tay</strong>. Số đỏ trên menu là số việc chưa xong.</span></li>
+        <li><span>Mỗi thẻ có các bước theo đúng tên nút trên app Facebook / Instagram, và nút Sao chép caption, link, câu giới thiệu để dán.</span></li>
+        <li><span>Làm trên điện thoại hoặc trên Page, rồi bấm <strong>Đánh dấu xong</strong> → <strong>Xong</strong>. Có thể ghi chú, ví dụ giờ đã đăng.</span></li>
+        <li><span>Chưa làm xong thì đừng bấm: việc đã xong không mở lại được.</span></li>
+      </ol>
+      <figure class="shot"><span>(ảnh chụp màn hình: thẻ việc “Story dẫn link” với các bước và nút “Sao chép link”)</span></figure>
+      <div class="tbl"><table class="plain">
+        <thead><tr><th>Việc thường gặp</th><th>Làm ở đâu</th></tr></thead>
+        <tbody>
+          <tr><td>Story dẫn link</td><td>App IG: chia sẻ bài → Thêm bài viết vào tin → sticker Liên kết, viết câu giới thiệu.</td></tr>
+          <tr><td>Bài trộn ảnh + video trên FB</td><td>Trên Page: ô tạo bài viết (“Bạn đang nghĩ gì?”), upload theo thứ tự, Công khai.</td></tr>
+          <tr><td>IG có nhạc thêm bằng app, caption từng ảnh, carousel quá 10 tấm</td><td>App IG trên điện thoại. Tắt “Chia sẻ lên Facebook”.</td></tr>
+          <tr><td>Cover sai trên lưới IG</td><td>App IG: mở bài → Chỉnh sửa → Ảnh bìa, chọn đúng frame.</td></tr>
+          <tr><td>Xoá lịch trên Planner (bài bị huỷ)</td><td>Business Suite → Planner, đối chiếu caption rồi xoá mục còn ở trạng thái đã lên lịch.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="claude">
+      <header><span class="paren">( 07 · Mọi vai trò )</span><h2>Kết nối Claude</h2></header>
+      <ol class="steps">
+        <li><span>Trong Claude: <strong>Settings → Connectors → Add custom connector</strong>, tên TDC Post, URL do admin gửi (đuôi <code>/mcp</code>).</span></li>
+        <li><span>Đăng nhập Google bằng tài khoản TDC của bạn, đọc danh sách quyền, bấm <strong>Đồng ý</strong>.</span></li>
+        <li><span>Thử: “Lịch đăng tuần này có gì?”.</span></li>
+      </ol>
+      <figure class="shot"><span>(ảnh chụp màn hình: trang Đồng ý cho Claude kết nối, danh sách quyền theo vai trò)</span></figure>
+      <p>Claude chỉ có đúng quyền của vai trò bạn. Mọi việc Claude làm ghi “Claude thay mặt &lt;tên bạn&gt;” trong Nhật ký. Góc trái dưới app cho biết Claude đã kết nối hay chưa; muốn ngắt thì nhờ admin Thu hồi Claude.</p>
+    </section>
+
+    <div class="next-page"><span class="label">Xem giao diện</span><a href="mockup.html">Mockup các màn</a></div>
+  </main>
+</div>
+
+<footer class="foot"><span>TDC Post · Hướng dẫn · 05.11.2026</span><span><a href="index.html">Phương án</a> · <a href="roadmap.html">Roadmap</a> · <a href="techstack.html">Tech stack</a> · <a href="designsystem.html">Design system</a> · <a href="mockup.html">Giao diện</a> · <a href="trienkhai.html">Triển khai</a> · Hướng dẫn</span></footer>
+</body>
+</html>
